@@ -13,11 +13,14 @@
 #import "MessageViewController.h"
 #import "ActivityViewController.h"
 #import "CenterViewController.h"
+#import "LoginViewController.h"
+
 @interface AppDelegate (){
     
     UINavigationController *_activityNavController;
     UINavigationController *_centerNavController;
     UINavigationController *_messageNavController;
+    UINavigationController *_loginNavController;
 }
 
 @end
@@ -57,9 +60,16 @@
     _centerViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"我的" image:imageNormal selectedImage:imageSelected];
     _centerNavController = [[UINavigationController alloc] initWithRootViewController:_centerViewController];
     
+    imageNormal       = [UIImage imageNamed:@"dependenticon"];
+    imageSelected     = [UIImage imageNamed:@"clockicon"];
+    _loginViewController = [[LoginViewController alloc] init];
+    _loginViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"登录" image:imageNormal selectedImage:imageSelected];
+    _loginNavController = [[UINavigationController alloc] initWithRootViewController:_loginViewController];
+
+    
     UITabBarController *_tabBarController = [[UITabBarController alloc] init];
     _tabBarController.delegate = self;
-    _tabBarController.viewControllers = @[_rootViewController,_messageNavController,_activityNavController,_centerNavController];
+    _tabBarController.viewControllers = @[_rootViewController,_messageNavController,_activityNavController,_centerNavController, _loginNavController];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.window setBackgroundColor:[UIColor clearColor]];

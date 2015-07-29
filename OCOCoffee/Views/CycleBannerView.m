@@ -31,7 +31,6 @@
 -(NSArray *)numberOfKDCycleBannerView:(KDCycleBannerView *)bannerView
 {
     return _bannerArray;
-    NSURL,NSURLRequest,NSURLConnection,NSURLSession;
 }
 
 -(UIViewContentMode)contentModeForImageIndex:(NSUInteger)index
