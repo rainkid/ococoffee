@@ -13,6 +13,7 @@
 @class ActivityViewController;
 @class CenterViewController;
 @class MessageViewController;
+@class LoginViewController;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,UITabBarControllerDelegate>
 
@@ -23,6 +24,8 @@
 @property(strong,nonatomic) MessageViewController *messageViewController;
 @property(strong,nonatomic) ActivityViewController *activityViewController;
 @property(strong,nonatomic) CenterViewController *centerViewController;
+@property(strong,nonatomic) LoginViewController *loginViewController;
+
 
 @end
 
