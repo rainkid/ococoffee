@@ -8,10 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@class RootViewController;
+@class IndexViewController;
+@class ActivityViewController;
+@class CenterViewController;
+@class MessageViewController;
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate,UITabBarControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
+
+@property(strong,nonatomic) RootViewController *rootViewController;
+@property(strong,nonatomic) MessageViewController *messageViewController;
+@property(strong,nonatomic) ActivityViewController *activityViewController;
+@property(strong,nonatomic) CenterViewController *centerViewController;
 
 @end
 

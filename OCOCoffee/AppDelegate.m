@@ -8,7 +8,17 @@
 
 #import "AppDelegate.h"
 
-@interface AppDelegate ()
+#import "RootViewController.h"
+#import "IndexViewController.h"
+#import "MessageViewController.h"
+#import "ActivityViewController.h"
+#import "CenterViewController.h"
+@interface AppDelegate (){
+    
+    UINavigationController *_activityNavController;
+    UINavigationController *_centerNavController;
+    UINavigationController *_messageNavController;
+}
 
 @end
 
@@ -17,6 +27,45 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    
+    
+    UIImage *imageNormal;
+    UIImage *imageSelected;
+    
+    imageNormal       = [UIImage imageNamed:@"singleicon"];
+    imageSelected     = [UIImage imageNamed:@"doubleicon"];
+    _rootViewController = [[RootViewController alloc] init];
+    _rootViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"首页" image:imageNormal selectedImage:imageSelected];
+    
+    imageNormal       = [UIImage imageNamed:@"doubleicon"];
+    imageSelected     = [UIImage imageNamed:@"singleicon"];
+    _messageViewController = [[MessageViewController alloc] init];
+    _messageViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"消息" image:imageNormal selectedImage:imageSelected];
+    //_messageViewController.tabBarItem.badgeValue = @"10";
+    _messageNavController = [[UINavigationController alloc] initWithRootViewController:_messageViewController];
+    
+    imageNormal       = [UIImage imageNamed:@"clockicon"];
+    imageSelected     = [UIImage imageNamed:@"dependenticon"];
+    _activityViewController = [[ActivityViewController alloc] init];
+    _activityViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"活动" image:imageNormal selectedImage:imageSelected];
+    _activityNavController = [[UINavigationController alloc] initWithRootViewController:_activityViewController];
+    
+    imageNormal       = [UIImage imageNamed:@"dependenticon"];
+    imageSelected     = [UIImage imageNamed:@"clockicon"];
+    _centerViewController = [[CenterViewController alloc] init];
+    _centerViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"我的" image:imageNormal selectedImage:imageSelected];
+    _centerNavController = [[UINavigationController alloc] initWithRootViewController:_centerViewController];
+    
+    UITabBarController *_tabBarController = [[UITabBarController alloc] init];
+    _tabBarController.delegate = self;
+    _tabBarController.viewControllers = @[_rootViewController,_messageNavController,_activityNavController,_centerNavController];
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window setBackgroundColor:[UIColor clearColor]];
+    [self.window setRootViewController:_tabBarController];
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
