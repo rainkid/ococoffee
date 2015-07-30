@@ -16,7 +16,7 @@
 #import "LoginViewController.h"
 
 @interface AppDelegate (){
-    
+
     UINavigationController *_activityNavController;
     UINavigationController *_centerNavController;
     UINavigationController *_messageNavController;
