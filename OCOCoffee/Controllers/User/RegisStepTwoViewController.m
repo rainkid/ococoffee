@@ -14,7 +14,7 @@
 #import "RegisStepTwoViewController.h"
 
 
-@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
+@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
 
@@ -32,7 +32,7 @@
 }
 
 - (void) initPickerView {
-    _arrOfAge = [[NSArray alloc]initWithObjects:@“one”,@"two", nil];
+    _arrOfAge = [[NSArray alloc]initWithObjects:@"one",@"two", nil];
     self.pickerView = [[UIPickerView alloc]  initWithFrame:CGRectMake(0, 300, self.view.frame.size.width, self.view.frame.size.height)];
 }
 
@@ -120,6 +120,7 @@
     if (indexPath.row == 0){
         [cell.label setText:@"呢    称"];
         [cell.textField setPlaceholder:@"请输入2-12位中英文字符"];
+        cell.textField.delegate = self;
         cell.textField.tag = TWO_NICKNAKE;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
@@ -175,4 +176,25 @@
 {
     NSLog(@"%ld", row);
 }
+
+#pragma mark-textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    NSLog(@"controller %ld", textField.tag);
+    if (textField.tag == TWO_TRADE) {
+        
+    }
+    return YES;
+}
+
+- (void) textFieldDidBeginEditing:(UITextField *)textField {
+    NSLog(@"controller %ld", textField.tag);
+    
+}
+
+-(void) textFieldDidEndEditing: (UITextField * ) textField {
+    NSLog(@"controller %ld", textField.tag);
+    
+}
+
 @end

@@ -12,7 +12,7 @@
 #import "RegisTableViewCell.h"
 
 
-@interface RegisTableViewCell()<UITextFieldDelegate>
+@interface RegisTableViewCell()
 
 @property (nonatomic, strong) SeparatorView *sepView;
 @property (nonatomic, strong) UIPickerView *tradePickerView;
@@ -36,7 +36,6 @@
         
         
         _textField = [[UITextField alloc] initWithFrame:CGRectMake(92.6, 15.2, tableWidth - 92.6, 18.3)];
-        _textField.delegate = self;
         [self addSubview:_textField];
         
         
@@ -92,24 +91,24 @@
 
 
 #pragma mark-textField
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    NSLog(@"cell %ld", textField.tag);
-    if (textField.tag == TWO_TRADE) {
-        
-    }
-    return YES;
-}
-
-- (void) textFieldDidBeginEditing:(UITextField *)textField {
-    NSLog(@"cell %ld", textField.tag);
-
-}
-
--(void) textFieldDidEndEditing: (UITextField * ) textField {
-    NSLog(@"cell %ld", textField.tag);
-
-}
+//- (BOOL)textFieldShouldReturn:(UITextField *)textField
+//{
+//    NSLog(@"cell %ld", textField.tag);
+//    if (textField.tag == TWO_TRADE) {
+//        
+//    }
+//    return YES;
+//}
+//
+//- (void) textFieldDidBeginEditing:(UITextField *)textField {
+//    NSLog(@"cell %ld", textField.tag);
+//
+//}
+//
+//-(void) textFieldDidEndEditing: (UITextField * ) textField {
+//    NSLog(@"cell %ld", textField.tag);
+//
+//}
 
 
 @end
