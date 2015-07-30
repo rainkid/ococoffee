@@ -1,0 +1,1 @@
+../../../Target Support Files/KDCycleBannerView/KDCycleBannerView-umbrella.h
