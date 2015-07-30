@@ -28,8 +28,7 @@
     return self;
 }
 
--(NSArray *)numberOfKDCycleBannerView:(KDCycleBannerView *)bannerView
-{
+-(NSArray *)numberOfKDCycleBannerView:(KDCycleBannerView *)bannerView{
     return _bannerArray;
 }
 
