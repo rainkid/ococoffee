@@ -29,6 +29,10 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
+		<string>sms</string>
+		<string>location_services</string>
+		<string>gps</string>
+		<string>wifi</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>

@@ -17,6 +17,8 @@
 		0AB7D7261B61248D00CFF4FF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0AB7D7251B61248D00CFF4FF /* Images.xcassets */; };
 		0AB7D7291B61248D00CFF4FF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AB7D7271B61248D00CFF4FF /* LaunchScreen.xib */; };
 		0AB7D7351B61248D00CFF4FF /* OCOCoffeeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AB7D7341B61248D00CFF4FF /* OCOCoffeeTests.m */; };
+		0AE0E8881B693E2200DECD3A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE0E8871B693E2200DECD3A /* CoreLocation.framework */; };
+		0AE0E88A1B693E3500DECD3A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE0E8891B693E3500DECD3A /* MobileCoreServices.framework */; };
 		22ACDD721B6905E5006B0953 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ACDD711B6905E5006B0953 /* Default-568h@2x.png */; };
 		22F066B61B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A31B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.m */; };
 		22F066B71B6902B900BB66EE /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A51B6902B900BB66EE /* UIActionSheet+Blocks.m */; };
@@ -78,6 +80,8 @@
 		0AB7D72E1B61248D00CFF4FF /* OCOCoffeeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OCOCoffeeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AB7D7331B61248D00CFF4FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0AB7D7341B61248D00CFF4FF /* OCOCoffeeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OCOCoffeeTests.m; sourceTree = "<group>"; };
+		0AE0E8871B693E2200DECD3A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		0AE0E8891B693E3500DECD3A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		14887310B7D8897250D65C1C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		22ACDD711B6905E5006B0953 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		22F066A21B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+UnRegisterDefaults.h"; sourceTree = "<group>"; };
@@ -147,6 +151,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AE0E88A1B693E3500DECD3A /* MobileCoreServices.framework in Frameworks */,
+				0AE0E8881B693E2200DECD3A /* CoreLocation.framework in Frameworks */,
 				BCB10E7777628E8564F7ED5B /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -399,6 +405,8 @@
 		C8E256D06F7BCD6211EC9086 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0AE0E8891B693E3500DECD3A /* MobileCoreServices.framework */,
+				0AE0E8871B693E2200DECD3A /* CoreLocation.framework */,
 				E5C59423456FA625F1931F9E /* libPods.a */,
 			);
 			name = Frameworks;
