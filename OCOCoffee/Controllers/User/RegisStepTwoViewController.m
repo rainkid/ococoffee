@@ -20,7 +20,10 @@
 
 @property (nonatomic, strong) NSArray *arrOfAge;
 
+@property(nonatomic,strong) NSIndexPath *selectedIndexPath;
+
 @end
+
 
 @implementation RegisStepTwoViewController
 
@@ -33,6 +36,8 @@
 
 - (void) initPickerView {
     _arrOfAge = [[NSArray alloc]initWithObjects:@"one",@"two", nil];
+    self.pickerView.dataSource = self;
+    self.pickerView.delegate = self;
     self.pickerView = [[UIPickerView alloc]  initWithFrame:CGRectMake(0, 300, self.view.frame.size.width, self.view.frame.size.height)];
 }
 
@@ -116,6 +121,7 @@
 {
     RegisTableViewCell *cell=[[RegisTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     
     if (indexPath.row == 0){
         [cell.label setText:@"呢    称"];
@@ -128,6 +134,7 @@
         [cell.label setText:@"性    别"];
         [cell.textField setPlaceholder:@"请选择性别"];
         cell.textField.tag = TWO_SEX;
+        cell.textField.delegate = self;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
 
@@ -135,6 +142,8 @@
         [cell.label setText:@"出生日期"];
         [cell.textField setPlaceholder:@"请选择出生日期"];
         cell.textField.tag = TWO_BIRGHDAY;
+        cell.textField.delegate = self;
+        cell.textField.inputAccessoryView = self.pickerView;
         cell.textField.secureTextEntry = YES;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:YES];
@@ -143,6 +152,7 @@
         [cell.label setText:@"所在行业"];
         [cell.textField setPlaceholder:@"请选择所在行业"];
         cell.textField.tag = TWO_TRADE;
+        cell.textField.delegate = self;
         cell.textField.secureTextEntry = YES;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:NO];
@@ -150,6 +160,12 @@
     }
     
     return cell;
+}
+
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    _selectedIndexPath = indexPath;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return kCellHeight;
@@ -188,12 +204,23 @@
 }
 
 - (void) textFieldDidBeginEditing:(UITextField *)textField {
-    NSLog(@"controller %ld", textField.tag);
     
+        NSLog(@"controller %ld", textField.tag);
+    if(![textField isFirstResponder]){
+        [textField resignFirstResponder];
+        [textField becomeFirstResponder];
+        
+    }
+    
+    NSLog(@"Begin Editing");
 }
 
 -(void) textFieldDidEndEditing: (UITextField * ) textField {
     NSLog(@"controller %ld", textField.tag);
+    
+    if([textField isFirstResponder]){
+       // [textField ]
+    }
     
 }
 
