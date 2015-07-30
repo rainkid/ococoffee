@@ -1,0 +1,6 @@
+module PSTCollectionView {
+  umbrella header "PSTCollectionView-umbrella.h"
+
+  export *
+  module * { export * }
+}

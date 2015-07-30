@@ -8,11 +8,14 @@
 
 #import "Golbal.h"
 #import "UIColor+colorBuild.h"
+#import <ActionSheetStringPicker.h>
 #import "RegisTableViewCell.h"
+
 
 @interface RegisTableViewCell()
 
 @property (nonatomic, strong) SeparatorView *sepView;
+@property (nonatomic, strong) UIPickerView *tradePickerView;
 
 @end
 
@@ -60,6 +63,8 @@
     return self;
 }
 
+
+
 - (void)showBottomLine:(BOOL)showLine
 {
     if (showLine) {
@@ -83,5 +88,27 @@
 
     // Configure the view for the selected state
 }
+
+
+#pragma mark-textField
+//- (BOOL)textFieldShouldReturn:(UITextField *)textField
+//{
+//    NSLog(@"cell %ld", textField.tag);
+//    if (textField.tag == TWO_TRADE) {
+//        
+//    }
+//    return YES;
+//}
+//
+//- (void) textFieldDidBeginEditing:(UITextField *)textField {
+//    NSLog(@"cell %ld", textField.tag);
+//
+//}
+//
+//-(void) textFieldDidEndEditing: (UITextField * ) textField {
+//    NSLog(@"cell %ld", textField.tag);
+//
+//}
+
 
 @end

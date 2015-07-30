@@ -13,6 +13,21 @@
 static const CGFloat kCellHeight = 47.0f;
 static const CGFloat kTableLeftSide = 23.3;
 
+
+typedef NS_ENUM(NSInteger, REGIS_STEP_ONE){
+    ONE_USERNAME = 0,
+    ONE_CODE,
+    ONE_PASSWORD
+};
+
+typedef NS_ENUM(NSInteger, REGIS_STEP_TWO){
+    TWO_NICKNAKE = 3,
+    TWO_SEX,
+    TWO_BIRGHDAY,
+    TWO_TRADE
+};
+
+
 @interface RegisTableViewCell : UITableViewCell
 
 @property (nonatomic, strong) UITextField *textField;

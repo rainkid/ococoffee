@@ -122,11 +122,13 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     LoginTableViewCell *cell=[[LoginTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.selectionStyle = UITableViewCellAccessoryNone;
+    
     
     if (indexPath.row == 0){
         [cell.imageView setImage:[UIImage imageNamed:@"login_username"]];
         [cell.textField setPlaceholder:@"请输入手机号码"];
+        cell.textField.keyboardType = UIKeyboardTypePhonePad;
         [cell setBottomLine:YES];
     } else if (indexPath.row == 1) {
         [cell.imageView setImage:[UIImage imageNamed:@"login_password"]];

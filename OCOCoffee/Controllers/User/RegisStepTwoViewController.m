@@ -10,13 +10,20 @@
 #import "Golbal.h"
 #import "UIColor+colorBuild.h"
 #import "RegisTableViewCell.h"
+#import "ActionSheetPicker.h"
 #import "RegisStepTwoViewController.h"
 
-@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate>
+
+@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
 
+@property (nonatomic, strong) NSArray *arrOfAge;
+
+@property(nonatomic,strong) NSIndexPath *selectedIndexPath;
+
 @end
+
 
 @implementation RegisStepTwoViewController
 
@@ -24,6 +31,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self addSubViews];
+    [self initPickerView];
+}
+
+- (void) initPickerView {
+    _arrOfAge = [[NSArray alloc]initWithObjects:@"one",@"two", nil];
+    self.pickerView.dataSource = self;
+    self.pickerView.delegate = self;
+    self.pickerView = [[UIPickerView alloc]  initWithFrame:CGRectMake(0, 300, self.view.frame.size.width, self.view.frame.size.height)];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -106,22 +121,29 @@
 {
     RegisTableViewCell *cell=[[RegisTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     
     if (indexPath.row == 0){
         [cell.label setText:@"呢    称"];
         [cell.textField setPlaceholder:@"请输入2-12位中英文字符"];
-        
+        cell.textField.delegate = self;
+        cell.textField.tag = TWO_NICKNAKE;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
     } else if (indexPath.row == 1) {
         [cell.label setText:@"性    别"];
         [cell.textField setPlaceholder:@"请选择性别"];
+        cell.textField.tag = TWO_SEX;
+        cell.textField.delegate = self;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
 
     } else if (indexPath.row == 2) {
         [cell.label setText:@"出生日期"];
         [cell.textField setPlaceholder:@"请选择出生日期"];
+        cell.textField.tag = TWO_BIRGHDAY;
+        cell.textField.delegate = self;
+        cell.textField.inputAccessoryView = self.pickerView;
         cell.textField.secureTextEntry = YES;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:YES];
@@ -129,17 +151,77 @@
     } else if (indexPath.row == 3) {
         [cell.label setText:@"所在行业"];
         [cell.textField setPlaceholder:@"请选择所在行业"];
+        cell.textField.tag = TWO_TRADE;
+        cell.textField.delegate = self;
         cell.textField.secureTextEntry = YES;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:NO];
         [cell showCodeButton:NO];
-
     }
     
     return cell;
 }
+
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    _selectedIndexPath = indexPath;
+}
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return kCellHeight;
+}
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+#pragma <#arguments#>
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return [_arrOfAge count];
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    NSString *titleRow;
+    titleRow = [NSString stringWithFormat:@"%@", [_arrOfAge objectAtIndex:row]];
+    return titleRow;
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    NSLog(@"%ld", row);
+}
+
+#pragma mark-textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    NSLog(@"controller %ld", textField.tag);
+    if (textField.tag == TWO_TRADE) {
+        
+    }
+    return YES;
+}
+
+- (void) textFieldDidBeginEditing:(UITextField *)textField {
+    
+        NSLog(@"controller %ld", textField.tag);
+    if(![textField isFirstResponder]){
+        [textField resignFirstResponder];
+        [textField becomeFirstResponder];
+        
+    }
+    
+    NSLog(@"Begin Editing");
+}
+
+-(void) textFieldDidEndEditing: (UITextField * ) textField {
+    NSLog(@"controller %ld", textField.tag);
+    
+    if([textField isFirstResponder]){
+       // [textField ]
+    }
+    
 }
 
 @end
