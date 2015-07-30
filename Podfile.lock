@@ -1,4 +1,5 @@
 PODS:
+  - ActionSheetPicker-3.0 (1.7.0)
   - AFNetworking (2.5.4):
     - AFNetworking/NSURLConnection (= 2.5.4)
     - AFNetworking/NSURLSession (= 2.5.4)
@@ -30,6 +31,7 @@ PODS:
   - KDCycleBannerView (1.1.1):
     - SDWebImage
   - MagicalRecord (2.3.0)
+  - Masonry (0.6.2)
   - MBProgressHUD (0.9.1)
   - MWPhotoBrowser (1.4.1):
     - DACircularProgress
@@ -41,8 +43,11 @@ PODS:
   - SDWebImage (3.7.3):
     - SDWebImage/Core (= 3.7.3)
   - SDWebImage/Core (3.7.3)
+  - SKTagView (0.7):
+    - Masonry
 
 DEPENDENCIES:
+  - ActionSheetPicker-3.0
   - AFNetworking (~> 2.5.0)
   - DZNEmptyDataSet (~> 1.5)
   - FMDB (~> 2.5)
@@ -52,18 +57,22 @@ DEPENDENCIES:
   - MWPhotoBrowser (~> 1.4.1)
   - PKRevealController (~> 2.0.6)
   - SDWebImage (~> 3.7.1)
+  - SKTagView
 
 SPEC CHECKSUMS:
+  ActionSheetPicker-3.0: 6516052442fc8ca8f3cc4b3c7aa0436de12373df
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   DZNEmptyDataSet: 3d31c27758230f03c71199f8c522bcfa99fba16c
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   KDCycleBannerView: 6dbac2cda6b1a6f4e27b65d66249ecd966403b8b
   MagicalRecord: 89eb7d7ead39fb37f01c3d010665ee94d17f8dba
+  Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MWPhotoBrowser: 2531e682860d62b8a7ba8659de02eb9040e431e5
   PKRevealController: ffb45a16f5a5032ad90a3d16e5cbb0d8e035bd58
   PSTCollectionView: 6749df92885353521f55279a7ce2b293762e2be4
   SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
+  SKTagView: 1e89c1ce2292cf890610901d3621c55d1ed82379
 
 COCOAPODS: 0.38.1

@@ -10,11 +10,15 @@
 #import "Golbal.h"
 #import "UIColor+colorBuild.h"
 #import "RegisTableViewCell.h"
+#import "ActionSheetPicker.h"
 #import "RegisStepTwoViewController.h"
 
-@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate>
+
+@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
+
+@property (nonatomic, strong) NSArray *arrOfAge;
 
 @end
 
@@ -24,6 +28,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self addSubViews];
+    [self initPickerView];
+}
+
+- (void) initPickerView {
+    _arrOfAge = [[NSArray alloc]initWithObjects:@“one”,@"two", nil];
+    self.pickerView = [[UIPickerView alloc]  initWithFrame:CGRectMake(0, 300, self.view.frame.size.width, self.view.frame.size.height)];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -110,18 +120,20 @@
     if (indexPath.row == 0){
         [cell.label setText:@"呢    称"];
         [cell.textField setPlaceholder:@"请输入2-12位中英文字符"];
-        
+        cell.textField.tag = TWO_NICKNAKE;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
     } else if (indexPath.row == 1) {
         [cell.label setText:@"性    别"];
         [cell.textField setPlaceholder:@"请选择性别"];
+        cell.textField.tag = TWO_SEX;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
 
     } else if (indexPath.row == 2) {
         [cell.label setText:@"出生日期"];
         [cell.textField setPlaceholder:@"请选择出生日期"];
+        cell.textField.tag = TWO_BIRGHDAY;
         cell.textField.secureTextEntry = YES;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:YES];
@@ -129,11 +141,11 @@
     } else if (indexPath.row == 3) {
         [cell.label setText:@"所在行业"];
         [cell.textField setPlaceholder:@"请选择所在行业"];
+        cell.textField.tag = TWO_TRADE;
         cell.textField.secureTextEntry = YES;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:NO];
         [cell showCodeButton:NO];
-
     }
     
     return cell;
@@ -142,4 +154,25 @@
     return kCellHeight;
 }
 
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+#pragma <#arguments#>
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return [_arrOfAge count];
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    NSString *titleRow;
+    titleRow = [NSString stringWithFormat:@"%@", [_arrOfAge objectAtIndex:row]];
+    return titleRow;
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    NSLog(@"%ld", row);
+}
 @end

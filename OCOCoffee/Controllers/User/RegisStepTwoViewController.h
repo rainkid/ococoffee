@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface RegisStepTwoViewController : UIViewController
-
+@property (nonatomic,strong) UIPickerView *pickerView;
 @end

@@ -114,18 +114,22 @@
     if (indexPath.row == 0){
         [cell.label setText:@"用户名"];
         [cell.textField setPlaceholder:@"请输入手机号码"];
+        cell.textField.keyboardType = UIKeyboardTypePhonePad;
+        cell.textField.tag = ONE_USERNAME;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
 
     } else if (indexPath.row == 1) {
         [cell.label setText:@"验证码"];
         [cell.textField setPlaceholder:@"请输入验证码"];
+        cell.textField.tag = ONE_CODE;
         [cell showBottomLine:YES];
         [cell showCodeButton:YES];
 
     } else if (indexPath.row == 2) {
         [cell.label setText:@"密    码"];
         [cell.textField setPlaceholder:@"请设置6位或6位以上密码"];
+        cell.textField.tag = ONE_PASSWORD;
         cell.textField.secureTextEntry = YES;
         [cell showBottomLine:NO];
         [cell showCodeButton:NO];
@@ -135,5 +139,8 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return kCellHeight;
 }
-
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"%ld", indexPath.row);
+}
 @end
