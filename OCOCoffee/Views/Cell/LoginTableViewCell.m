@@ -25,7 +25,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(13, 22.6, 13, 18.3)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(27.2, 46.9, 28, 38)];
         [self addSubview:imageView];
         
         double tableWidth = SCREEN_WIDTH - (kTableLeftSide*2);

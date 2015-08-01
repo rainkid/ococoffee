@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RegisStepTwoViewController : UIViewController<UITextFieldDelegate>
-@property (nonatomic,strong) UIPickerView *pickerView;
+@interface RegisStepTwoViewController : UIViewController
+
 @end

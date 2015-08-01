@@ -11,16 +11,17 @@
 #import "UIColor+colorBuild.h"
 #import "RegisTableViewCell.h"
 #import "ActionSheetPicker.h"
+#import "StringPickerView.h"
+#import "DatePickerView.h"
 #import "RegisStepTwoViewController.h"
 
 
-@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
-
+@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate, DatePickerViewDelegate, StringPickerViewDelegate>
+@property(nonatomic, assign) long cellIndex;
 @property (nonatomic, strong) UITableView *tableView;
-
-@property (nonatomic, strong) NSArray *arrOfAge;
-
-@property(nonatomic,strong) NSIndexPath *selectedIndexPath;
+@property(nonatomic, strong) DatePickerView *datePicker;
+@property(nonatomic,strong) StringPickerView *pickerView;
+@property(nonatomic, strong) NSArray *pickerViewData;
 
 @end
 
@@ -35,10 +36,20 @@
 }
 
 - (void) initPickerView {
-    _arrOfAge = [[NSArray alloc]initWithObjects:@"one",@"two", nil];
-    self.pickerView.dataSource = self;
-    self.pickerView.delegate = self;
-    self.pickerView = [[UIPickerView alloc]  initWithFrame:CGRectMake(0, 300, self.view.frame.size.width, self.view.frame.size.height)];
+    _datePicker = [[DatePickerView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 200)];
+    _datePicker.delegate = self;
+    
+    _pickerView = [[StringPickerView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 200)];
+    _pickerView.delegate = self;
+
+    _pickerViewData=[[NSArray alloc] initWithObjects:@"哈哈",
+                    @"two",
+                    @"three",
+                    @"four",
+                    @"five",
+                    nil];
+    
+    _pickerView.pickerViewData = _pickerViewData;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -121,12 +132,11 @@
 {
     RegisTableViewCell *cell=[[RegisTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
+    cell.textField.delegate = self;
     
     if (indexPath.row == 0){
         [cell.label setText:@"呢    称"];
         [cell.textField setPlaceholder:@"请输入2-12位中英文字符"];
-        cell.textField.delegate = self;
         cell.textField.tag = TWO_NICKNAKE;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
@@ -134,7 +144,6 @@
         [cell.label setText:@"性    别"];
         [cell.textField setPlaceholder:@"请选择性别"];
         cell.textField.tag = TWO_SEX;
-        cell.textField.delegate = self;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
 
@@ -142,9 +151,7 @@
         [cell.label setText:@"出生日期"];
         [cell.textField setPlaceholder:@"请选择出生日期"];
         cell.textField.tag = TWO_BIRGHDAY;
-        cell.textField.delegate = self;
-        cell.textField.inputAccessoryView = self.pickerView;
-        cell.textField.secureTextEntry = YES;
+        cell.textField.inputView = _datePicker;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
@@ -152,8 +159,7 @@
         [cell.label setText:@"所在行业"];
         [cell.textField setPlaceholder:@"请选择所在行业"];
         cell.textField.tag = TWO_TRADE;
-        cell.textField.delegate = self;
-        cell.textField.secureTextEntry = YES;
+        cell.textField.inputView = _pickerView;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:NO];
         [cell showCodeButton:NO];
@@ -162,36 +168,10 @@
     return cell;
 }
 
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    _selectedIndexPath = indexPath;
-}
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return kCellHeight;
 }
 
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return 1;
-}
-
-#pragma <#arguments#>
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
-{
-    return [_arrOfAge count];
-}
-
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    NSString *titleRow;
-    titleRow = [NSString stringWithFormat:@"%@", [_arrOfAge objectAtIndex:row]];
-    return titleRow;
-}
-
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
-{
-    NSLog(@"%ld", row);
-}
 
 #pragma mark-textField
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -204,24 +184,48 @@
 }
 
 - (void) textFieldDidBeginEditing:(UITextField *)textField {
-    
-        NSLog(@"controller %ld", textField.tag);
-    if(![textField isFirstResponder]){
-        [textField resignFirstResponder];
-        [textField becomeFirstResponder];
-        
-    }
-    
-    NSLog(@"Begin Editing");
+    self.cellIndex = textField.tag;
+    [textField becomeFirstResponder];
+    NSLog(@"cellIndex = %ld", self.cellIndex);
 }
 
 -(void) textFieldDidEndEditing: (UITextField * ) textField {
     NSLog(@"controller %ld", textField.tag);
-    
-    if([textField isFirstResponder]){
-       // [textField ]
-    }
-    
+}
+
+#pragma DatePickerViewDelegate
+-(void) datePickerDone:(NSDate *)date
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
+    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
+    RegisTableViewCell *cell = (RegisTableViewCell *)[_tableView cellForRowAtIndexPath:cellIndexPath];
+    cell.textField.text = [formatter stringFromDate:date];
+    [cell.textField resignFirstResponder];
+    NSLog(@"%@", date);
+}
+
+-(void)datePickercalcel
+{
+    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
+    RegisTableViewCell *cell = (RegisTableViewCell *)[_tableView cellForRowAtIndexPath:cellIndexPath];
+    [cell.textField resignFirstResponder];
+}
+
+#pragma StringPickerViewDelegate
+-(void) stringPickerDone:(long)index
+{
+    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
+    RegisTableViewCell *cell = (RegisTableViewCell *)[_tableView cellForRowAtIndexPath:cellIndexPath];
+    cell.textField.text = [_pickerViewData objectAtIndex:index];
+    [cell.textField resignFirstResponder];
+}
+
+-(void)stringPickerCancel
+{
+    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
+    RegisTableViewCell *cell = (RegisTableViewCell *)[_tableView cellForRowAtIndexPath:cellIndexPath];
+    [cell.textField resignFirstResponder];
 }
 
 @end

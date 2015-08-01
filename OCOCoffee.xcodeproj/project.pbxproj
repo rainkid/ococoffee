@@ -31,6 +31,8 @@
 		0AD23F611B6A54DF00515C38 /* RegisStepTwoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD23F551B6A54DF00515C38 /* RegisStepTwoViewController.m */; };
 		0AE0E8881B693E2200DECD3A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE0E8871B693E2200DECD3A /* CoreLocation.framework */; };
 		0AE0E88A1B693E3500DECD3A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE0E8891B693E3500DECD3A /* MobileCoreServices.framework */; };
+		223BA1F01B6C624E001F9DC5 /* DatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 223BA1EF1B6C624E001F9DC5 /* DatePickerView.m */; };
+		223BA1F31B6C6278001F9DC5 /* StringPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 223BA1F21B6C6278001F9DC5 /* StringPickerView.m */; };
 		22F066B61B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A31B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.m */; };
 		22F066B71B6902B900BB66EE /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A51B6902B900BB66EE /* UIActionSheet+Blocks.m */; };
 		22F066B81B6902B900BB66EE /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A71B6902B900BB66EE /* UIAlertView+Blocks.m */; };
@@ -107,6 +109,10 @@
 		0AE0E8871B693E2200DECD3A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		0AE0E8891B693E3500DECD3A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		14887310B7D8897250D65C1C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		223BA1EE1B6C624E001F9DC5 /* DatePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatePickerView.h; sourceTree = "<group>"; };
+		223BA1EF1B6C624E001F9DC5 /* DatePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatePickerView.m; sourceTree = "<group>"; };
+		223BA1F11B6C6278001F9DC5 /* StringPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringPickerView.h; sourceTree = "<group>"; };
+		223BA1F21B6C6278001F9DC5 /* StringPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringPickerView.m; sourceTree = "<group>"; };
 		22F066A21B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+UnRegisterDefaults.h"; sourceTree = "<group>"; };
 		22F066A31B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+UnRegisterDefaults.m"; sourceTree = "<group>"; };
 		22F066A41B6902B900BB66EE /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
@@ -328,6 +334,17 @@
 			path = User;
 			sourceTree = "<group>";
 		};
+		223BA1ED1B6C624E001F9DC5 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				223BA1EE1B6C624E001F9DC5 /* DatePickerView.h */,
+				223BA1EF1B6C624E001F9DC5 /* DatePickerView.m */,
+				223BA1F11B6C6278001F9DC5 /* StringPickerView.h */,
+				223BA1F21B6C6278001F9DC5 /* StringPickerView.m */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
 		22F0668E1B6902B900BB66EE /* Library */ = {
 			isa = PBXGroup;
 			children = (
@@ -356,6 +373,7 @@
 		22F066BB1B6903D600BB66EE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				223BA1ED1B6C624E001F9DC5 /* Util */,
 				22F066BC1B6903D600BB66EE /* Cell */,
 				22F066C71B6903D600BB66EE /* CycleBannerView.h */,
 				22F066C81B6903D600BB66EE /* CycleBannerView.m */,
@@ -588,6 +606,8 @@
 				22F066D21B6903D600BB66EE /* RegisTableViewCell.m in Sources */,
 				22F066D11B6903D600BB66EE /* MessageCell.m in Sources */,
 				0AD23F581B6A54DF00515C38 /* CityViewController.m in Sources */,
+				223BA1F31B6C6278001F9DC5 /* StringPickerView.m in Sources */,
+				223BA1F01B6C624E001F9DC5 /* DatePickerView.m in Sources */,
 				22F066B71B6902B900BB66EE /* UIActionSheet+Blocks.m in Sources */,
 				22F066BA1B6902B900BB66EE /* UIColor+colorBuild.m in Sources */,
 				0AB7D71B1B61248D00CFF4FF /* main.m in Sources */,
