@@ -135,6 +135,8 @@
         [cell.textField setPlaceholder:@"请选择性别"];
         cell.textField.tag = TWO_SEX;
         cell.textField.delegate = self;
+        cell.textField.keyboardType = UIKeyboardTypeAlphabet;
+        
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
 
@@ -197,6 +199,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     NSLog(@"controller %ld", textField.tag);
+    
     if (textField.tag == TWO_TRADE) {
         
     }
@@ -205,22 +208,12 @@
 
 - (void) textFieldDidBeginEditing:(UITextField *)textField {
     
-        NSLog(@"controller %ld", textField.tag);
-    if(![textField isFirstResponder]){
-        [textField resignFirstResponder];
-        [textField becomeFirstResponder];
-        
-    }
     
     NSLog(@"Begin Editing");
 }
 
 -(void) textFieldDidEndEditing: (UITextField * ) textField {
     NSLog(@"controller %ld", textField.tag);
-    
-    if([textField isFirstResponder]){
-       // [textField ]
-    }
     
 }
 
