@@ -154,6 +154,7 @@
         [cell.label setText:@"性    别"];
         [cell.textField setPlaceholder:@"请选择性别"];
         cell.textField.tag = TWO_SEX;
+        cell.textField.delegate = self;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
 
@@ -187,6 +188,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     NSLog(@"controller %ld", textField.tag);
+    
     if (textField.tag == TWO_TRADE) {
         
     }

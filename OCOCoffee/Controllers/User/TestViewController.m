@@ -23,6 +23,7 @@
     UIButton *nextBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     nextBtn.frame = CGRectMake(0, 235.8, self.view.frame.size
                                .width, 46.4);
+    nextBtn.backgroundColor = [UIColor redColor];
     nextBtn.layer.cornerRadius = 3;
     nextBtn.layer.masksToBounds = YES;
     [nextBtn setTitle:@"测试"  forState:UIControlStateNormal];
