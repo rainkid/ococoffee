@@ -13,6 +13,7 @@
 #import "ActionSheetPicker.h"
 #import "StringPickerView.h"
 #import "DatePickerView.h"
+#import "RegisStepThreeViewController.h"
 #import "RegisStepTwoViewController.h"
 
 
@@ -104,17 +105,26 @@
     _tableView.showsHorizontalScrollIndicator = NO;
     [view addSubview:_tableView];
     
-    UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    loginBtn.frame = CGRectMake(0, 235.8, view.frame.size
+    UIButton *nextBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    nextBtn.frame = CGRectMake(0, 235.8, view.frame.size
                                 .width, 46.4);
-    loginBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
-    loginBtn.layer.cornerRadius = 3;
-    loginBtn.layer.masksToBounds = YES;
-    [loginBtn setTitle:@"下一步"  forState:UIControlStateNormal];
-    [loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [view addSubview:loginBtn];
+    nextBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
+    nextBtn.layer.cornerRadius = 3;
+    nextBtn.layer.masksToBounds = YES;
+    [nextBtn setTitle:@"下一步"  forState:UIControlStateNormal];
+    [nextBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [nextBtn addTarget:self action:@selector(registerThreePage:) forControlEvents:UIControlEventTouchUpInside];
+    [view addSubview:nextBtn];
     
     [self.view addSubview:view];
+}
+
+#pragma mark - nextBtn action
+- (IBAction)registerThreePage:(id)sender {
+    RegisStepThreeViewController *page = [[RegisStepThreeViewController alloc] init];
+    [self presentViewController:page animated:YES completion:^{
+        NSLog(@"regis page ");
+    }];
 }
 
 #pragma mark Table view methods

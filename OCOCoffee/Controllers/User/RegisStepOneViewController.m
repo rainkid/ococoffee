@@ -80,8 +80,10 @@ static const CGFloat kTableHeight = 142.5f;
 
 #pragma mark - nextBtn action
 - (IBAction)registerTwoPage:(id)sender {
-    RegisStepTwoViewController *one = [[RegisStepTwoViewController alloc] init];
-    [self.navigationController pushViewController:one animated:YES];
+    RegisStepTwoViewController *page = [[RegisStepTwoViewController alloc] init];
+    [self presentViewController:page animated:YES completion:^{
+        NSLog(@"completion");
+    }];
 }
 
 

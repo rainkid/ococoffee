@@ -19,7 +19,6 @@ static const CGFloat PickerToolBarHeight = 44.f;
 
 @implementation StringPickerView
 
-
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self == [super initWithFrame:frame]) {
         _pickerView = [[UIPickerView alloc] initWithFrame: CGRectMake(0, PickerToolBarHeight, frame.size.width, frame.size.height - PickerToolBarHeight)];
@@ -38,10 +37,7 @@ static const CGFloat PickerToolBarHeight = 44.f;
         toolbar.items = [NSArray arrayWithObjects:cancelButton, flexibleSpace, doneButton, nil];
         [self addSubview: toolbar];
         
-        
         self.autoresizesSubviews = YES;
-
-        
     }
     return self;
 }
