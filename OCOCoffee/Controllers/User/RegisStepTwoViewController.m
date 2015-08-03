@@ -36,10 +36,10 @@
 }
 
 - (void) initPickerView {
-    _datePicker = [[DatePickerView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 200)];
+    _datePicker = [[DatePickerView alloc] initWithFrame:CGRectMake(0, 0,self.view.frame.size.width, 200)];
     _datePicker.delegate = self;
     
-    _pickerView = [[StringPickerView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 200)];
+    _pickerView = [[StringPickerView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
     _pickerView.delegate = self;
 
     _pickerViewData=[[NSArray alloc] initWithObjects:@"哈哈",
@@ -205,7 +205,7 @@
     NSLog(@"%@", date);
 }
 
--(void)datePickercalcel
+-(void)datePickerCancel
 {
     NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
     RegisTableViewCell *cell = (RegisTableViewCell *)[_tableView cellForRowAtIndexPath:cellIndexPath];

@@ -38,7 +38,6 @@
 		22F066B81B6902B900BB66EE /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A71B6902B900BB66EE /* UIAlertView+Blocks.m */; };
 		22F066B91B6902B900BB66EE /* UIButton+EnlargeTouchArea.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A91B6902B900BB66EE /* UIButton+EnlargeTouchArea.m */; };
 		22F066BA1B6902B900BB66EE /* UIColor+colorBuild.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066AB1B6902B900BB66EE /* UIColor+colorBuild.m */; };
-		22F066CF1B6903D600BB66EE /* ImagePlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066BE1B6903D600BB66EE /* ImagePlayerView.m */; };
 		22F066D01B6903D600BB66EE /* LoginTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066C01B6903D600BB66EE /* LoginTableViewCell.m */; };
 		22F066D11B6903D600BB66EE /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066C21B6903D600BB66EE /* MessageCell.m */; };
 		22F066D21B6903D600BB66EE /* RegisTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066C41B6903D600BB66EE /* RegisTableViewCell.m */; };
@@ -123,8 +122,6 @@
 		22F066A91B6902B900BB66EE /* UIButton+EnlargeTouchArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+EnlargeTouchArea.m"; sourceTree = "<group>"; };
 		22F066AA1B6902B900BB66EE /* UIColor+colorBuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+colorBuild.h"; sourceTree = "<group>"; };
 		22F066AB1B6902B900BB66EE /* UIColor+colorBuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+colorBuild.m"; sourceTree = "<group>"; };
-		22F066BD1B6903D600BB66EE /* ImagePlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePlayerView.h; sourceTree = "<group>"; };
-		22F066BE1B6903D600BB66EE /* ImagePlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePlayerView.m; sourceTree = "<group>"; };
 		22F066BF1B6903D600BB66EE /* LoginTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginTableViewCell.h; sourceTree = "<group>"; };
 		22F066C01B6903D600BB66EE /* LoginTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginTableViewCell.m; sourceTree = "<group>"; };
 		22F066C11B6903D600BB66EE /* MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCell.h; sourceTree = "<group>"; };
@@ -390,8 +387,6 @@
 		22F066BC1B6903D600BB66EE /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				22F066BD1B6903D600BB66EE /* ImagePlayerView.h */,
-				22F066BE1B6903D600BB66EE /* ImagePlayerView.m */,
 				22F066BF1B6903D600BB66EE /* LoginTableViewCell.h */,
 				22F066C01B6903D600BB66EE /* LoginTableViewCell.m */,
 				22F066C11B6903D600BB66EE /* MessageCell.h */,
@@ -593,7 +588,6 @@
 				0AD23F5F1B6A54DF00515C38 /* LoginViewController.m in Sources */,
 				0AD23F5C1B6A54DF00515C38 /* RootViewController.m in Sources */,
 				22F066D31B6903D600BB66EE /* SeparatorView.m in Sources */,
-				22F066CF1B6903D600BB66EE /* ImagePlayerView.m in Sources */,
 				22F066D51B6903D600BB66EE /* IndexCollectionView.m in Sources */,
 				22F066D61B6903D600BB66EE /* IndexCollectionViewCell.m in Sources */,
 				0AD23F571B6A54DF00515C38 /* CenterViewController.m in Sources */,
