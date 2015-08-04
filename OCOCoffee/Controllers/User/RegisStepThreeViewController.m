@@ -8,9 +8,9 @@
 
 #import "Golbal.h"
 #import "UIColor+colorBuild.h"
-#import "SKTagView.h"
+#import <Masonry/Masonry.h>
+#import <SKTagView/SKTagView.h>
 #import "RegisStepThreeViewController.h"
-
 static const CGFloat kHeight = 48.6;
 static const CGFloat kTableLeftSide = 23.3;
 
@@ -22,8 +22,11 @@ static const CGFloat kTableLeftSide = 23.3;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     [self addSubViews];
+    [self setupTagView];
+
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -54,8 +57,7 @@ static const CGFloat kTableLeftSide = 23.3;
     
     self.tagView = ({
         SKTagView *view = [SKTagView new];
-        view.backgroundColor = UIColor.cyanColor;
-        view.padding    = UIEdgeInsetsMake(10, 25, 10, 25);
+//        view.padding    = UIEdgeInsetsMake(10, 25, 10, 25);
         view.insets    = 5;
         view.lineSpace = 2;
         __weak SKTagView *weakView = view;
@@ -67,7 +69,19 @@ static const CGFloat kTableLeftSide = 23.3;
         view;
     });
     [view addSubview:self.tagView];
+    [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
+        UIView *superView = view;
+        make.top.equalTo(superView.mas_top).offset(10);
+        make.leading.equalTo(superView.mas_leading);
+        make.trailing.equalTo(superView.mas_trailing);
+    }];
     
+    [self.view addSubview:view];
+    
+}
+
+- (void)setupTagView
+{
     //Add Tags
     [@[@"Python", @"Javascript", @"HTML", @"Go", @"Objective-C",@"C", @"PHP"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
      {
@@ -80,9 +94,6 @@ static const CGFloat kTableLeftSide = 23.3;
          
          [self.tagView addTag:tag];
      }];
-    
-    [self.view addSubview:view];
-    
 }
 
 @end
