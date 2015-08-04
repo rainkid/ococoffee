@@ -118,13 +118,14 @@ static const CGFloat kPhotoHeight = 109;
     }];
 
     
-//    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(logoLeft+80, PHONE_NAVIGATIONBAR_HEIGHT+43+75,  22.3, 19.3)];
-//    cameraImageView.image = [UIImage imageNamed:@"regis_camera"];
-//    [self.view addSubview:cameraImageView];
+    UIImageView *cameraImageView = [UIImageView new];//[[UIImageView alloc] initWithFrame:CGRectMake(logoLeft+80, PHONE_NAVIGATIONBAR_HEIGHT+43+75,  22.3, 19.3)];
+    cameraImageView.image = [UIImage imageNamed:@"regis_camera"];
+    [self.view addSubview:cameraImageView];
+    [cameraImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(cview.mas_top).offset(60);
+        make.left.mas_equalTo(cview.mas_left).offset(82);
+    }];
     
-//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(kTableLeftSide, PHONE_NAVIGATIONBAR_HEIGHT + 181.6, SCREEN_WIDTH - (kTableLeftSide*2), self.view.bounds.size.height - logoHeight)];
-    
-//    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 189.9)];
     
     _tableView = [UITableView new];
     _tableView.layer.cornerRadius = 3;
@@ -144,8 +145,6 @@ static const CGFloat kPhotoHeight = 109;
     }];
     
     UIButton *nextBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    nextBtn.frame = CGRectMake(0, 235.8, self.view.frame.size
-                                .width, 46.4);
     nextBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
     nextBtn.layer.cornerRadius = 3;
     nextBtn.layer.masksToBounds = YES;
@@ -159,7 +158,6 @@ static const CGFloat kPhotoHeight = 109;
         make.left.and.right.equalTo(_tableView);
         make.top.equalTo(_tableView.mas_bottom).offset(47.5);
     }];
-    
 }
 
 #pragma mark - nextBtn action
