@@ -46,11 +46,12 @@ static const CGFloat kPhotoHeight = 109;
     _pickerView = [[StringPickerView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
     _pickerView.delegate = self;
 
-    _pickerViewData=[[NSArray alloc] initWithObjects:@"哈哈",
-                    @"two",
-                    @"three",
-                    @"four",
-                    @"five",
+    _pickerViewData=[[NSArray alloc] initWithObjects:
+                     @"金融行业",
+                    @"IT行业",
+                    @"互联行业",
+                    @"投资行业",
+                    @"手机游戏开发",
                     nil];
     
     _pickerView.pickerViewData = _pickerViewData;
@@ -70,8 +71,7 @@ static const CGFloat kPhotoHeight = 109;
     
     __weak typeof(self) weakSelf = self;
 
-    //
-//    UIView *cview = [[UIView alloc] initWithFrame:CGRectMake(logoLeft, PHONE_NAVIGATIONBAR_HEIGHT+38, logoWith, logoHeight)];
+    //photo
     UIView *cview = [UIView new];
     cview.layer.cornerRadius = kPhotoHeight/2;
     cview.layer.masksToBounds = YES;
@@ -85,11 +85,10 @@ static const CGFloat kPhotoHeight = 109;
         make.top.mas_equalTo(PHONE_NAVIGATIONBAR_HEIGHT + 40);
     }];
     
-
+    //phone inner
     UIImageView *imageView = [UIImageView new];
     imageView.image = [UIImage imageNamed:@"regis_no_img"];
     imageView.layer.cornerRadius = (kPhotoHeight-4) /2;
-
     imageView.layer.masksToBounds = YES;
     [self.view addSubview:imageView];
     [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -98,6 +97,7 @@ static const CGFloat kPhotoHeight = 109;
         make.height.and.width.mas_equalTo(kPhotoHeight - 4);;
     }];
     
+    //labels
     UILabel *label_1 = [UILabel new];
     label_1.text = @"请上传一张本人照片作为图像";
     label_1.font = [UIFont systemFontOfSize:14];
@@ -117,8 +117,8 @@ static const CGFloat kPhotoHeight = 109;
         make.centerX.equalTo(weakSelf.view);
     }];
 
-    
-    UIImageView *cameraImageView = [UIImageView new];//[[UIImageView alloc] initWithFrame:CGRectMake(logoLeft+80, PHONE_NAVIGATIONBAR_HEIGHT+43+75,  22.3, 19.3)];
+    //camera image view
+    UIImageView *cameraImageView = [UIImageView new];
     cameraImageView.image = [UIImage imageNamed:@"regis_camera"];
     [self.view addSubview:cameraImageView];
     [cameraImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -126,7 +126,7 @@ static const CGFloat kPhotoHeight = 109;
         make.left.mas_equalTo(cview.mas_left).offset(82);
     }];
     
-    
+    //table view
     _tableView = [UITableView new];
     _tableView.layer.cornerRadius = 3;
     _tableView.layer.masksToBounds = YES;
@@ -144,6 +144,7 @@ static const CGFloat kPhotoHeight = 109;
         make.top.mas_equalTo(label_2.mas_bottom).offset(26);
     }];
     
+    //next button
     UIButton *nextBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     nextBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
     nextBtn.layer.cornerRadius = 3;
