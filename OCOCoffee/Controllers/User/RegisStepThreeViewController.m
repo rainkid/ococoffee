@@ -11,8 +11,8 @@
 #import <Masonry/Masonry.h>
 #import <SKTagView/SKTagView.h>
 #import "RegisStepThreeViewController.h"
-static const CGFloat kHeight = 48.6;
-static const CGFloat kTableLeftSide = 23.3;
+static const CGFloat kHeight = 48.6f;
+static const CGFloat kTableLeftSide = 23.3f;
 
 @interface RegisStepThreeViewController ()
 @property(nonatomic,strong) SKTagView *tagView;
@@ -23,6 +23,8 @@ static const CGFloat kTableLeftSide = 23.3;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+
+    
     [self addSubViews];
     [self setupTagView];
 
@@ -40,26 +42,59 @@ static const CGFloat kTableLeftSide = 23.3;
     [bg_imageView setFrame:self.view.bounds];
     [self.view addSubview:bg_imageView];
     
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(kTableLeftSide, PHONE_NAVIGATIONBAR_HEIGHT+15.6, SCREEN_WIDTH - (kTableLeftSide*2), self.view.bounds.size.height)];
+
     
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, kHeight)];
+    UIView *view = [UIView new];
+    [self.view addSubview:view];
+    
+    [view mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(kTableLeftSide);
+        make.right.mas_equalTo(-kTableLeftSide);
+        make.top.mas_equalTo(PHONE_NAVIGATIONBAR_HEIGHT);
+        make.height.mas_equalTo(PHONE_CONTENT_HEIGHT);
+    }];
+    
+    UITextField *textField = [UITextField new];
     textField.placeholder = @"  添加自定义标签（2-5个字符）";
     textField.backgroundColor = [UIColor whiteColor];
     textField.layer.cornerRadius = 3;
     textField.layer.masksToBounds = YES;
     [view addSubview:textField];
-
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, kHeight, view.frame.size.width, kHeight)];
+    [textField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(view.mas_top);
+        make.left.and.right.mas_equalTo(0);
+        make.height.mas_equalTo(kHeight);
+    }];
+    
+    UIImageView *plus= [UIImageView new];
+    [plus setImage:[UIImage imageNamed:@"regis_plus"]];
+    [view addSubview:plus];
+    
+    [plus mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(textField.mas_top);
+        make.height.and.width.equalTo(textField.mas_height);
+        make.right.equalTo(textField.mas_right);
+    }];
+    
+    
+    UILabel *label = [UILabel new];
     label.text = @"给TA印象更深，您可以选择1-5个标签";
     label.textColor = [UIColor colorFromHexString:@"#aaaaaa"];
+    label.font = [UIFont systemFontOfSize:14];
     [view addSubview:label];
+    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(textField.mas_left);
+        make.height.mas_equalTo(kHeight);
+        make.top.equalTo(textField.mas_bottom);
+    }];
+    
     
     self.tagView = ({
         SKTagView *view = [SKTagView new];
-//        view.padding    = UIEdgeInsetsMake(10, 25, 10, 25);
+        view.padding    = UIEdgeInsetsMake(0, 0, 0, 0);
         view.insets    = 5;
-        view.lineSpace = 2;
+        view.lineSpace = 10;
         __weak SKTagView *weakView = view;
         //Handle tag's click event
         view.didClickTagAtIndex = ^(NSUInteger index){
@@ -70,27 +105,23 @@ static const CGFloat kTableLeftSide = 23.3;
     });
     [view addSubview:self.tagView];
     [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
-        UIView *superView = view;
-        make.top.equalTo(superView.mas_top).offset(10);
-        make.leading.equalTo(superView.mas_leading);
-        make.trailing.equalTo(superView.mas_trailing);
+        make.left.equalTo(label.mas_left);
+        make.top.equalTo(label.mas_bottom);
+        make.right.mas_equalTo(view.mas_right);
     }];
-    
-    [self.view addSubview:view];
-    
 }
 
 - (void)setupTagView
 {
     //Add Tags
-    [@[@"Python", @"Javascript", @"HTML", @"Go", @"Objective-C",@"C", @"PHP"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
+    [@[@"电烧友", @"电影控", @"吃货", @"旅游达人", @"喜欢冰琪淋",@"代码控", @"大叔", @"罗莉控"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
      {
          SKTag *tag = [SKTag tagWithText:obj];
          tag.textColor = UIColor.whiteColor;
-         tag.bgColor = UIColor.orangeColor;
+         tag.bgColor = [UIColor colorFromHexString:@"#ffa3a4"];
          tag.cornerRadius = 3;
-         tag.fontSize = 15;
-         tag.padding = UIEdgeInsetsMake(13.5, 12.5, 13.5, 12.5);
+         tag.fontSize = 13;
+         tag.padding = UIEdgeInsetsMake(5, 5, 5, 5);
          
          [self.tagView addTag:tag];
      }];

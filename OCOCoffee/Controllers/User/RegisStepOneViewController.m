@@ -7,14 +7,11 @@
 //
 
 #import "Golbal.h"
+#import <Masonry/Masonry.h>
 #import "RegisTableViewCell.h"
 #import "UIColor+colorBuild.h"
 #import "RegisStepTwoViewController.h"
 #import "RegisStepOneViewController.h"
-
-static const CGFloat kLogoHeight = 104.f;
-static const CGFloat kLogoWidth = 80.3f;
-static const CGFloat kTableHeight = 142.5f;
 
 @interface RegisStepOneViewController()<UITableViewDataSource, UITableViewDelegate, UINavigationBarDelegate>
 
@@ -34,21 +31,23 @@ static const CGFloat kTableHeight = 142.5f;
     UIImage *bg_image = [UIImage imageNamed:@"background.png"];
     UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
     [bg_imageView setFrame:self.view.bounds];
-    
     [self.view addSubview: bg_imageView];
     
-    long logoLeft = (SCREEN_WIDTH - kLogoWidth) /2;
-    UIImage *image = [UIImage imageNamed:@"login_logo.png"];
+    __weak typeof(self) weakSelf = self;
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(logoLeft, PHONE_STATUSBAR_HEIGHT+38, kLogoWidth, kLogoHeight)];
-    imageView.image = image;
+    
+    //logo
+    UIImageView *imageView = [UIImageView new];
+    imageView.image = [UIImage imageNamed:@"login_logo.png"];
     imageView.contentMode = UIViewContentModeScaleAspectFill;
     [self.view addSubview:imageView];
+    [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(PHONE_NAVIGATIONBAR_HEIGHT + 40);
+        make.centerX.equalTo(self.view);
+    }];
 
-    
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(kTableLeftSide, PHONE_STATUSBAR_HEIGHT + 181.6, SCREEN_WIDTH - (kTableLeftSide*2), self.view.bounds.size.height - kLogoHeight)];
-    
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, kTableHeight)];
+    //tableview
+    _tableView = [UITableView new];
     _tableView.layer.cornerRadius = 3;
     _tableView.layer.masksToBounds = YES;
     _tableView.delegate = self;
@@ -57,20 +56,30 @@ static const CGFloat kTableHeight = 142.5f;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.showsVerticalScrollIndicator = NO;
     _tableView.showsHorizontalScrollIndicator = NO;
-    [view addSubview:_tableView];
+    [self.view addSubview:_tableView];
+    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(imageView.mas_bottom).offset(41);
+        make.centerX.equalTo(weakSelf.view);
+        make.height.mas_equalTo(kCellHeight * 3);
+        make.left.equalTo(self.view).offset(kTableLeftSide);
+    }];
+    
     
     UIButton *nextBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    nextBtn.frame = CGRectMake(0, 187.1, view.frame.size.width, 46.4);
     nextBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
     nextBtn.layer.cornerRadius = 3;
     nextBtn.layer.masksToBounds = YES;
     [nextBtn setTitle:@"下一步"  forState:UIControlStateNormal];
     [nextBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [nextBtn addTarget:self action:@selector(registerTwoPage:) forControlEvents:UIControlEventTouchUpInside];
-
-    [view addSubview:nextBtn];
+    [self.view addSubview:nextBtn];
+    [nextBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(weakSelf.view);
+        make.height.mas_equalTo(kButtonHeight);
+        make.left.and.right.equalTo(_tableView);
+        make.top.equalTo(_tableView.mas_bottom).offset(47.5);
+    }];
     
-    [self.view addSubview:view];
 }
 
 - (void)didReceiveMemoryWarning {

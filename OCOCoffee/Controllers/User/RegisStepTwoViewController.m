@@ -8,6 +8,7 @@
 
 
 #import "Golbal.h"
+#import <Masonry/Masonry.h>
 #import "UIColor+colorBuild.h"
 #import "RegisTableViewCell.h"
 #import "ActionSheetPicker.h"
@@ -16,6 +17,8 @@
 #import "RegisStepThreeViewController.h"
 #import "RegisStepTwoViewController.h"
 
+
+static const CGFloat kPhotoHeight = 109;
 
 @interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate, DatePickerViewDelegate, StringPickerViewDelegate>
 @property(nonatomic, assign) long cellIndex;
@@ -62,39 +65,68 @@
     UIImage *bg_image = [UIImage imageNamed:@"background.png"];
     UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
     [bg_imageView setFrame:self.view.bounds];
-    
     [self.view addSubview: bg_imageView];
     
-    long logoWith = 109.1;
-    long logoHeight = 109.1;
-    long logoLeft = (SCREEN_WIDTH - logoWith) /2;
     
-    UIView *cview = [[UIView alloc] initWithFrame:CGRectMake(logoLeft, PHONE_NAVIGATIONBAR_HEIGHT+38, logoWith, logoHeight)];
-    cview.layer.cornerRadius = logoHeight/2;
+    __weak typeof(self) weakSelf = self;
+
+    //
+//    UIView *cview = [[UIView alloc] initWithFrame:CGRectMake(logoLeft, PHONE_NAVIGATIONBAR_HEIGHT+38, logoWith, logoHeight)];
+    UIView *cview = [UIView new];
+    cview.layer.cornerRadius = kPhotoHeight/2;
     cview.layer.masksToBounds = YES;
-    cview.layer.borderWidth = 3.0f;
-    cview.layer.borderColor = [UIColor colorFromHexString:@"#f8f7f9"].CGColor;
-    cview.alpha = 0.5;
+    cview.layer.borderWidth = 2.0f;
+    cview.layer.borderColor = [UIColor whiteColor].CGColor;
+    cview.alpha = 0.9;
     [self.view addSubview:cview];
+    [cview mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(weakSelf.view);
+        make.height.and.width.mas_equalTo(kPhotoHeight);
+        make.top.mas_equalTo(PHONE_NAVIGATIONBAR_HEIGHT + 40);
+    }];
     
-    long imgWidth =logoWith-10;
-    long imgHeight = logoHeight - 10;
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(logoLeft+5, PHONE_NAVIGATIONBAR_HEIGHT+43,imgWidth, imgHeight)];
+
+    UIImageView *imageView = [UIImageView new];
     imageView.image = [UIImage imageNamed:@"regis_no_img"];
-    imageView.layer.cornerRadius = imgHeight/2;
+    imageView.layer.cornerRadius = (kPhotoHeight-4) /2;
+
     imageView.layer.masksToBounds = YES;
-    cview.backgroundColor = [UIColor colorFromHexString:@"#c39258"];
-    
     [self.view addSubview:imageView];
+    [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(weakSelf.view);
+        make.top.mas_equalTo(cview.mas_top).offset(2);
+        make.height.and.width.mas_equalTo(kPhotoHeight - 4);;
+    }];
     
-    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(logoLeft+80, PHONE_NAVIGATIONBAR_HEIGHT+43+75,  22.3, 19.3)];
-    cameraImageView.image = [UIImage imageNamed:@"regis_camera"];
-    [self.view addSubview:cameraImageView];
+    UILabel *label_1 = [UILabel new];
+    label_1.text = @"请上传一张本人照片作为图像";
+    label_1.font = [UIFont systemFontOfSize:14];
+    label_1.textColor = [UIColor colorFromHexString:@"#939494"];
+    [self.view addSubview:label_1];
+    [label_1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(cview.mas_bottom).offset(8.3);
+        make.centerX.equalTo(weakSelf.view);
+    }];
+    UILabel *label_2 = [UILabel new];
+    label_2.text = @"图片大小不能大于5M";
+    label_2.font = [UIFont systemFontOfSize:14];
+    label_2.textColor = [UIColor colorFromHexString:@"#939494"];
+    [self.view addSubview:label_2];
+    [label_2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(label_1.mas_bottom).offset(2);
+        make.centerX.equalTo(weakSelf.view);
+    }];
+
     
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(kTableLeftSide, PHONE_NAVIGATIONBAR_HEIGHT + 181.6, SCREEN_WIDTH - (kTableLeftSide*2), self.view.bounds.size.height - logoHeight)];
+//    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(logoLeft+80, PHONE_NAVIGATIONBAR_HEIGHT+43+75,  22.3, 19.3)];
+//    cameraImageView.image = [UIImage imageNamed:@"regis_camera"];
+//    [self.view addSubview:cameraImageView];
     
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, 189.9)];
+//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(kTableLeftSide, PHONE_NAVIGATIONBAR_HEIGHT + 181.6, SCREEN_WIDTH - (kTableLeftSide*2), self.view.bounds.size.height - logoHeight)];
     
+//    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 189.9)];
+    
+    _tableView = [UITableView new];
     _tableView.layer.cornerRadius = 3;
     _tableView.layer.masksToBounds = YES;
     _tableView.delegate = self;
@@ -103,10 +135,16 @@
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.showsVerticalScrollIndicator = NO;
     _tableView.showsHorizontalScrollIndicator = NO;
-    [view addSubview:_tableView];
+    [self.view addSubview:_tableView];
+    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view).offset(kTableLeftSide);
+        make.centerX.equalTo(weakSelf.view);
+        make.height.mas_equalTo(kCellHeight * 4);
+        make.top.mas_equalTo(label_2.mas_bottom).offset(26);
+    }];
     
     UIButton *nextBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    nextBtn.frame = CGRectMake(0, 235.8, view.frame.size
+    nextBtn.frame = CGRectMake(0, 235.8, self.view.frame.size
                                 .width, 46.4);
     nextBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
     nextBtn.layer.cornerRadius = 3;
@@ -114,9 +152,14 @@
     [nextBtn setTitle:@"下一步"  forState:UIControlStateNormal];
     [nextBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [nextBtn addTarget:self action:@selector(registerThreePage:) forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:nextBtn];
+    [self.view addSubview:nextBtn];
+    [nextBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(weakSelf.view);
+        make.height.mas_equalTo(kButtonHeight);
+        make.left.and.right.equalTo(_tableView);
+        make.top.equalTo(_tableView.mas_bottom).offset(47.5);
+    }];
     
-    [self.view addSubview:view];
 }
 
 #pragma mark - nextBtn action
