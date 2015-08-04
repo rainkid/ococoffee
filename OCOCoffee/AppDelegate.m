@@ -13,14 +13,13 @@
 #import "MessageViewController.h"
 #import "ActivityViewController.h"
 #import "CenterViewController.h"
-#import "TestViewController.h"
 
 @interface AppDelegate (){
 
+    UINavigationController *_rootNavController;
     UINavigationController *_activityNavController;
     UINavigationController *_centerNavController;
     UINavigationController *_messageNavController;
-    UINavigationController *_testNavController;
 }
 
 @end
@@ -36,40 +35,34 @@
     UIImage *imageNormal;
     UIImage *imageSelected;
     
-    imageNormal       = [UIImage imageNamed:@"singleicon"];
-    imageSelected     = [UIImage imageNamed:@"doubleicon"];
+    imageNormal       = [UIImage imageNamed:@"home_origin"];
+    imageSelected     = [UIImage imageNamed:@"home_clicked"];
     _rootViewController = [[RootViewController alloc] init];
     _rootViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"首页" image:imageNormal selectedImage:imageSelected];
     
-    imageNormal       = [UIImage imageNamed:@"doubleicon"];
-    imageSelected     = [UIImage imageNamed:@"singleicon"];
+    imageNormal       = [UIImage imageNamed:@"msg_origin"];
+    imageSelected     = [UIImage imageNamed:@"msg_clicked"];
     _messageViewController = [[MessageViewController alloc] init];
     _messageViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"消息" image:imageNormal selectedImage:imageSelected];
     //_messageViewController.tabBarItem.badgeValue = @"10";
     _messageNavController = [[UINavigationController alloc] initWithRootViewController:_messageViewController];
     
-    imageNormal       = [UIImage imageNamed:@"clockicon"];
-    imageSelected     = [UIImage imageNamed:@"dependenticon"];
+    imageNormal       = [UIImage imageNamed:@"schedule_origin"];
+    imageSelected     = [UIImage imageNamed:@"schedule_clicked"];
     _activityViewController = [[ActivityViewController alloc] init];
-    _activityViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"活动" image:imageNormal selectedImage:imageSelected];
+    _activityViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"日程" image:imageNormal selectedImage:imageSelected];
     _activityNavController = [[UINavigationController alloc] initWithRootViewController:_activityViewController];
     
-    imageNormal       = [UIImage imageNamed:@"dependenticon"];
-    imageSelected     = [UIImage imageNamed:@"clockicon"];
+    imageNormal       = [UIImage imageNamed:@"my_origin"];
+    imageSelected     = [UIImage imageNamed:@"my_clicked"];
     _centerViewController = [[CenterViewController alloc] init];
     _centerViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"我的" image:imageNormal selectedImage:imageSelected];
     _centerNavController = [[UINavigationController alloc] initWithRootViewController:_centerViewController];
-    
-    imageNormal       = [UIImage imageNamed:@"dependenticon"];
-    imageSelected     = [UIImage imageNamed:@"clockicon"];
-    _testViewController = [[TestViewController alloc] init];
-    _testViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"登录" image:imageNormal selectedImage:imageSelected];
-    _testNavController = [[UINavigationController alloc] initWithRootViewController:_testViewController];
 
     
     UITabBarController *_tabBarController = [[UITabBarController alloc] init];
     _tabBarController.delegate = self;
-    _tabBarController.viewControllers = @[_rootViewController,_messageNavController,_activityNavController,_centerNavController, _testNavController];
+    _tabBarController.viewControllers = @[_rootViewController,_messageNavController,_activityNavController,_centerNavController];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.window setBackgroundColor:[UIColor clearColor]];

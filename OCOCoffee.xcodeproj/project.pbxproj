@@ -34,7 +34,6 @@
 		223BA1F01B6C624E001F9DC5 /* DatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 223BA1EF1B6C624E001F9DC5 /* DatePickerView.m */; };
 		223BA1F31B6C6278001F9DC5 /* StringPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 223BA1F21B6C6278001F9DC5 /* StringPickerView.m */; };
 		226553021B6F8CD200A18274 /* RegisStepThreeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 226553011B6F8CD200A18274 /* RegisStepThreeViewController.m */; };
-		226553051B6F910400A18274 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 226553041B6F910400A18274 /* TestViewController.m */; };
 		22F066B61B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A31B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.m */; };
 		22F066B71B6902B900BB66EE /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A51B6902B900BB66EE /* UIActionSheet+Blocks.m */; };
 		22F066B81B6902B900BB66EE /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F066A71B6902B900BB66EE /* UIAlertView+Blocks.m */; };
@@ -116,8 +115,6 @@
 		223BA1F21B6C6278001F9DC5 /* StringPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringPickerView.m; sourceTree = "<group>"; };
 		226553001B6F8CD200A18274 /* RegisStepThreeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisStepThreeViewController.h; sourceTree = "<group>"; };
 		226553011B6F8CD200A18274 /* RegisStepThreeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisStepThreeViewController.m; sourceTree = "<group>"; };
-		226553031B6F910400A18274 /* TestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
-		226553041B6F910400A18274 /* TestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 		22F066A21B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+UnRegisterDefaults.h"; sourceTree = "<group>"; };
 		22F066A31B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+UnRegisterDefaults.m"; sourceTree = "<group>"; };
 		22F066A41B6902B900BB66EE /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
@@ -335,8 +332,6 @@
 				0AD23F551B6A54DF00515C38 /* RegisStepTwoViewController.m */,
 				226553001B6F8CD200A18274 /* RegisStepThreeViewController.h */,
 				226553011B6F8CD200A18274 /* RegisStepThreeViewController.m */,
-				226553031B6F910400A18274 /* TestViewController.h */,
-				226553041B6F910400A18274 /* TestViewController.m */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -594,7 +589,6 @@
 			files = (
 				22F066B81B6902B900BB66EE /* UIAlertView+Blocks.m in Sources */,
 				0AD23F601B6A54DF00515C38 /* RegisStepOneViewController.m in Sources */,
-				226553051B6F910400A18274 /* TestViewController.m in Sources */,
 				0AD23F591B6A54DF00515C38 /* CountryViewController.m in Sources */,
 				0AD23F5F1B6A54DF00515C38 /* LoginViewController.m in Sources */,
 				0AD23F5C1B6A54DF00515C38 /* RootViewController.m in Sources */,

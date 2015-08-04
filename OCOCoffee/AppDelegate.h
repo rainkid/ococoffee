@@ -9,11 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @class RootViewController;
-@class IndexViewController;
 @class ActivityViewController;
 @class CenterViewController;
 @class MessageViewController;
-@class TestViewController;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,UITabBarControllerDelegate>
 
@@ -24,7 +22,6 @@
 @property(strong,nonatomic) MessageViewController *messageViewController;
 @property(strong,nonatomic) ActivityViewController *activityViewController;
 @property(strong,nonatomic) CenterViewController *centerViewController;
-@property(strong,nonatomic) TestViewController *testViewController;
 
 
 @end
