@@ -10,6 +10,7 @@
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
 #import <SKTagView/SKTag.h>
+#import <SKTagView/SKTagButton.h>
 #import <SKTagView/SKTagView.h>
 #import "RegisStepThreeViewController.h"
 static const CGFloat kHeight = 48.6f;
@@ -44,7 +45,7 @@ static const CGFloat kTableLeftSide = 23.3f;
     [bg_imageView setFrame:self.view.bounds];
     [self.view addSubview:bg_imageView];
     
-
+    __weak typeof(self) weakSelf = self;
     
     UIView *view = [UIView new];
     [self.view addSubview:view];
@@ -91,7 +92,6 @@ static const CGFloat kTableLeftSide = 23.3f;
         make.top.equalTo(textField.mas_bottom);
     }];
     
-    
     self.selectTagCount = 0;
     self.tagView = ({
         SKTagView *view = [SKTagView new];
@@ -99,20 +99,23 @@ static const CGFloat kTableLeftSide = 23.3f;
         view.insets    = 5;
         view.lineSpace = 10;
         __weak SKTagView *weakView = view;
+        
         //Handle tag's click event
         view.didClickTagAtIndex = ^(NSUInteger index){
             //Remove tag
-            SKTagView *tag = [weakView.subviews objectAtIndex:index];
-            if (tag.tag == 1) {
+            SKTagButton *tagBtnView = [weakView.subviews objectAtIndex:index];
+            if (tagBtnView.tag == 1) {
                 self.selectTagCount--;
-                tag.backgroundColor = [UIColor whiteColor];
-                tag.tag = 0;
+                tagBtnView.backgroundColor = [UIColor whiteColor];
+                [tagBtnView setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                tagBtnView.tag = 0;
             } else {
                 if (self.selectTagCount < 5) {
-                    if (tag.tag == 0) {
+                    if (tagBtnView.tag == 0) {
                         self.selectTagCount++;
-                        tag.backgroundColor = [UIColor colorFromHexString:@"#9cd7cd"];
-                        tag.tag = 1;
+                        tagBtnView.backgroundColor = [UIColor colorFromHexString:@"#9cd7cd"];
+                        [tagBtnView setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                        tagBtnView.tag = 1;
                     }
                 } else {
                     NSLog(@"只能选择5个标签");
