@@ -82,7 +82,6 @@ alpha:(a)]
  */
 #define PHONE_NAVIGATIONBAR_HEIGHT 44
 
-#define BANER_HEIGHT 150
 
 /*
  * iPhone 在显示导航栏时内容区域的高度

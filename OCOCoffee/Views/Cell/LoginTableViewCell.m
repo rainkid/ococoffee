@@ -25,12 +25,12 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(13, 22.6, 13, 18.3)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(27.2, 43, 28, 38)];
+        imageView.contentMode = UIViewContentModeCenter;
         [self addSubview:imageView];
         
         double tableWidth = SCREEN_WIDTH - (kTableLeftSide*2);
-        
-        _textField = [[UITextField alloc] initWithFrame:CGRectMake(56.6, 0, tableWidth - 60, self.frame.size.height)];
+        _textField = [[UITextField alloc] initWithFrame:CGRectMake(56.6, 0, tableWidth - 60, kCellHeight - 5)];
         [self addSubview:_textField];
         
         CGFloat height = 0.5;

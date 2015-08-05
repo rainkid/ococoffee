@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, REGIS_STEP_ONE){
 };
 
 typedef NS_ENUM(NSInteger, REGIS_STEP_TWO){
-    TWO_NICKNAKE = 3,
+    TWO_NICKNAKE = 0,
     TWO_SEX,
     TWO_BIRGHDAY,
     TWO_TRADE

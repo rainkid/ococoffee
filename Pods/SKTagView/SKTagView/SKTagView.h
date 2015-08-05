@@ -6,10 +6,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SKTag.h"
 
+@class SKTag;
 @interface SKTagView : UIView
-
 @property (nonatomic) UIEdgeInsets padding;
 @property (nonatomic) int lineSpace;
 @property (nonatomic) CGFloat insets;
@@ -21,8 +20,6 @@
 - (void)removeTag:(SKTag *)tag;
 - (void)removeTagAtIndex:(NSUInteger)index;
 - (void)removeAllTags;
-
-@property (nonatomic, copy) void (^didClickTagAtIndex)(NSUInteger index);
 
 @end
 

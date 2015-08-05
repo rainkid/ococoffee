@@ -5,21 +5,10 @@
 //  Copyright 2010 Magical Panda Software, LLC All rights reserved.
 //
 
-#import "NSPersistentStoreCoordinator+MagicalRecord.h"
-#import "NSPersistentStore+MagicalRecord.h"
-#import "NSManagedObjectModel+MagicalRecord.h"
-#import "MagicalRecord+ErrorHandling.h"
-#import "MagicalRecordLogging.h"
-
+#import "CoreData+MagicalRecord.h"
 
 static NSPersistentStoreCoordinator *defaultCoordinator_ = nil;
 NSString * const kMagicalRecordPSCDidCompleteiCloudSetupNotification = @"kMagicalRecordPSCDidCompleteiCloudSetupNotification";
-NSString * const kMagicalRecordPSCMismatchWillDeleteStore = @"kMagicalRecordPSCMismatchWillDeleteStore";
-NSString * const kMagicalRecordPSCMismatchDidDeleteStore = @"kMagicalRecordPSCMismatchDidDeleteStore";
-NSString * const kMagicalRecordPSCMismatchWillRecreateStore = @"kMagicalRecordPSCMismatchWillRecreateStore";
-NSString * const kMagicalRecordPSCMismatchDidRecreateStore = @"kMagicalRecordPSCMismatchDidRecreateStore";
-NSString * const kMagicalRecordPSCMismatchCouldNotDeleteStore = @"kMagicalRecordPSCMismatchCouldNotDeleteStore";
-NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalRecordPSCMismatchCouldNotRecreateStore";
 
 @interface NSDictionary (MagicalRecordMerging)
 
@@ -54,7 +43,7 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
         
         if ([persistentStores count] && [NSPersistentStore MR_defaultPersistentStore] == nil)
         {
-            [NSPersistentStore MR_setDefaultPersistentStore:[persistentStores firstObject]];
+            [NSPersistentStore MR_setDefaultPersistentStore:[persistentStores objectAtIndex:0]];
         }
     }
 }
@@ -75,138 +64,44 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
 
 - (NSPersistentStore *) MR_addSqliteStoreNamed:(id)storeFileName withOptions:(__autoreleasing NSDictionary *)options
 {
-    return [self MR_addSqliteStoreNamed:storeFileName configuration:nil withOptions:options];
-}
-
-- (NSPersistentStore *) MR_addSqliteStoreNamed:(id)storeFileName configuration:(NSString *)configuration withOptions:(__autoreleasing NSDictionary *)options
-{
     NSURL *url = [storeFileName isKindOfClass:[NSURL class]] ? storeFileName : [NSPersistentStore MR_urlForStoreName:storeFileName];
     NSError *error = nil;
     
     [self MR_createPathToStoreFileIfNeccessary:url];
     
     NSPersistentStore *store = [self addPersistentStoreWithType:NSSQLiteStoreType
-                                                  configuration:configuration
+                                                  configuration:nil
                                                             URL:url
                                                         options:options
                                                           error:&error];
     
-    if (!store)
+    if (!store && [MagicalRecord shouldDeleteStoreOnModelMismatch])
     {
-        if ([MagicalRecord shouldDeleteStoreOnModelMismatch])
+        BOOL isMigrationError = [error code] == NSPersistentStoreIncompatibleVersionHashError || [error code] == NSMigrationMissingSourceModelError;
+        if ([[error domain] isEqualToString:NSCocoaErrorDomain] && isMigrationError)
         {
-            BOOL isMigrationError = (([error code] == NSPersistentStoreIncompatibleVersionHashError) || ([error code] == NSMigrationMissingSourceModelError) || ([error code] == NSMigrationError));
-            if ([[error domain] isEqualToString:NSCocoaErrorDomain] && isMigrationError)
+            // Could not open the database, so... kill it!
+            [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+
+            MRLog(@"Removed incompatible model version: %@", [url lastPathComponent]);
+            
+            // Try one more time to create the store
+            store = [self addPersistentStoreWithType:NSSQLiteStoreType
+                                       configuration:nil
+                                                 URL:url
+                                             options:options
+                                               error:&error];
+            if (store)
             {
-                [[NSNotificationCenter defaultCenter] postNotificationName:kMagicalRecordPSCMismatchWillDeleteStore object:nil];
-                
-                NSError * deleteStoreError;
-                // Could not open the database, so... kill it! (AND WAL bits)
-                NSString *rawURL = [url absoluteString];
-                NSURL *shmSidecar = [NSURL URLWithString:[rawURL stringByAppendingString:@"-shm"]];
-                NSURL *walSidecar = [NSURL URLWithString:[rawURL stringByAppendingString:@"-wal"]];
-                [[NSFileManager defaultManager] removeItemAtURL:url error:&deleteStoreError];
-                [[NSFileManager defaultManager] removeItemAtURL:shmSidecar error:nil];
-                [[NSFileManager defaultManager] removeItemAtURL:walSidecar error:nil];
-                
-                MRLogWarn(@"Removed incompatible model version: %@", [url lastPathComponent]);
-                if(deleteStoreError) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kMagicalRecordPSCMismatchCouldNotDeleteStore object:nil userInfo:@{@"Error":deleteStoreError}];
-                }
-                else {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kMagicalRecordPSCMismatchDidDeleteStore object:nil];
-                }
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:kMagicalRecordPSCMismatchWillRecreateStore object:nil];
-                // Try one more time to create the store
-                store = [self addPersistentStoreWithType:NSSQLiteStoreType
-                                           configuration:nil
-                                                     URL:url
-                                                 options:options
-                                                   error:&error];
-                if (store)
-                {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kMagicalRecordPSCMismatchDidRecreateStore object:nil];
-                    // If we successfully added a store, remove the error that was initially created
-                    error = nil;
-                }
-                else {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kMagicalRecordPSCMismatchCouldNotRecreateStore object:nil userInfo:@{@"Error":error}];
-                }
+                // If we successfully added a store, remove the error that was initially created
+                error = nil;
             }
         }
+                
         [MagicalRecord handleErrors:error];
     }
     return store;
 }
-
-- (void) MR_addiCloudContainerID:(NSString *)containerID contentNameKey:(NSString *)contentNameKey storeIdentifier:(id)storeIdentifier cloudStorePathComponent:(NSString *)subPathComponent completion:(void(^)(void))completionBlock
-{
-    NSAssert([contentNameKey containsString:@"."] == NO, @"NSPersistentStoreUbiquitousContentNameKey cannot contain a period.");
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-        NSURL *cloudURL = [NSPersistentStore MR_cloudURLForUbiqutiousContainer:containerID];
-        if (subPathComponent)
-        {
-            cloudURL = [cloudURL URLByAppendingPathComponent:subPathComponent];
-        }
-        
-        [MagicalRecord setICloudEnabled:cloudURL != nil];
-        
-        NSDictionary *options = [[self class] MR_autoMigrationOptions];
-        if (cloudURL)   //iCloud is available
-        {
-            NSMutableDictionary *iCloudOptions = [[NSMutableDictionary alloc] init];
-            [iCloudOptions setObject:cloudURL forKey:NSPersistentStoreUbiquitousContentURLKey];
-
-            if ([contentNameKey length] > 0)
-            {
-                [iCloudOptions setObject:contentNameKey forKey:NSPersistentStoreUbiquitousContentNameKey];
-            }
-
-            options = [options MR_dictionaryByMergingDictionary:iCloudOptions];
-        }
-        else
-        {
-            MRLogWarn(@"iCloud is not enabled");
-        }
-
-
-        if ([self respondsToSelector:@selector(performBlockAndWait:)])
-        {
-            [self performSelector:@selector(performBlockAndWait:) withObject:^{
-                [self MR_addSqliteStoreNamed:storeIdentifier withOptions:options];
-            }];
-        }
-        else
-        {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            [self lock];
-#pragma clang diagnostic pop
-            [self MR_addSqliteStoreNamed:storeIdentifier withOptions:options];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            [self unlock];
-#pragma clang diagnostic pop
-        }
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([NSPersistentStore MR_defaultPersistentStore] == nil)
-            {
-                [NSPersistentStore MR_setDefaultPersistentStore:[[self persistentStores] firstObject]];
-            }
-            if (completionBlock)
-            {
-                completionBlock();
-            }
-            NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-            [notificationCenter postNotificationName:kMagicalRecordPSCDidCompleteiCloudSetupNotification object:nil];
-        });
-    });
-}
-
 
 
 #pragma mark - Public Instance Methods
@@ -246,12 +141,6 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
     return [self MR_addSqliteStoreNamed:storeFileName withOptions:options];
 }
 
-- (NSPersistentStore *) MR_addAutoMigratingSqliteStoreAtURL:(NSURL *)storeURL
-{
-    NSDictionary *options = [[self class] MR_autoMigrationOptions];
-    return [self MR_addSqliteStoreNamed:storeURL withOptions:options];
-}
-
 
 #pragma mark - Public Class Methods
 
@@ -269,22 +158,6 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
         [coordinator performSelector:@selector(MR_addAutoMigratingSqliteStoreNamed:) withObject:storeFileName afterDelay:0.5];
     }
 
-    return coordinator;
-}
-
-+ (NSPersistentStoreCoordinator *) MR_coordinatorWithAutoMigratingSqliteStoreAtURL:(NSURL *)storeURL
-{
-    NSManagedObjectModel *model = [NSManagedObjectModel MR_defaultManagedObjectModel];
-    NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-    
-    [coordinator MR_addAutoMigratingSqliteStoreAtURL:storeURL];
-    
-    //HACK: lame solution to fix automigration error "Migration failed after first pass"
-    if ([[coordinator persistentStores] count] == 0)
-    {
-        [coordinator performSelector:@selector(MR_addAutoMigratingSqliteStoreAtURL:) withObject:storeURL afterDelay:0.5];
-    }
-    
     return coordinator;
 }
 
@@ -314,31 +187,48 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
                        completion:nil];
 }
 
-- (void) MR_addiCloudContainerID:(NSString *)containerID contentNameKey:(NSString *)contentNameKey localStoreAtURL:(NSURL *)storeURL cloudStorePathComponent:(NSString *)subPathComponent
-{
-    [self MR_addiCloudContainerID:containerID
-                   contentNameKey:contentNameKey
-                  localStoreAtURL:storeURL
-          cloudStorePathComponent:subPathComponent
-                       completion:nil];
-}
-
 - (void) MR_addiCloudContainerID:(NSString *)containerID contentNameKey:(NSString *)contentNameKey localStoreNamed:(NSString *)localStoreName cloudStorePathComponent:(NSString *)subPathComponent completion:(void(^)(void))completionBlock;
 {
-    [self MR_addiCloudContainerID:containerID
-                   contentNameKey:contentNameKey
-                  storeIdentifier:localStoreName
-          cloudStorePathComponent:subPathComponent
-                       completion:completionBlock]; 
-}
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSURL *cloudURL = [NSPersistentStore MR_cloudURLForUbiqutiousContainer:containerID];
+        if (subPathComponent) 
+        {
+            cloudURL = [cloudURL URLByAppendingPathComponent:subPathComponent];
+        }
 
-- (void) MR_addiCloudContainerID:(NSString *)containerID contentNameKey:(NSString *)contentNameKey localStoreAtURL:(NSURL *)storeURL cloudStorePathComponent:(NSString *)subPathComponent completion:(void(^)(void))completionBlock;
-{
-    [self MR_addiCloudContainerID:containerID
-                   contentNameKey:contentNameKey
-                  storeIdentifier:storeURL
-          cloudStorePathComponent:subPathComponent
-                       completion:completionBlock];   
+        [MagicalRecord setICloudEnabled:cloudURL != nil];
+        
+        NSDictionary *options = [[self class] MR_autoMigrationOptions];
+        if (cloudURL)   //iCloud is available
+        {
+            NSDictionary *iCloudOptions = [NSDictionary dictionaryWithObjectsAndKeys:
+                                           contentNameKey, NSPersistentStoreUbiquitousContentNameKey,
+                                           cloudURL, NSPersistentStoreUbiquitousContentURLKey, nil];
+            options = [options MR_dictionaryByMergingDictionary:iCloudOptions];
+        }
+        else 
+        {
+            MRLog(@"iCloud is not enabled");
+        }
+        
+        [self lock];
+        [self MR_addSqliteStoreNamed:localStoreName withOptions:options];
+        [self unlock];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([NSPersistentStore MR_defaultPersistentStore] == nil)
+            {
+                [NSPersistentStore MR_setDefaultPersistentStore:[[self persistentStores] objectAtIndex:0]];
+            }
+            if (completionBlock)
+            {
+                completionBlock();
+            }
+            NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+            [notificationCenter postNotificationName:kMagicalRecordPSCDidCompleteiCloudSetupNotification object:nil];
+        });
+    });   
 }
 
 + (NSPersistentStoreCoordinator *) MR_coordinatorWithiCloudContainerID:(NSString *)containerID 
@@ -353,18 +243,6 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
                                           completion:nil];
 }
 
-+ (NSPersistentStoreCoordinator *) MR_coordinatorWithiCloudContainerID:(NSString *)containerID
-                                                        contentNameKey:(NSString *)contentNameKey
-                                                       localStoreAtURL:(NSURL *)storeURL
-                                               cloudStorePathComponent:(NSString *)subPathComponent
-{
-    return [self MR_coordinatorWithiCloudContainerID:containerID
-                               contentNameKey:contentNameKey
-                              localStoreAtURL:storeURL
-                      cloudStorePathComponent:subPathComponent
-                                   completion:nil];
-}
-
 + (NSPersistentStoreCoordinator *) MR_coordinatorWithiCloudContainerID:(NSString *)containerID 
                                                         contentNameKey:(NSString *)contentNameKey
                                                        localStoreNamed:(NSString *)localStoreName
@@ -377,24 +255,6 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
     [psc MR_addiCloudContainerID:containerID 
                   contentNameKey:contentNameKey
                  localStoreNamed:localStoreName
-         cloudStorePathComponent:subPathComponent
-                      completion:completionHandler];
-    
-    return psc;
-}
-
-+ (NSPersistentStoreCoordinator *) MR_coordinatorWithiCloudContainerID:(NSString *)containerID
-                                                        contentNameKey:(NSString *)contentNameKey
-                                                       localStoreAtURL:(NSURL *)storeURL
-                                               cloudStorePathComponent:(NSString *)subPathComponent
-                                                            completion:(void (^)(void))completionHandler
-{
-    NSManagedObjectModel *model = [NSManagedObjectModel MR_defaultManagedObjectModel];
-    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-    
-    [psc MR_addiCloudContainerID:containerID
-                  contentNameKey:contentNameKey
-                 localStoreAtURL:storeURL
          cloudStorePathComponent:subPathComponent
                       completion:completionHandler];
     
@@ -420,23 +280,9 @@ NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore = @"kMagicalReco
     return psc;
 }
 
-+ (NSPersistentStoreCoordinator *) MR_coordinatorWithSqliteStoreAtURL:(NSURL *)storeURL withOptions:(NSDictionary *)options
-{
-    NSManagedObjectModel *model = [NSManagedObjectModel MR_defaultManagedObjectModel];
-    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-    
-    [psc MR_addSqliteStoreNamed:storeURL withOptions:options];
-    return psc;
-}
-
 + (NSPersistentStoreCoordinator *) MR_coordinatorWithSqliteStoreNamed:(NSString *)storeFileName
 {
 	return [self MR_coordinatorWithSqliteStoreNamed:storeFileName withOptions:nil];
-}
-
-+ (NSPersistentStoreCoordinator *) MR_coordinatorWithSqliteStoreAtURL:(NSURL *)storeURL
-{
-    return [self MR_coordinatorWithSqliteStoreAtURL:storeURL withOptions:nil];
 }
 
 @end

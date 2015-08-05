@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "SeparatorView.h"
 
-static const CGFloat kCellHeight = 47.0f;
+static const CGFloat kCellHeight = 49.2f;
 static const CGFloat kTableLeftSide = 23.3;
 
 @interface LoginTableViewCell : UITableViewCell

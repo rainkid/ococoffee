@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Magical Panda Software LLC. All rights reserved.
 //
 
-#import <MagicalRecord/MagicalRecordInternal.h>
+#import "MagicalRecord.h"
 
 @interface MagicalRecord (Setup)
 
@@ -16,9 +16,6 @@
 
 + (void) setupCoreDataStackWithStoreNamed:(NSString *)storeName;
 + (void) setupCoreDataStackWithAutoMigratingSqliteStoreNamed:(NSString *)storeName;
-
-+ (void) setupCoreDataStackWithStoreAtURL:(NSURL *)storeURL;
-+ (void) setupCoreDataStackWithAutoMigratingSqliteStoreAtURL:(NSURL *)storeURL;
 
 
 @end

@@ -9,6 +9,8 @@
 #import "IndexViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "IndexCollectionView.h"
+
 
 
 @interface IndexViewController ()<CLLocationManagerDelegate>
@@ -18,6 +20,8 @@
     
     double userLogitude;
     double userLatitude;
+    
+    IndexCollectionView *_collectionView ;
 }
 
 @end
@@ -30,7 +34,11 @@
     
     [self getLocation];
     
+    [self getView];
+    
+    
    }
+
 
 
 -(void)getLocation {
@@ -67,6 +75,29 @@
 
 }
 
+
+-(void)getView {
+    
+    _collectionView = [[IndexCollectionView alloc] init];
+    _collectionView.items = [self getTestData];
+    
+    NSLog(@"%@",_collectionView.items);
+    
+    [self.view addSubview:_collectionView];
+    
+    
+}
+
+-(NSMutableArray *)getTestData {
+    NSMutableArray *mutableArr = [[NSMutableArray alloc] initWithCapacity:0];
+    for(int i = 0;i< 5;i++){
+        [mutableArr addObject:[UIImage imageNamed:@"001.png"]];
+        [mutableArr addObject:[UIImage imageNamed:@"002.png"]];
+    }
+    return mutableArr;
+    
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -90,4 +121,7 @@
     NSLog(@"Some Error Has Happened!");
     [_locationManager stopUpdatingLocation];
 }
+
+
+
 @end

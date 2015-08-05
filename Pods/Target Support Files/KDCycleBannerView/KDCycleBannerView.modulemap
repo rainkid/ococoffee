@@ -1,6 +1,0 @@
-module KDCycleBannerView {
-  umbrella header "KDCycleBannerView-umbrella.h"
-
-  export *
-  module * { export * }
-}

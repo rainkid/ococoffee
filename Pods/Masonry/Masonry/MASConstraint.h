@@ -127,20 +127,6 @@
 - (MASConstraint *)centerY;
 - (MASConstraint *)baseline;
 
-#if TARGET_OS_IPHONE
-
-- (MASConstraint *)leftMargin;
-- (MASConstraint *)rightMargin;
-- (MASConstraint *)topMargin;
-- (MASConstraint *)bottomMargin;
-- (MASConstraint *)leadingMargin;
-- (MASConstraint *)trailingMargin;
-- (MASConstraint *)centerXWithinMargins;
-- (MASConstraint *)centerYWithinMargins;
-
-#endif
-
-
 /**
  *	Sets the constraint debug name
  */

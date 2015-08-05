@@ -1,10 +1,5 @@
 ## SKTagView
 
-[![CI Status](http://img.shields.io/travis/zsk425/SKTagView.svg?style=flat-square)](https://travis-ci.org/zsk425/SKTagView)
-[![Version](https://img.shields.io/cocoapods/v/SKTagView.svg?style=flat-square)](http://cocoadocs.org/docsets/SKTagView)
-[![License](https://img.shields.io/cocoapods/l/SKTagView.svg?style=flat-square)](http://cocoadocs.org/docsets/SKTagView)
-[![Platform](https://img.shields.io/cocoapods/p/SKTagView.svg?style=flat-square)](http://cocoadocs.org/docsets/SKTagView)
-
 This library is derived from [SFTagView](https://github.com/shiweifu/SFTagView),which tries to build a view displaying tags without using UICollectionView and supports auto layout.It's a good beginning,but not good enough.
 
 So I tried to make it more auto layout.After having tried a lot,I inspired by UILabel.Now it just works like UILabel and supports single line and multi-line.
@@ -31,12 +26,6 @@ Check out the project. It contains the usages of normal way and in UITableViewCe
     view.padding    = UIEdgeInsetsMake(10, 25, 10, 25);
     view.insets    = 5;
     view.lineSpace = 2;
-	__weak SKTagView *weakView = view;
-	//Handle tag's click event
-	view.didClickTagAtIndex = ^(NSUInteger index){
-		//Remove tag
-		[weakView removeTagAtIndex:index];
-	};
     view;
   });
   [self.view addSubview:self.tagView];
@@ -53,9 +42,9 @@ Check out the project. It contains the usages of normal way and in UITableViewCe
     SKTag *tag = [SKTag tagWithText:obj];
     tag.textColor = UIColor.whiteColor;
     tag.bgColor = UIColor.orangeColor;
+    tag.target = self;
+    tag.action = @selector(handleBtn:);
     tag.cornerRadius = 3;
-	tag.fontSize = 15;
-	tag.padding = UIEdgeInsetsMake(13.5, 12.5, 13.5, 12.5);
 
     [self.tagView addTag:tag];
   }];
@@ -78,4 +67,4 @@ When uses with UITableViewCell in multi-line mode,it MUST be set preferredMaxLay
 
 ### License
 
-SKTagView is available under the MIT license. See the LICENSE file for more info.
+AFNetworking is available under the MIT license. See the LICENSE file for more info.

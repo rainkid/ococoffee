@@ -19,7 +19,6 @@
 @property (nonatomic, readonly) UIImageView *imageView;
 @property (nonatomic, readonly) UIButton *button;
 @property (nonatomic, strong) UIView *customView;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 
 @property (nonatomic, assign) CGPoint offset;
 @property (nonatomic, assign) CGFloat verticalSpace;
@@ -33,8 +32,6 @@
 static char const * const kEmptyDataSetSource =     "emptyDataSetSource";
 static char const * const kEmptyDataSetDelegate =   "emptyDataSetDelegate";
 static char const * const kEmptyDataSetView =       "emptyDataSetView";
-
-static NSString * const kEmptyDataSetDealloc =      @"dealloc";
 
 @interface UIScrollView () <UIGestureRecognizerDelegate>
 @property (nonatomic, readonly) DZNEmptyDataSetView *emptyDataSetView;
@@ -71,12 +68,13 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
     {
         view = [DZNEmptyDataSetView new];
         view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        view.userInteractionEnabled = YES;
         view.hidden = YES;
         
-        view.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dzn_didTapContentView:)];
-        view.tapGesture.delegate = self;
-        [view addGestureRecognizer:view.tapGesture];
-
+        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dzn_didTapContentView:)];
+        gesture.delegate = self;
+        [view addGestureRecognizer:gesture];
+        
         [self setEmptyDataSetView:view];
     }
     return view;
@@ -171,32 +169,12 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
     return nil;
 }
 
-- (UIColor *)dzn_imageTintColor
-{
-    if (self.emptyDataSetSource && [self.emptyDataSetSource respondsToSelector:@selector(imageTintColorForEmptyDataSet:)]) {
-        UIColor *color = [self.emptyDataSetSource imageTintColorForEmptyDataSet:self];
-        if (color) NSAssert([color isKindOfClass:[UIColor class]], @"You must return a valid UIColor object -imageTintColorForEmptyDataSet:");
-        return color;
-    }
-    return nil;
-}
-
 - (NSAttributedString *)dzn_buttonTitleForState:(UIControlState)state
 {
     if (self.emptyDataSetSource && [self.emptyDataSetSource respondsToSelector:@selector(buttonTitleForEmptyDataSet:forState:)]) {
         NSAttributedString *string = [self.emptyDataSetSource buttonTitleForEmptyDataSet:self forState:state];
         if (string) NSAssert([string isKindOfClass:[NSAttributedString class]], @"You must return a valid NSAttributedString object for -buttonTitleForEmptyDataSet:forState:");
         return string;
-    }
-    return nil;
-}
-
-- (UIImage *)dzn_buttonImageForState:(UIControlState)state
-{
-    if (self.emptyDataSetSource && [self.emptyDataSetSource respondsToSelector:@selector(buttonImageForEmptyDataSet:forState:)]) {
-        UIImage *image = [self.emptyDataSetSource buttonImageForEmptyDataSet:self forState:state];
-        if (image) NSAssert([image isKindOfClass:[UIImage class]], @"You must return a valid UIImage object for -buttonImageForEmptyDataSet:forState:");
-        return image;
     }
     return nil;
 }
@@ -233,10 +211,10 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
 
 - (CGPoint)dzn_offset
 {
-    CGFloat top = roundf(self.contentInset.top / 2.0);
-    CGFloat left = roundf(self.contentInset.left / 2.0);
-    CGFloat bottom = roundf(self.contentInset.bottom / 2.0);
-    CGFloat right = roundf(self.contentInset.right / 2.0);
+    CGFloat top = self.contentInset.top / 2.0;
+    CGFloat left = self.contentInset.left / 2.0;
+    CGFloat bottom = self.contentInset.bottom / 2.0;
+    CGFloat right = self.contentInset.right / 2.0;
     
     // Honors the scrollView's contentInset
     CGPoint offset = CGPointMake(left-right, top-bottom);
@@ -284,17 +262,10 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
     return NO;
 }
 
-- (void)dzn_willAppear
+- (void)dzn_willWillAppear
 {
     if (self.emptyDataSetDelegate && [self.emptyDataSetDelegate respondsToSelector:@selector(emptyDataSetWillAppear:)]) {
         [self.emptyDataSetDelegate emptyDataSetWillAppear:self];
-    }
-}
-
-- (void)dzn_didAppear
-{
-    if (self.emptyDataSetDelegate && [self.emptyDataSetDelegate respondsToSelector:@selector(emptyDataSetDidAppear:)]) {
-        [self.emptyDataSetDelegate emptyDataSetDidAppear:self];
     }
 }
 
@@ -302,13 +273,6 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
 {
     if (self.emptyDataSetDelegate && [self.emptyDataSetDelegate respondsToSelector:@selector(emptyDataSetWillDisappear:)]) {
         [self.emptyDataSetDelegate emptyDataSetWillDisappear:self];
-    }
-}
-
-- (void)dzn_didDisappear
-{
-    if (self.emptyDataSetDelegate && [self.emptyDataSetDelegate respondsToSelector:@selector(emptyDataSetDidDisappear:)]) {
-        [self.emptyDataSetDelegate emptyDataSetDidDisappear:self];
     }
 }
 
@@ -333,12 +297,10 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
 {
     // Registers for device orientation changes
     if (source && !self.emptyDataSetSource) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dzn_deviceDidChangeOrientation:) name:UIDeviceOrientationDidChangeNotification object:nil];
-        [self swizzle:NSSelectorFromString(kEmptyDataSetDealloc)];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceDidChangeOrientation:) name:UIDeviceOrientationDidChangeNotification object:nil];
     }
-    // Skip if the datasource is already set up
-    else {
-        return;
+    else if (!source && self.emptyDataSetSource) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     
     objc_setAssociatedObject(self, kEmptyDataSetSource, source, OBJC_ASSOCIATION_ASSIGN);
@@ -350,7 +312,7 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
     // We add method sizzling for injecting -dzn_reloadData implementation to the native -reloadData implementation
     [self swizzle:@selector(reloadData)];
     
-    // Exclusively for UITableView, we also inject -dzn_reloadData to -endUpdates
+    // If UITableView, we also inject -dzn_reloadData to -endUpdates
     if ([self isKindOfClass:[UITableView class]]) {
         [self swizzle:@selector(endUpdates)];
     }
@@ -393,7 +355,7 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
     if ([self dzn_shouldDisplay] && [self dzn_itemsCount] == 0)
     {
         // Notifies that the empty dataset view will appear
-        [self dzn_willAppear];
+        [self dzn_willWillAppear];
         
         DZNEmptyDataSetView *view = self.emptyDataSetView;
         UIView *customView = [self dzn_customView];
@@ -401,7 +363,7 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
         if (!view.superview) {
 
             // Send the view to back, in case a header and/or footer is present
-            if (([self isKindOfClass:[UITableView class]] || [self isKindOfClass:[UICollectionView class]]) && self.subviews.count > 1) {
+            if ([self isKindOfClass:[UITableView class]] && self.subviews.count > 1) {
                 [self insertSubview:view atIndex:1];
             }
             else {
@@ -422,27 +384,14 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
             view.titleLabel.attributedText = [self dzn_titleLabelText];
             
             // Configure imageview
-            UIColor *tintColor = [self dzn_imageTintColor];
-            UIImage *image = [self dzn_image];
-            UIImageRenderingMode renderingMode = tintColor ? UIImageRenderingModeAlwaysTemplate : UIImageRenderingModeAlwaysOriginal;
-            
-            view.imageView.image = [image imageWithRenderingMode:renderingMode];
-            view.imageView.tintColor = tintColor;
+            view.imageView.image = [self dzn_image];
             
             // Configure button
-            UIImage *buttonImage = [self dzn_buttonImageForState:UIControlStateNormal];
-            NSAttributedString *buttonTitle = [self dzn_buttonTitleForState:UIControlStateNormal];
-
-            if (buttonImage) {
-                [view.button setImage:buttonImage forState:UIControlStateNormal];
-                [view.button setImage:[self dzn_buttonImageForState:UIControlStateHighlighted] forState:UIControlStateHighlighted];
-            }
-            else if (buttonTitle) {
-                [view.button setAttributedTitle:buttonTitle forState:UIControlStateNormal];
-                [view.button setAttributedTitle:[self dzn_buttonTitleForState:UIControlStateHighlighted] forState:UIControlStateHighlighted];
-                [view.button setBackgroundImage:[self dzn_buttonBackgroundImageForState:UIControlStateNormal] forState:UIControlStateNormal];
-                [view.button setBackgroundImage:[self dzn_buttonBackgroundImageForState:UIControlStateHighlighted] forState:UIControlStateHighlighted];
-            }
+            [view.button setAttributedTitle:[self dzn_buttonTitleForState:0] forState:0];
+            [view.button setAttributedTitle:[self dzn_buttonTitleForState:1] forState:1];
+            [view.button setBackgroundImage:[self dzn_buttonBackgroundImageForState:0] forState:0];
+            [view.button setBackgroundImage:[self dzn_buttonBackgroundImageForState:1] forState:1];
+            [view.button setUserInteractionEnabled:[self dzn_isTouchAllowed]];
 
             // Configure spacing
             view.verticalSpace = [self dzn_verticalSpace];
@@ -460,12 +409,6 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
         
         // Configure scroll permission
         self.scrollEnabled = [self dzn_isScrollAllowed];
-
-        // Configure empty dataset userInteraction permission
-        view.userInteractionEnabled = [self dzn_isTouchAllowed];
-
-        // Notifies that the empty dataset view did appear
-        [self dzn_didAppear];
     }
     else if (self.isEmptyDataSetVisible) {
         [self dzn_invalidate];
@@ -485,24 +428,13 @@ static NSString * const kEmptyDataSetDealloc =      @"dealloc";
     }
     
     self.scrollEnabled = YES;
-
-    // Notifies that the empty dataset view did disappear
-    [self dzn_didDisappear];
 }
 
-
-#pragma mark - Lifeterm Methods (Private)
-
-- (void)dzn_dealloc
-{
-    // Remove observers
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
-}
 
 
 #pragma mark - Notification Events
 
-- (void)dzn_deviceDidChangeOrientation:(NSNotification *)notification
+- (void)deviceDidChangeOrientation:(NSNotification *)notification
 {
     if (self.isEmptyDataSetVisible) {
         [self.emptyDataSetView updateConstraints];
@@ -531,15 +463,9 @@ void dzn_original_implementation(id self, SEL _cmd)
     
     IMP impPointer = [impValue pointerValue];
     
-    // Prevent doing any logic over self during dealloc process
-    if ([key rangeOfString:kEmptyDataSetDealloc].location != NSNotFound) {
-        [self dzn_dealloc];
-    }
-    else {
-        // We then inject the additional implementation for reloading the empty dataset
-        // Doing it before calling the original implementation does update the 'isEmptyDataSetVisible' flag on time.
-        [self dzn_reloadEmptyDataSet];
-    }
+    // We then inject the additional implementation for reloading the empty dataset
+    // Doing it before calling the original implementation does update the 'isEmptyDataSetVisible' flag on time.
+    [self dzn_reloadEmptyDataSet];
 
     // If found, call original implementation
     if (impPointer) {
@@ -563,6 +489,7 @@ NSString *dzn_implementationKey(id target, SEL selector)
     NSString *selectorName = NSStringFromSelector(selector);
     return [NSString stringWithFormat:@"%@_%@",className,selectorName];
 }
+
 
 - (void)swizzle:(SEL)selector
 {
@@ -620,21 +547,10 @@ NSString *dzn_implementationKey(id target, SEL selector)
     return [super gestureRecognizerShouldBegin:gestureRecognizer];
 }
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    UIGestureRecognizer *tapGesture = self.emptyDataSetView.tapGesture;
-
-    if ([gestureRecognizer isEqual:tapGesture] || [otherGestureRecognizer isEqual:tapGesture]) {
-        return YES;
-    }
-
-    // defer to emptyDataSetDelegate's implementation if available
-    if ( (self.emptyDataSetDelegate != (id)self) && [self.emptyDataSetDelegate respondsToSelector:@selector(gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:)]) {
-        return [(id)self.emptyDataSetDelegate gestureRecognizer:gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:otherGestureRecognizer];
-    }
-    
-    return NO;
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
 }
+
 
 @end
 
@@ -667,7 +583,6 @@ NSString *dzn_implementationKey(id target, SEL selector)
                      animations:^{_contentView.alpha = 1.0;}
                      completion:NULL];
 }
-
 
 #pragma mark - Getters
 
@@ -771,10 +686,7 @@ NSString *dzn_implementationKey(id target, SEL selector)
 }
 
 - (BOOL)canShowButton {
-    if ([_button attributedTitleForState:UIControlStateNormal].string.length > 0 || [_button imageForState:UIControlStateNormal]) {
-        return (_button.superview != nil) ? YES : NO;
-    }
-    return NO;
+    return ([_button attributedTitleForState:UIControlStateNormal].string.length > 0 && _button.superview);
 }
 
 
@@ -782,18 +694,19 @@ NSString *dzn_implementationKey(id target, SEL selector)
 
 - (void)setCustomView:(UIView *)view
 {
-    if (!view) {
-        return;
-    }
-    
     if (_customView) {
         [_customView removeFromSuperview];
         _customView = nil;
     }
     
+    if (!view) {
+        return;
+    }
+    
     _customView = view;
     _customView.translatesAutoresizingMaskIntoConstraints = !CGRectIsEmpty(view.frame);
-    [self.contentView addSubview:_customView];
+    
+    [_contentView addSubview:_customView];
 }
 
 
@@ -822,7 +735,7 @@ NSString *dzn_implementationKey(id target, SEL selector)
 - (void)removeAllConstraints
 {
     [self removeConstraints:self.constraints];
-    [_contentView removeConstraints:_contentView.constraints];
+    [self.contentView removeConstraints:self.contentView.constraints];
 }
 
 
@@ -839,7 +752,6 @@ NSString *dzn_implementationKey(id target, SEL selector)
     [self removeAllConstraints];
     
     NSMutableDictionary *views = [NSMutableDictionary dictionary];
-    
     [views setObject:self forKey:@"self"];
     [views setObject:self.contentView forKey:@"contentView"];
     
@@ -917,7 +829,7 @@ NSString *dzn_implementationKey(id target, SEL selector)
     }
     
     // Assign the button's horizontal constraints
-    if ([self canShowButton]) {
+    if (_button.superview) {
         [views setObject:_button forKey:@"button"];
         [verticalSubviews addObject:@"[button]"];
         
@@ -932,7 +844,7 @@ NSString *dzn_implementationKey(id target, SEL selector)
     
 
     // Build the string format for the vertical constraints, adding a margin between each element. Default is 11.
-    NSString *verticalFormat = [verticalSubviews componentsJoinedByString:[NSString stringWithFormat:@"-(%.f)-", self.verticalSpace ?: 11]];
+    NSString *verticalFormat = [verticalSubviews componentsJoinedByString:[NSString stringWithFormat:@"-%.f-", self.verticalSpace ?: 11]];
     
     // Assign the vertical constraints to the content view
     if (verticalFormat.length > 0) {

@@ -5,8 +5,9 @@
 //  Copyright 2010 Magical Panda Software, LLC All rights reserved.
 //
 
-#import "NSManagedObjectModel+MagicalRecord.h"
-#import "MagicalRecord+Options.h"
+//#import "NSManagedObjectModel+MagicalRecord.h"
+#import "CoreData+MagicalRecord.h"
+
 
 static NSManagedObjectModel *defaultManagedObjectModel_ = nil;
 
@@ -36,17 +37,6 @@ static NSManagedObjectModel *defaultManagedObjectModel_ = nil;
     NSString *path = [[NSBundle mainBundle] pathForResource:[modelName stringByDeletingPathExtension] 
                                                      ofType:[modelName pathExtension] 
                                                 inDirectory:bundleName];
-    NSURL *modelUrl = [NSURL fileURLWithPath:path];
-    
-    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelUrl];
-    
-    return mom;
-}
-
-+ (NSManagedObjectModel *) MR_newModelNamed:(NSString *) modelName inBundle:(NSBundle*) bundle
-{
-    NSString *path = [bundle pathForResource:[modelName stringByDeletingPathExtension]
-                                                     ofType:[modelName pathExtension]];
     NSURL *modelUrl = [NSURL fileURLWithPath:path];
     
     NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelUrl];

@@ -5,7 +5,8 @@
 //  Copyright 2010 Magical Panda Software, LLC All rights reserved.
 //
 
-#import "NSPersistentStore+MagicalRecord.h"
+//#import "NSPersistentStore+MagicalRecord.h"
+#import "CoreData+MagicalRecord.h"
 
 NSString * const kMagicalRecordDefaultStoreFileName = @"CoreDataStore.sqlite";
 
@@ -19,12 +20,12 @@ static NSPersistentStore *defaultPersistentStore_ = nil;
 	return defaultPersistentStore_;
 }
 
-+ (void) MR_setDefaultPersistentStore:(NSPersistentStore *)store
++ (void) MR_setDefaultPersistentStore:(NSPersistentStore *) store
 {
 	defaultPersistentStore_ = store;
 }
 
-+ (NSString *) MR_directory:(NSSearchPathDirectory)type
++ (NSString *) MR_directory:(int) type
 {    
     return [NSSearchPathForDirectoriesInDomains(type, NSUserDomainMask, YES) lastObject];
 }
@@ -42,8 +43,20 @@ static NSPersistentStore *defaultPersistentStore_ = nil;
 
 + (NSURL *) MR_urlForStoreName:(NSString *)storeFileName
 {
-    NSString *pathForStoreName = [[self MR_applicationStorageDirectory] stringByAppendingPathComponent:storeFileName];
-    return [NSURL fileURLWithPath:pathForStoreName];
+	NSArray *paths = [NSArray arrayWithObjects:[self MR_applicationDocumentsDirectory], [self MR_applicationStorageDirectory], nil];
+    NSFileManager *fm = [[NSFileManager alloc] init];
+    
+    for (NSString *path in paths) 
+    {
+        NSString *filepath = [path stringByAppendingPathComponent:storeFileName];
+        if ([fm fileExistsAtPath:filepath])
+        {
+            return [NSURL fileURLWithPath:filepath];
+        }
+    }
+
+    //set default url
+    return [NSURL fileURLWithPath:[[self MR_applicationStorageDirectory] stringByAppendingPathComponent:storeFileName]];
 }
 
 + (NSURL *) MR_cloudURLForUbiqutiousContainer:(NSString *)bucketName;

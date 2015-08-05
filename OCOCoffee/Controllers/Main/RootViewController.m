@@ -9,11 +9,14 @@
 #import "RootViewController.h"
 #import "ViewController.h"
 #import "SearchViewController.h"
+#import "IndexViewController.h"
 
 @interface RootViewController (){
     
     UINavigationController *_rootNavigationController;
     ViewController *_viewController;
+    
+    IndexViewController *_indexViewController;
 }
 
 @end
@@ -24,14 +27,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    if(_viewController == nil){
-        _viewController = [[ViewController alloc] init];
-    }
-    
+//    if(_viewController == nil){
+//        _viewController = [[ViewController alloc] init];
+//    }
    /// _viewController = [[ViewController alloc] init];
     
+    if(_indexViewController == nil){
+        _indexViewController = [[IndexViewController alloc] init];
+    }
+    
     if(_rootNavigationController == nil){
-        _rootNavigationController = [[UINavigationController alloc] initWithRootViewController:_viewController];
+        _rootNavigationController = [[UINavigationController alloc] initWithRootViewController:_indexViewController];
         _rootNavigationController.view.frame = self.view.frame;
         _rootNavigationController.view.backgroundColor = [UIColor clearColor];
     }

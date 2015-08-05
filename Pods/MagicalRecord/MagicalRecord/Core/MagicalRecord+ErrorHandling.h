@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Magical Panda Software LLC. All rights reserved.
 //
 
-#import <MagicalRecord/MagicalRecordInternal.h>
+#import "MagicalRecord.h"
 
 @interface MagicalRecord (ErrorHandling)
 

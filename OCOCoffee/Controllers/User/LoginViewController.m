@@ -12,6 +12,9 @@
 #import "RegisStepOneViewController.h"
 #import "UIColor+colorBuild.h"
 
+static const CGFloat kLogoHeight = 104.f;
+static const CGFloat kLogoWidth = 80.3f;
+
 @interface LoginViewController()<UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate>
 @property (nonatomic, strong) UITableView *tableView;
 @end
@@ -37,19 +40,16 @@
     
     [self.view addSubview: bg_imageView];
     
-    long logoWith = 80.3;
-    long logoHeight = 104;
-    long logoLeft = (SCREEN_WIDTH - logoWith) /2;
-    
+    long logoLeft = (SCREEN_WIDTH - kLogoWidth) /2;
     UIImage *image = [UIImage imageNamed:@"login_logo.png"];
 
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(logoLeft, PHONE_NAVIGATIONBAR_HEIGHT+38, logoWith, logoHeight)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(logoLeft, PHONE_STATUSBAR_HEIGHT+38, kLogoWidth, kLogoHeight)];
     imageView.image = image;
     imageView.contentMode = UIViewContentModeScaleAspectFill;
     
     [self.view addSubview:imageView];
     
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(kTableLeftSide, PHONE_NAVIGATIONBAR_HEIGHT + 181.6, SCREEN_WIDTH - (kTableLeftSide*2), self.view.bounds.size.height - logoHeight)];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(kTableLeftSide, PHONE_STATUSBAR_HEIGHT + 181.6, SCREEN_WIDTH - (kTableLeftSide*2), self.view.bounds.size.height - kLogoHeight)];
 
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, 94.6)];
 
@@ -126,7 +126,7 @@
     
     
     if (indexPath.row == 0){
-        [cell.imageView setImage:[UIImage imageNamed:@"login_username"]];
+        [cell.imageView setImage:[UIImage imageNamed:@"login_phone"]];
         [cell.textField setPlaceholder:@"请输入手机号码"];
         cell.textField.keyboardType = UIKeyboardTypePhonePad;
         [cell setBottomLine:YES];

@@ -89,26 +89,4 @@
     // Configure the view for the selected state
 }
 
-
-#pragma mark-textField
-//- (BOOL)textFieldShouldReturn:(UITextField *)textField
-//{
-//    NSLog(@"cell %ld", textField.tag);
-//    if (textField.tag == TWO_TRADE) {
-//        
-//    }
-//    return YES;
-//}
-//
-//- (void) textFieldDidBeginEditing:(UITextField *)textField {
-//    NSLog(@"cell %ld", textField.tag);
-//
-//}
-//
-//-(void) textFieldDidEndEditing: (UITextField * ) textField {
-//    NSLog(@"cell %ld", textField.tag);
-//
-//}
-
-
 @end

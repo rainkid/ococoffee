@@ -311,8 +311,7 @@
 
         pickerLabel = [[UILabel alloc] initWithFrame:frame];
         [pickerLabel setTextAlignment:NSTextAlignmentCenter];
-        if ([pickerLabel respondsToSelector:@selector(setMinimumScaleFactor:)])
-            [pickerLabel setMinimumScaleFactor:0.5];
+        [pickerLabel setMinimumScaleFactor:0.5];
         [pickerLabel setAdjustsFontSizeToFitWidth:YES];
         [pickerLabel setBackgroundColor:[UIColor clearColor]];
         [pickerLabel setFont:[UIFont systemFontOfSize:20]];
