@@ -60,7 +60,7 @@ DEPENDENCIES:
   - MWPhotoBrowser (~> 1.4.1)
   - PKRevealController (~> 2.0.6)
   - SDWebImage (~> 3.7.1)
-  - SKTagView
+  - SKTagView (~> 0.2)
 
 SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 4f48f8ca46f981effd10ba59a73401d4ae9d6a2e
