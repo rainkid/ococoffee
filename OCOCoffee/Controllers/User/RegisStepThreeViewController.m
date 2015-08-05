@@ -104,6 +104,8 @@ static const CGFloat kTableLeftSide = 23.3f;
         view.didClickTagAtIndex = ^(NSUInteger index){
             //Remove tag
             SKTagButton *tagBtnView = [weakView.subviews objectAtIndex:index];
+            
+            //只能选中5个标签及标签选中、取消状态变化
             if (tagBtnView.tag == 1) {
                 self.selectTagCount--;
                 tagBtnView.backgroundColor = [UIColor whiteColor];
