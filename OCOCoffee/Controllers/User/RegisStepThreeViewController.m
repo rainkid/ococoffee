@@ -8,7 +8,7 @@
 
 #import "Golbal.h"
 #import "UIColor+colorBuild.h"
-#import <Masonry/Masonry.h>
+#import ∫<Masonry/Masonry.h>
 #import <SKTagView/SKTag.h>
 #import <SKTagView/SKTagButton.h>
 #import <SKTagView/SKTagView.h>

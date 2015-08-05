@@ -24,7 +24,6 @@
     if (self) {
         UIImageView *imageView = [UIImageView new];
     }
-
     return self;
 }
 
