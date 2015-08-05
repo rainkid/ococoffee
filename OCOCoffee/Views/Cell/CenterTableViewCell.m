@@ -8,6 +8,10 @@
 
 #import "CenterTableViewCell.h"
 
+@interface CenterTableViewCell()
+
+@end
+
 @implementation CenterTableViewCell
 
 - (void)awakeFromNib {
@@ -18,10 +22,10 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        __weak typeof(self) weakSelf = self;
-        
+        UIImageView *imageView = [UIImageView new];
     }
-    return  self;
+
+    return self;
 }
 
 @end
