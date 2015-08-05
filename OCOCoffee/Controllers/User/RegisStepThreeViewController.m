@@ -9,13 +9,17 @@
 #import "Golbal.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
+#import <SKTagView/SKTag.h>
 #import <SKTagView/SKTagView.h>
 #import "RegisStepThreeViewController.h"
 static const CGFloat kHeight = 48.6f;
 static const CGFloat kTableLeftSide = 23.3f;
 
 @interface RegisStepThreeViewController ()
+
 @property(nonatomic,strong) SKTagView *tagView;
+@property(nonatomic, assign) int selectTagCount;
+
 @end
 
 @implementation RegisStepThreeViewController
@@ -23,8 +27,6 @@ static const CGFloat kTableLeftSide = 23.3f;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-
-    
     [self addSubViews];
     [self setupTagView];
 
@@ -90,6 +92,7 @@ static const CGFloat kTableLeftSide = 23.3f;
     }];
     
     
+    self.selectTagCount = 0;
     self.tagView = ({
         SKTagView *view = [SKTagView new];
         view.padding    = UIEdgeInsetsMake(0, 0, 0, 0);
@@ -99,7 +102,22 @@ static const CGFloat kTableLeftSide = 23.3f;
         //Handle tag's click event
         view.didClickTagAtIndex = ^(NSUInteger index){
             //Remove tag
-            [weakView removeTagAtIndex:index];
+            SKTagView *tag = [weakView.subviews objectAtIndex:index];
+            if (tag.tag == 1) {
+                self.selectTagCount--;
+                tag.backgroundColor = [UIColor whiteColor];
+                tag.tag = 0;
+            } else {
+                if (self.selectTagCount < 5) {
+                    if (tag.tag == 0) {
+                        self.selectTagCount++;
+                        tag.backgroundColor = [UIColor colorFromHexString:@"#9cd7cd"];
+                        tag.tag = 1;
+                    }
+                } else {
+                    NSLog(@"只能选择5个标签");
+                }
+            }
         };
         view;
     });
@@ -117,8 +135,8 @@ static const CGFloat kTableLeftSide = 23.3f;
     [@[@"电烧友", @"电影控", @"吃货", @"旅游达人", @"喜欢冰琪淋",@"代码控", @"大叔", @"罗莉控"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
      {
          SKTag *tag = [SKTag tagWithText:obj];
-         tag.textColor = UIColor.whiteColor;
-         tag.bgColor = [UIColor colorFromHexString:@"#ffa3a4"];
+         tag.textColor = [UIColor blackColor];
+         tag.bgColor = [UIColor whiteColor];
          tag.cornerRadius = 3;
          tag.fontSize = 13;
          tag.padding = UIEdgeInsetsMake(5, 5, 5, 5);
