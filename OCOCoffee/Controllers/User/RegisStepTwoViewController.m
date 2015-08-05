@@ -187,13 +187,13 @@ static const CGFloat kPhotoHeight = 109;
     cell.textField.delegate = self;
     
     if (indexPath.row == 0){
-        [cell.label setText:@"呢    称"];
+        [cell.label setText:@"呢      称"];
         [cell.textField setPlaceholder:@"请输入2-12位中英文字符"];
         cell.textField.tag = TWO_NICKNAKE;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
     } else if (indexPath.row == 1) {
-        [cell.label setText:@"性    别"];
+        [cell.label setText:@"性      别"];
         [cell.textField setPlaceholder:@"请选择性别"];
         cell.textField.tag = TWO_SEX;
         cell.textField.delegate = self;

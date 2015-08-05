@@ -64,7 +64,7 @@
         make.left.equalTo(self.view).offset(kTableLeftSide);
     }];
     
-    
+    //nextBtn
     UIButton *nextBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     nextBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
     nextBtn.layer.cornerRadius = 3;

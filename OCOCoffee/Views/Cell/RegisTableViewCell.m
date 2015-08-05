@@ -7,6 +7,7 @@
 //
 
 #import "Golbal.h"
+#import <Masonry/Masonry.h>
 #import "UIColor+colorBuild.h"
 #import <ActionSheetStringPicker.h>
 #import "RegisTableViewCell.h"
@@ -28,20 +29,26 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        double tableWidth = SCREEN_WIDTH - (kTableLeftSide*2);
-        
-        _label = [[UILabel alloc] initWithFrame:CGRectMake(13, 15.2, 92.6, 18.3)];
+    if (self) {        
+        __weak typeof(self) weakSelf = self;
+
+        _label = [UILabel new];
         [self addSubview:_label];
+        [_label mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(weakSelf.mas_left).offset(18);
+            make.centerY.mas_equalTo(weakSelf);
+        }];
         
         
-        _textField = [[UITextField alloc] initWithFrame:CGRectMake(92.6, 15.2, tableWidth - 92.6, 18.3)];
+        _textField = [UITextField new];
         [self addSubview:_textField];
-        
+        [_textField mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(_label.mas_right).offset(17);
+            make.centerY.mas_equalTo(weakSelf);
+        }];
         
         _button =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [_button setTitle:@"发送验证码" forState:UIControlStateNormal];
-        _button.frame = CGRectMake(tableWidth - 92.6, 7.1, 67, 31.3);
         [[_button layer] setBorderWidth:1.0f];
         [[_button layer] setBorderColor:[UIColor colorFromHexString:@"#4a2320"].CGColor];
         _button.titleLabel.font = [UIFont systemFontOfSize:12.0];
@@ -50,15 +57,24 @@
         _button.layer.cornerRadius = 3;
         _button.layer.masksToBounds = YES;
         [self addSubview:_button];
+        [_button mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.mas_equalTo(weakSelf).offset(-4);
+            make.centerY.mas_equalTo(weakSelf);
+        }];
         
         CGFloat height = 0.5;
         if ([[UIScreen mainScreen] scale] < 2) {
             height = 1;
         }
         
-        _sepView = [[SeparatorView alloc] initWithFrame:CGRectMake(0, 47 - height, tableWidth, height)];
+        _sepView = [SeparatorView new];
         [_sepView setBackgroundColor:[UIColor clearColor]];
         [self addSubview:self.sepView];
+        [_sepView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(kCellHeight-1);
+            make.height.mas_equalTo(height);
+            make.width.mas_equalTo(weakSelf.mas_width);
+        }];
     }
     return self;
 }
