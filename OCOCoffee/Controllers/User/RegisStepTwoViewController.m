@@ -18,14 +18,16 @@
 #import "RegisStepTwoViewController.h"
 
 
-static const CGFloat kPhotoHeight = 109;
+static const CGFloat kPhotoHeight = 82;
 
-@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate, DatePickerViewDelegate, StringPickerViewDelegate>
+@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate, DatePickerViewDelegate, StringPickerViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 @property(nonatomic, assign) long cellIndex;
 @property (nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) DatePickerView *datePicker;
 @property(nonatomic,strong) StringPickerView *pickerView;
 @property(nonatomic, strong) NSArray *pickerViewData;
+@property(nonatomic, strong) UIImageView *imageView;
+@property(nonatomic, strong) UIImageView *cameraView;
 
 @end
 
@@ -73,28 +75,46 @@ static const CGFloat kPhotoHeight = 109;
 
     //photo
     UIView *cview = [UIView new];
-    cview.layer.cornerRadius = kPhotoHeight/2;
+    long kPhotoSlide = 8;
+    long kCPhotoHeight =kPhotoHeight+kPhotoSlide;
+    cview.layer.cornerRadius = kCPhotoHeight/2;
     cview.layer.masksToBounds = YES;
-    cview.layer.borderWidth = 2.0f;
+    cview.layer.borderWidth = 1.0f;
     cview.layer.borderColor = [UIColor whiteColor].CGColor;
     cview.alpha = 0.9;
     [self.view addSubview:cview];
     [cview mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
-        make.height.and.width.mas_equalTo(kPhotoHeight);
+        make.height.and.width.mas_equalTo(kCPhotoHeight);
         make.top.mas_equalTo(PHONE_NAVIGATIONBAR_HEIGHT + 40);
     }];
     
     //phone inner
-    UIImageView *imageView = [UIImageView new];
-    imageView.image = [UIImage imageNamed:@"regis_no_img"];
-    imageView.layer.cornerRadius = (kPhotoHeight-4) /2;
-    imageView.layer.masksToBounds = YES;
-    [self.view addSubview:imageView];
-    [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    _imageView = [UIImageView new];
+    _imageView.image = [UIImage imageNamed:@"regis_no_img"];
+    _imageView.layer.cornerRadius = (kPhotoHeight) /2;
+    _imageView.layer.masksToBounds = YES;
+    _imageView.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapUserImage:)];
+    [singleTap setNumberOfTouchesRequired:1];
+    [singleTap setNumberOfTapsRequired:1];
+    [_imageView addGestureRecognizer:singleTap];
+    
+    [self.view addSubview:_imageView];
+    [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
-        make.top.mas_equalTo(cview.mas_top).offset(2);
-        make.height.and.width.mas_equalTo(kPhotoHeight - 4);;
+        make.top.mas_equalTo(cview.mas_top).offset(kPhotoSlide/2);
+        make.height.and.width.mas_equalTo(kPhotoHeight);;
+    }];
+    
+    //camera image view
+    _cameraView = [UIImageView new];
+    _cameraView.image = [UIImage imageNamed:@"regis_camera"];
+    [self.view addSubview:_cameraView];
+    [_cameraView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(cview.mas_top).offset(60);
+        make.centerX.mas_equalTo(cview).offset(30);
     }];
     
     //labels
@@ -117,14 +137,7 @@ static const CGFloat kPhotoHeight = 109;
         make.centerX.equalTo(weakSelf.view);
     }];
 
-    //camera image view
-    UIImageView *cameraImageView = [UIImageView new];
-    cameraImageView.image = [UIImage imageNamed:@"regis_camera"];
-    [self.view addSubview:cameraImageView];
-    [cameraImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(cview.mas_top).offset(60);
-        make.left.mas_equalTo(cview.mas_left).offset(82);
-    }];
+   
     
     //table view
     _tableView = [UITableView new];
@@ -159,6 +172,44 @@ static const CGFloat kPhotoHeight = 109;
         make.left.and.right.equalTo(_tableView);
         make.top.equalTo(_tableView.mas_bottom).offset(47.5);
     }];
+}
+
+#pragma mark 用户单击上传图像
+- (void)tapUserImage:(UITapGestureRecognizer*)tap
+{
+    NSLog(@"click userImage...");
+    [self openThePhotoAlbum];
+}
+
+#pragma mark 打开系统相册或照相机
+- (void)openThePhotoAlbum
+{
+    //创建图片选取器对象
+    UIImagePickerController * pickerViwController = [[UIImagePickerController alloc] init];
+    /*
+     图片来源
+     UIImagePickerControllerSourceTypePhotoLibrary：表示显示所有的照片
+     UIImagePickerControllerSourceTypeCamera：表示从摄像头选取照片
+     UIImagePickerControllerSourceTypeSavedPhotosAlbum：表示仅仅从相册中选取照片。
+     */
+    pickerViwController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    //允许用户编辑图片 (YES可以编辑，NO只能选择照片)
+    pickerViwController.allowsEditing = YES;
+    
+    pickerViwController.delegate = self;
+    [self presentViewController:pickerViwController animated:YES completion:nil];
+}
+
+#pragma mark 相册协议中方法，选中某张图片后调用方法
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    //头像设置为选中的图片
+    [info objectForKey:UIImagePickerControllerOriginalImage];
+    UIImage* image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    _cameraView.hidden = YES;
+    _imageView.image = image;
 }
 
 #pragma mark - nextBtn action

@@ -44,7 +44,6 @@
     imageSelected     = [UIImage imageNamed:@"msg_clicked"];
     _messageViewController = [[MessageViewController alloc] init];
     _messageViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"消息" image:imageNormal selectedImage:imageSelected];
-    //_messageViewController.tabBarItem.badgeValue = @"10";
     _messageNavController = [[UINavigationController alloc] initWithRootViewController:_messageViewController];
     
     imageNormal       = [UIImage imageNamed:@"schedule_origin"];
