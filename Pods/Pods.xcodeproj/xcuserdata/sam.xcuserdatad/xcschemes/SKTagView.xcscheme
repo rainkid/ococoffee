@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A192300B353067452CF03D1A"
+               BlueprintIdentifier = "64432B38FB0D0BFDE0946723"
                BuildableName = "libSKTagView.a"
                BlueprintName = "SKTagView"
                ReferencedContainer = "container:Pods.xcodeproj">

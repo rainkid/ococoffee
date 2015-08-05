@@ -52,6 +52,7 @@
 		22F067061B69049D00BB66EE /* country.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22F067011B69049D00BB66EE /* country.plist */; };
 		22F067071B69049D00BB66EE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22F067021B69049D00BB66EE /* Info.plist */; };
 		22F067081B69049D00BB66EE /* province.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22F067031B69049D00BB66EE /* province.plist */; };
+		22F0E3921B7230BA00ACF5D7 /* CenterTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 22F0E3911B7230BA00ACF5D7 /* CenterTableViewCell.m */; };
 		BCB10E7777628E8564F7ED5B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E5C59423456FA625F1931F9E /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -146,6 +147,8 @@
 		22F067011B69049D00BB66EE /* country.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = country.plist; sourceTree = "<group>"; };
 		22F067021B69049D00BB66EE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22F067031B69049D00BB66EE /* province.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = province.plist; sourceTree = "<group>"; };
+		22F0E3901B7230BA00ACF5D7 /* CenterTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenterTableViewCell.h; sourceTree = "<group>"; };
+		22F0E3911B7230BA00ACF5D7 /* CenterTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenterTableViewCell.m; sourceTree = "<group>"; };
 		D61E0951857E66DEA4826284 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		E5C59423456FA625F1931F9E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -400,6 +403,8 @@
 				22F066C41B6903D600BB66EE /* RegisTableViewCell.m */,
 				22F066C51B6903D600BB66EE /* SeparatorView.h */,
 				22F066C61B6903D600BB66EE /* SeparatorView.m */,
+				22F0E3901B7230BA00ACF5D7 /* CenterTableViewCell.h */,
+				22F0E3911B7230BA00ACF5D7 /* CenterTableViewCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -594,6 +599,7 @@
 				0AD23F5C1B6A54DF00515C38 /* RootViewController.m in Sources */,
 				22F066D31B6903D600BB66EE /* SeparatorView.m in Sources */,
 				226553021B6F8CD200A18274 /* RegisStepThreeViewController.m in Sources */,
+				22F0E3921B7230BA00ACF5D7 /* CenterTableViewCell.m in Sources */,
 				22F066D51B6903D600BB66EE /* IndexCollectionView.m in Sources */,
 				22F066D61B6903D600BB66EE /* IndexCollectionViewCell.m in Sources */,
 				0AD23F571B6A54DF00515C38 /* CenterViewController.m in Sources */,

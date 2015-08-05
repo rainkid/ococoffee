@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EF41EFFBB6787BAFE09E9C07"
+               BlueprintIdentifier = "9172E6521A879068BDD294A7"
                BuildableName = "libKDCycleBannerView.a"
                BlueprintName = "KDCycleBannerView"
                ReferencedContainer = "container:Pods.xcodeproj">
