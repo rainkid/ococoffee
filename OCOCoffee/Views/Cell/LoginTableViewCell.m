@@ -6,6 +6,7 @@
 //  Copyright (c) 2015年 sam. All rights reserved.
 //
 #import "Golbal.h"
+#import <Masonry/Masonry.h>
 #import "LoginTableViewCell.h"
 #import "LoginViewController.h"
 
@@ -25,22 +26,36 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(27.2, 43, 28, 38)];
+        __weak typeof(self) weakSelf = self;
+
+        UIImageView *imageView = [UIImageView new];
         imageView.contentMode = UIViewContentModeCenter;
         [self addSubview:imageView];
+        [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(weakSelf);
+        }];
         
-        double tableWidth = SCREEN_WIDTH - (kTableLeftSide*2);
-        _textField = [[UITextField alloc] initWithFrame:CGRectMake(56.6, 0, tableWidth - 60, kCellHeight - 5)];
+        
+        _textField = [UITextField new];
         [self addSubview:_textField];
+        [_textField mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(weakSelf).offset(42);
+            make.centerY.equalTo(weakSelf);
+        }];
         
         CGFloat height = 0.5;
         if ([[UIScreen mainScreen] scale] < 2) {
             height = 1;
         }
         
-        _sepView = [[SeparatorView alloc] initWithFrame:CGRectMake(0, 47 - height, tableWidth, height)];
+        _sepView = [SeparatorView new];
         [_sepView setBackgroundColor:[UIColor clearColor]];
         [self addSubview:self.sepView];
+        [_sepView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(kCellHeight-1);
+            make.height.mas_equalTo(height);
+            make.width.mas_equalTo(weakSelf.mas_width);
+        }];
     }
     return self;
 }

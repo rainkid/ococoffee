@@ -55,6 +55,7 @@ DEPENDENCIES:
   - FMDB (~> 2.5)
   - KDCycleBannerView (~> 1.1.1)
   - MagicalRecord (~> 2.2)
+  - Masonry
   - MBProgressHUD (~> 0.9)
   - MWPhotoBrowser (~> 1.4.1)
   - PKRevealController (~> 2.0.6)

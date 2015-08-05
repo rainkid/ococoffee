@@ -7,13 +7,13 @@
 //
 
 #import "Golbal.h"
+#import <Masonry/Masonry.h>
 #import "LoginViewController.h"
 #import "LoginTableViewCell.h"
 #import "RegisStepOneViewController.h"
 #import "UIColor+colorBuild.h"
 
-static const CGFloat kLogoHeight = 104.f;
-static const CGFloat kLogoWidth = 80.3f;
+static const CGFloat kButtonHeight = 43;
 
 @interface LoginViewController()<UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate>
 @property (nonatomic, strong) UITableView *tableView;
@@ -37,22 +37,24 @@ static const CGFloat kLogoWidth = 80.3f;
     UIImage *bg_image = [UIImage imageNamed:@"background.png"];
     UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
     [bg_imageView setFrame:self.view.bounds];
-    
     [self.view addSubview: bg_imageView];
     
-    long logoLeft = (SCREEN_WIDTH - kLogoWidth) /2;
-    UIImage *image = [UIImage imageNamed:@"login_logo.png"];
+    __weak typeof(self) weakSelf = self;
 
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(logoLeft, PHONE_STATUSBAR_HEIGHT+38, kLogoWidth, kLogoHeight)];
-    imageView.image = image;
+    
+    //logo
+    UIImageView *imageView = [UIImageView new];
+    imageView.image = [UIImage imageNamed:@"login_logo.png"];
     imageView.contentMode = UIViewContentModeScaleAspectFill;
-    
     [self.view addSubview:imageView];
+    [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(PHONE_NAVIGATIONBAR_HEIGHT + 40);
+        make.centerX.equalTo(self.view);
+    }];
     
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(kTableLeftSide, PHONE_STATUSBAR_HEIGHT + 181.6, SCREEN_WIDTH - (kTableLeftSide*2), self.view.bounds.size.height - kLogoHeight)];
-
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, 94.6)];
-
+    
+    //table view
+    _tableView = [UITableView new];
     _tableView.layer.cornerRadius = 3;
     _tableView.layer.masksToBounds = YES;
     _tableView.delegate = self;
@@ -61,40 +63,53 @@ static const CGFloat kLogoWidth = 80.3f;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.showsVerticalScrollIndicator = NO;
     _tableView.showsHorizontalScrollIndicator = NO;
-    [view addSubview:_tableView];
+    [self.view addSubview:_tableView];
+    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(imageView.mas_bottom).offset(41);
+        make.centerX.equalTo(weakSelf.view);
+        make.height.mas_equalTo(kCellHeight * 2);
+        make.left.equalTo(self.view).offset(kTableLeftSide);
+    }];
     
+    //login button
     UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    loginBtn.frame = CGRectMake(0, 115, view.frame.size
-                                .width, 46.4);
     loginBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
     loginBtn.layer.cornerRadius = 3;
     loginBtn.layer.masksToBounds = YES;
     [loginBtn setTitle:@"登录"  forState:UIControlStateNormal];
     [loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [view addSubview:loginBtn];
+    [self.view addSubview:loginBtn];
+    [loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(weakSelf.view);
+        make.height.mas_equalTo(kButtonHeight);
+        make.left.and.right.equalTo(_tableView);
+        make.top.equalTo(_tableView.mas_bottom).offset(47.5);
+    }];
     
+    //regis button
     UIButton *regisBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    regisBtn.frame = CGRectMake(0, 253.3, view.frame.size
-                                .width, 46.4);
     regisBtn.backgroundColor = [UIColor whiteColor];
     regisBtn.layer.cornerRadius = 3;
     regisBtn.layer.masksToBounds = YES;
     regisBtn.alpha = 0.7;
     [regisBtn setTitle:@"注册"  forState:UIControlStateNormal];
     [regisBtn setTitleColor:[UIColor colorFromHexString:@"#4a2320"] forState:UIControlStateNormal];
-    
     [regisBtn addTarget:self action:@selector(registerOnePage:) forControlEvents:UIControlEventTouchUpInside];
-    
-   
-    [view addSubview:regisBtn];
-    
-    [self.view addSubview:view];
+    [self.view addSubview:regisBtn];
+    [regisBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(weakSelf.view);
+        make.height.mas_equalTo(kButtonHeight);
+        make.left.and.right.equalTo(_tableView);
+        make.top.equalTo(loginBtn.mas_bottom).offset(95);
+    }];
 }
 
 // 点击事件
 - (IBAction)registerOnePage:(id)sender {
-    RegisStepOneViewController *one = [[RegisStepOneViewController alloc] init];
-    [self.navigationController pushViewController:one animated:YES];
+    RegisStepOneViewController *page = [[RegisStepOneViewController alloc] init];
+    [self presentViewController:page animated:YES completion:^{
+        NSLog(@"completion");
+    }];
 }
 
 
