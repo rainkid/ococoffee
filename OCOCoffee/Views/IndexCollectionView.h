@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface IndexCollectionView : UICollectionView
+@interface IndexCollectionView : UICollectionView<UICollectionViewDataSource,UICollectionViewDelegate>
+
+@property(strong,nonatomic) NSMutableArray *items;
+@property(strong,nonatomic) UICollectionView *colView;
 
 @end

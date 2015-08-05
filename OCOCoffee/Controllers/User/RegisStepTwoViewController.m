@@ -249,6 +249,7 @@ static const CGFloat kPhotoHeight = 82;
         [cell.textField setPlaceholder:@"请选择性别"];
         cell.textField.tag = TWO_SEX;
         cell.textField.delegate = self;
+        cell.textField.keyboardType = UIKeyboardTypeAlphabet;
         [cell showBottomLine:YES];
         [cell showCodeButton:NO];
 
@@ -290,9 +291,11 @@ static const CGFloat kPhotoHeight = 82;
 }
 
 - (void) textFieldDidBeginEditing:(UITextField *)textField {
+
     self.cellIndex = textField.tag;
     [textField becomeFirstResponder];
     NSLog(@"cellIndex = %ld", self.cellIndex);
+
 }
 
 -(void) textFieldDidEndEditing: (UITextField * ) textField {

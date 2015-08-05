@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface IndexViewLayout : UICollectionViewLayout
+@interface IndexViewLayout : UICollectionViewFlowLayout<UICollectionViewDelegateFlowLayout>
+
+
 
 @end

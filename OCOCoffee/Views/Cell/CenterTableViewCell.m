@@ -6,7 +6,6 @@
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
 
-#import <M>
 #import "CenterTableViewCell.h"
 
 @interface CenterTableViewCell()

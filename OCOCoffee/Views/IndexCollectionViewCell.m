@@ -13,11 +13,20 @@
 -(instancetype)initWithFrame:(CGRect)frame
 {
     if( self = [super initWithFrame:frame]){
-        _photo = [[UIImageView alloc] init];
-        _photo.frame = CGRectMake(0.f, 0.f, CGRectGetWidth(self.contentView.bounds), CGRectGetHeight(self.contentView.bounds));
-        _photo.contentMode = UIViewContentModeScaleAspectFill;
-        _photo.clipsToBounds = YES;
-        [self.contentView addSubview:_photo];
+    
+        _userImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 150, 120)];
+        _userImageView.backgroundColor = [UIColor blueColor];
+        
+        [self.contentView addSubview: _userImageView];
+        
+        _usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 123, 30, 20)];
+        _usernameLabel.textAlignment = NSTextAlignmentCenter;
+        _usernameLabel.font = [UIFont fontWithName:@"Heceriva" size:12.0];
+        [self.contentView addSubview:_usernameLabel];
+        
+        _sexImageView = [[UIImageView alloc] initWithFrame:CGRectMake(100, 123, 30, 20)];
+        _sexImageView.image = [UIImage imageNamed:@"001.png"];
+        [self.contentView addSubview:_sexImageView];
     }
     
     return self;

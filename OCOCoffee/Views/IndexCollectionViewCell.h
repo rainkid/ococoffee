@@ -10,14 +10,17 @@
 
 @interface IndexCollectionViewCell : UICollectionViewCell
 
-@property(strong,nonatomic) UIImageView *photo;
-@property(strong,nonatomic) UILabel     *nameLabel;
-@property(strong,nonatomic) UILabel     *sexLabel;
-@property(strong,nonatomic) UILabel     *ageLabel;
-@property(strong,nonatomic) UILabel     *jobLabel;
-@property(strong,nonatomic) UILabel     *hobbyLabel;
-@property(strong,nonatomic) UILabel     *distanceLabel;
-@property(strong,nonatomic) UILabel     *loginLabel;
+
+@property(strong,nonatomic) UIImageView *userImageView;
+@property(strong,nonatomic) UILabel    *usernameLabel;
+@property(strong,nonatomic) UIImageView *sexImageView;
+@property(strong,nonatomic) UILabel    *ageLabel;
+@property(strong,nonatomic) UILabel    *constellation;//星座
+@property(strong,nonatomic) NSArray     *tagLabel;
+@property(strong,nonatomic) UIImageView *locationImageView;
+@property(strong,nonatomic) UILabel    *locationLabel;
+@property(strong,nonatomic) UIImageView *timeImageView;
+@property(strong,nonatomic) UILabel    *timeLabel;
 
 
 @end
