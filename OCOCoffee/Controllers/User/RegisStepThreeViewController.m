@@ -18,6 +18,7 @@ static const CGFloat kTableLeftSide = 23.3f;
 
 @interface RegisStepThreeViewController ()
 
+@property(nonatomic, strong) UITextField *textField;
 @property(nonatomic,strong) SKTagView *tagView;
 @property(nonatomic, assign) int selectTagCount;
 
@@ -45,7 +46,7 @@ static const CGFloat kTableLeftSide = 23.3f;
     [bg_imageView setFrame:self.view.bounds];
     [self.view addSubview:bg_imageView];
     
-    __weak typeof(self) weakSelf = self;
+//    __weak typeof(self) weakSelf = self;
     
     UIView *view = [UIView new];
     [self.view addSubview:view];
@@ -62,6 +63,7 @@ static const CGFloat kTableLeftSide = 23.3f;
     textField.backgroundColor = [UIColor whiteColor];
     textField.layer.cornerRadius = 3;
     textField.layer.masksToBounds = YES;
+    self.textField = textField;
     [view addSubview:textField];
     
     [textField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -71,7 +73,13 @@ static const CGFloat kTableLeftSide = 23.3f;
     }];
     
     UIImageView *plus= [UIImageView new];
+    plus.userInteractionEnabled = YES;
     [plus setImage:[UIImage imageNamed:@"regis_plus"]];
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapUserPlus:)];
+    [singleTap setNumberOfTouchesRequired:1];
+    [singleTap setNumberOfTapsRequired:1];
+    [plus addGestureRecognizer:singleTap];
     [view addSubview:plus];
     
     [plus mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -139,15 +147,29 @@ static const CGFloat kTableLeftSide = 23.3f;
     //Add Tags
     [@[@"电烧友", @"电影控", @"吃货", @"旅游达人", @"喜欢冰琪淋",@"代码控", @"大叔", @"罗莉控"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
      {
-         SKTag *tag = [SKTag tagWithText:obj];
-         tag.textColor = [UIColor blackColor];
-         tag.bgColor = [UIColor whiteColor];
-         tag.cornerRadius = 3;
-         tag.fontSize = 13;
-         tag.padding = UIEdgeInsetsMake(5, 5, 5, 5);
-         
-         [self.tagView addTag:tag];
+         [self addTagWithObj:obj];
      }];
 }
 
+- (void) addTagWithObj:(id)obj
+{
+    SKTag *tag = [SKTag tagWithText:obj];
+    tag.textColor = [UIColor blackColor];
+    tag.bgColor = [UIColor whiteColor];
+    tag.cornerRadius = 3;
+    tag.fontSize = 13;
+    tag.padding = UIEdgeInsetsMake(5, 5, 5, 5);
+    
+    [self.tagView addTag:tag];
+}
+
+#pragma mark 用户单击上传图像
+- (void)tapUserPlus:(UITapGestureRecognizer*)tap
+{
+    NSString *customTag = _textField.text;
+    if ([customTag length] != 0){
+        [self addTagWithObj:customTag];
+        _textField.text = @"";
+    }
+}
 @end
