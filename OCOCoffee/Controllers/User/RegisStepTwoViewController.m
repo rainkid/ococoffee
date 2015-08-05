@@ -96,6 +96,7 @@ static const CGFloat kPhotoHeight = 82;
     _imageView.layer.masksToBounds = YES;
     _imageView.userInteractionEnabled = YES;
     
+    //点击事件
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapUserImage:)];
     [singleTap setNumberOfTouchesRequired:1];
     [singleTap setNumberOfTapsRequired:1];
