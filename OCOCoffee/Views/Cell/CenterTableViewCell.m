@@ -6,7 +6,12 @@
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
 
+#import <M>
 #import "CenterTableViewCell.h"
+
+@interface CenterTableViewCell()
+
+@end
 
 @implementation CenterTableViewCell
 
@@ -18,9 +23,9 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        __weak typeof(self) weakSelf = self;
-        
+        UIImageView *imageView = [UIImageView new];
     }
+    return self;
 }
 
 @end
