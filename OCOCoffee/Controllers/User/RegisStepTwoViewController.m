@@ -243,16 +243,16 @@ static const CGFloat kPhotoHeight = 82;
         [cell.textField setPlaceholder:@"请输入2-12位中英文字符"];
         cell.textField.tag = TWO_NICKNAKE;
         [cell showBottomLine:YES];
-        [cell showCodeButton:NO];
     } else if (indexPath.row == 1) {
         [cell.label setText:@"性      别"];
-        [cell.textField setPlaceholder:@"请选择性别"];
-        cell.textField.tag = TWO_SEX;
-        cell.textField.delegate = self;
-        cell.textField.keyboardType = UIKeyboardTypeAlphabet;
+        cell.textField.hidden = YES;
+        
+        UISegmentedControl *sortSegmentedController = [[UISegmentedControl alloc] initWithItems:@[@"男",@"女"]];
+        sortSegmentedController.selectedSegmentIndex = 0;
+        [sortSegmentedController addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
+        cell.accessoryView = sortSegmentedController;
+        
         [cell showBottomLine:YES];
-        [cell showCodeButton:NO];
-
     } else if (indexPath.row == 2) {
         [cell.label setText:@"出生日期"];
         [cell.textField setPlaceholder:@"请选择出生日期"];
@@ -260,7 +260,6 @@ static const CGFloat kPhotoHeight = 82;
         cell.textField.inputView = _datePicker;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:YES];
-        [cell showCodeButton:NO];
     } else if (indexPath.row == 3) {
         [cell.label setText:@"所在行业"];
         [cell.textField setPlaceholder:@"请选择所在行业"];
@@ -268,7 +267,6 @@ static const CGFloat kPhotoHeight = 82;
         cell.textField.inputView = _pickerView;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell showBottomLine:NO];
-        [cell showCodeButton:NO];
     }
     
     return cell;

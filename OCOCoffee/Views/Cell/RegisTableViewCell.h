@@ -34,10 +34,8 @@ typedef NS_ENUM(NSInteger, REGIS_STEP_TWO){
 
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) UILabel *label;
-@property (nonatomic, strong) UIButton *button;
 
 
 - (void)showBottomLine:(BOOL)showLine;
-- (void)showCodeButton:(BOOL)showButton;
 
 @end

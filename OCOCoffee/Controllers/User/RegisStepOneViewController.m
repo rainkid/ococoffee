@@ -128,22 +128,31 @@
         cell.textField.keyboardType = UIKeyboardTypePhonePad;
         cell.textField.tag = ONE_USERNAME;
         [cell showBottomLine:YES];
-        [cell showCodeButton:NO];
 
     } else if (indexPath.row == 1) {
         [cell.label setText:@"验证码"];
         [cell.textField setPlaceholder:@"请输入验证码"];
         cell.textField.tag = ONE_CODE;
+        
+        UIButton *button =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        button.frame = CGRectMake(0, 0, 69, 32);
+        [button setTitle:@"发送验证码" forState:UIControlStateNormal];
+        [[button layer] setBorderWidth:1.0f];
+        [[button layer] setBorderColor:[UIColor colorFromHexString:@"#4a2320"].CGColor];
+        button.titleLabel.font = [UIFont systemFontOfSize:12.0];
+        [button setTitleColor:[UIColor colorFromHexString:@"#4a2320"] forState:UIControlStateNormal];
+        button.backgroundColor = [UIColor whiteColor];
+        button.layer.cornerRadius = 3;
+        button.layer.masksToBounds = YES;
+        cell.accessoryView = button;
+        
         [cell showBottomLine:YES];
-        [cell showCodeButton:YES];
-
     } else if (indexPath.row == 2) {
         [cell.label setText:@"密    码"];
         [cell.textField setPlaceholder:@"请设置6位或6位以上密码"];
         cell.textField.tag = ONE_PASSWORD;
         cell.textField.secureTextEntry = YES;
         [cell showBottomLine:NO];
-        [cell showCodeButton:NO];
     }
     return cell;
 }

@@ -47,21 +47,6 @@
             make.centerY.mas_equalTo(weakSelf);
         }];
         
-        _button =  [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [_button setTitle:@"发送验证码" forState:UIControlStateNormal];
-        [[_button layer] setBorderWidth:1.0f];
-        [[_button layer] setBorderColor:[UIColor colorFromHexString:@"#4a2320"].CGColor];
-        _button.titleLabel.font = [UIFont systemFontOfSize:12.0];
-        [_button setTitleColor:[UIColor colorFromHexString:@"#4a2320"] forState:UIControlStateNormal];
-        _button.backgroundColor = [UIColor whiteColor];
-        _button.layer.cornerRadius = 3;
-        _button.layer.masksToBounds = YES;
-        [self addSubview:_button];
-        [_button mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.mas_equalTo(weakSelf).offset(-4);
-            make.centerY.mas_equalTo(weakSelf);
-        }];
-        
         CGFloat height = 0.5;
         if ([[UIScreen mainScreen] scale] < 2) {
             height = 1;
@@ -87,15 +72,6 @@
         _sepView.hidden = NO;
     }else{
         _sepView.hidden = YES;
-    }
-}
-
-- (void)showCodeButton:(BOOL)showButton
-{
-    if (showButton) {
-        _button.hidden = NO;
-    }else{
-        _button.hidden = YES;
     }
 }
 

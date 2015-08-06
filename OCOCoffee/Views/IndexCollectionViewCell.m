@@ -25,7 +25,7 @@
         [self.contentView addSubview:_usernameLabel];
         
         _sexImageView = [[UIImageView alloc] initWithFrame:CGRectMake(100, 123, 30, 20)];
-        _sexImageView.image = [UIImage imageNamed:@"001.png"];
+        _sexImageView.image = [UIImage imageNamed:@"001"];
         [self.contentView addSubview:_sexImageView];
     }
     
