@@ -232,17 +232,15 @@ static const CGFloat kPhotoHeight = 82;
     NSLog(@"%ld==%ld", section, row);
     if(section == 0){
         switch (row) {
-            case 0:
-            {
+            case 0:{
                 [cell.limageView setImage:[UIImage imageNamed:@"center_01"]];
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"我的活动";
             }
             break;
                 
-            case 1:
-            {
-                [cell.limageView setImage:[UIImage imageNamed:@"center_01"]];
+            case 1:{
+                [cell.limageView setImage:[UIImage imageNamed:@"center_02"]];
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"我的好友";
 
@@ -252,9 +250,8 @@ static const CGFloat kPhotoHeight = 82;
         
     }else if (section == 1){
         switch (row) {
-            case 0:
-            {
-                [cell.limageView setImage:[UIImage imageNamed:@"center_01"]];
+            case 0:{
+                [cell.limageView setImage:[UIImage imageNamed:@"center_03"]];
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"设置";
             }
@@ -313,24 +310,18 @@ static const CGFloat kPhotoHeight = 82;
 
 - (IBAction)regisOne:(id)sender {
     RegisStepOneViewController *one = [[RegisStepOneViewController alloc] init];
-    [self presentViewController:one animated:YES completion:^{
-        NSLog(@"a");
-    }];
+    [self presentViewController:one animated:YES completion:nil];
 }
 
 
 - (IBAction)login:(id)sender {
     LoginViewController *one = [[LoginViewController alloc] init];
-    [self presentViewController:one animated:YES completion:^{
-        NSLog(@"a");
-    }];
+    [self presentViewController:one animated:YES completion:nil];
 }
 
 - (IBAction)regisTwo:(id)sender {
     RegisStepTwoViewController *one = [[RegisStepTwoViewController alloc] init];
-    [self presentViewController:one animated:YES completion:^{
-        NSLog(@"a");
-    }];
+    [self presentViewController:one animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
