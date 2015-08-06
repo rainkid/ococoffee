@@ -10,6 +10,7 @@
 #import "ViewController.h"
 #import "SearchViewController.h"
 #import "IndexViewController.h"
+#import "IndexView.h"
 
 @interface RootViewController (){
     
@@ -17,6 +18,7 @@
     ViewController *_viewController;
     
     IndexViewController *_indexViewController;
+
 }
 
 @end
@@ -25,12 +27,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-//    if(_viewController == nil){
-//        _viewController = [[ViewController alloc] init];
-//    }
-   /// _viewController = [[ViewController alloc] init];
     
     if(_indexViewController == nil){
         _indexViewController = [[IndexViewController alloc] init];
@@ -39,7 +35,7 @@
     if(_rootNavigationController == nil){
         _rootNavigationController = [[UINavigationController alloc] initWithRootViewController:_indexViewController];
         _rootNavigationController.view.frame = self.view.frame;
-        _rootNavigationController.view.backgroundColor = [UIColor clearColor];
+        _rootNavigationController.view.backgroundColor = [UIColor whiteColor];
     }
     
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"筛选"
@@ -47,7 +43,7 @@
                                                                      target:self
                                                                      action:@selector(search)
                                       ];
-    _viewController.navigationItem.leftBarButtonItem = leftBarButton;
+    _indexViewController.navigationItem.leftBarButtonItem = leftBarButton;
     
     
     UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"设置"
@@ -55,7 +51,7 @@
                                                                    target:self
                                                                    action:@selector(settings)
                                     ];
-    _viewController.navigationItem.rightBarButtonItem = rightButton;
+    _indexViewController.navigationItem.rightBarButtonItem = rightButton;
     
     [self.view addSubview:_rootNavigationController.view];
 }

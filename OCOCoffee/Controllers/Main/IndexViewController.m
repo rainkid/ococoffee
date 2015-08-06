@@ -10,6 +10,8 @@
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "IndexCollectionView.h"
+#import "IndexViewLayout.h"
+#import "IndexCollectionViewCell.h"
 
 
 
@@ -21,7 +23,8 @@
     double userLogitude;
     double userLatitude;
     
-    IndexCollectionView *_collectionView ;
+    IndexCollectionView *_indexCollectionView ;
+    IndexViewLayout *_indexViewLayout;
 }
 
 @end
@@ -34,12 +37,18 @@
     
     [self getLocation];
     
-    [self getView];
+    NSLog(@"did Load");
+    [self.view addSubview:_collectionView];
     
     
    }
 
-
+-(void)viewDidAppear:(BOOL)animated
+{
+    NSLog(@"ddd");
+    [self.collectionView reloadData];
+   
+}
 
 -(void)getLocation {
     _locationManager = [[CLLocationManager alloc] init];
@@ -76,14 +85,26 @@
 }
 
 
+-(UICollectionView *)collectionView {
+    if(_collectionView == nil){
+         _indexViewLayout = [[IndexViewLayout alloc] init];
+        _indexViewLayout.minimumInteritemSpacing = 5.0;
+        _indexViewLayout.minimumLineSpacing = 8.0;
+        _indexViewLayout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
+        _indexViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+        
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) collectionViewLayout:_indexViewLayout];
+        _collectionView.delegate  = self;
+        _collectionView.dataSource =self;
+        _collectionView.backgroundColor = [UIColor lightGrayColor];
+        [_collectionView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:@"CellIdentifier"];
+    }
+    return _collectionView;
+}
+
+
 -(void)getView {
     
-    _collectionView = [[IndexCollectionView alloc] init];
-    _collectionView.items = [self getTestData];
-    
-    NSLog(@"%@",_collectionView.items);
-    
-    [self.view addSubview:_collectionView];
     
     
 }
@@ -113,6 +134,7 @@
     NSLog(@"%f",userLatitude);
     
     [_locationManager stopUpdatingLocation];
+    
 }
 
 
@@ -123,5 +145,33 @@
 }
 
 
+-(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 2;
+}
+
+-(NSInteger)numberOfItemsInSection:(NSInteger)section
+{
+    return 10;
+}
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return 10;
+}
+
+
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    static  NSString  *identifier = @"CellIdentifier";
+    IndexCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
+    cell.backgroundColor = [UIColor grayColor];
+//    
+//    cell.userImageView.image = [UIImage imageNamed:[_items objectAtIndex:indexPath.row]];
+//    
+//    NSLog(@"%@",cell.userImageView.image);
+    cell.userImageView.image = [UIImage imageNamed:@"001.png"];
+    return cell;
+}
 
 @end

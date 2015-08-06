@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "IndexViewLayout.h"
 
-@interface IndexViewController : UIViewController
+@interface IndexViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate>
+
+@property(nonatomic,strong) UICollectionView *collectionView;
 
 @end
