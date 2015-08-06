@@ -38,6 +38,7 @@
 		0AD23F611B6A54DF00515C38 /* RegisStepTwoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD23F551B6A54DF00515C38 /* RegisStepTwoViewController.m */; };
 		0AE0E8881B693E2200DECD3A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE0E8871B693E2200DECD3A /* CoreLocation.framework */; };
 		0AE0E88A1B693E3500DECD3A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE0E8891B693E3500DECD3A /* MobileCoreServices.framework */; };
+		0AF13F561B724CE5008D24D0 /* IndexView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF13F551B724CE5008D24D0 /* IndexView.m */; };
 		223BA1F01B6C624E001F9DC5 /* DatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 223BA1EF1B6C624E001F9DC5 /* DatePickerView.m */; };
 		223BA1F31B6C6278001F9DC5 /* StringPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 223BA1F21B6C6278001F9DC5 /* StringPickerView.m */; };
 		226553021B6F8CD200A18274 /* RegisStepThreeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 226553011B6F8CD200A18274 /* RegisStepThreeViewController.m */; };
@@ -124,6 +125,8 @@
 		0AD23F8E1B6A554800515C38 /* Golbal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Golbal.h; sourceTree = "<group>"; };
 		0AE0E8871B693E2200DECD3A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		0AE0E8891B693E3500DECD3A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		0AF13F541B724CE5008D24D0 /* IndexView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexView.h; sourceTree = "<group>"; };
+		0AF13F551B724CE5008D24D0 /* IndexView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexView.m; sourceTree = "<group>"; };
 		14887310B7D8897250D65C1C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		223BA1EE1B6C624E001F9DC5 /* DatePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatePickerView.h; sourceTree = "<group>"; };
 		223BA1EF1B6C624E001F9DC5 /* DatePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatePickerView.m; sourceTree = "<group>"; };
@@ -427,6 +430,8 @@
 				22F066CC1B6903D600BB66EE /* IndexCollectionViewCell.m */,
 				22F066CD1B6903D600BB66EE /* IndexViewLayout.h */,
 				22F066CE1B6903D600BB66EE /* IndexViewLayout.m */,
+				0AF13F541B724CE5008D24D0 /* IndexView.h */,
+				0AF13F551B724CE5008D24D0 /* IndexView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -669,6 +674,7 @@
 				0AD23F5D1B6A54DF00515C38 /* SearchViewController.m in Sources */,
 				22F066B61B6902B900BB66EE /* NSUserDefaults+UnRegisterDefaults.m in Sources */,
 				0AD23F5E1B6A54DF00515C38 /* ViewController.m in Sources */,
+				0AF13F561B724CE5008D24D0 /* IndexView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

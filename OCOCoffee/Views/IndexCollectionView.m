@@ -12,49 +12,48 @@
 
 @implementation IndexCollectionView
 
--(instancetype)initWithFrame:(CGRect)frame {
-    if(self =[super initWithFrame:frame]){
-        //if(_collectionView == nil){
-            
-            IndexViewLayout *indexViewLayout = [[IndexViewLayout alloc] init];
-            indexViewLayout.minimumInteritemSpacing = 5.0;
-            indexViewLayout.minimumLineSpacing = 8.0;
-            indexViewLayout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
-            indexViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
-            
-            _colView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) collectionViewLayout:indexViewLayout];
-            _colView.delegate  = self;
-            _colView.dataSource =self;
-            _colView.backgroundColor = [UIColor lightGrayColor];
-            [_colView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:@"CellIdentifier"];
-        
-            [self addSubview:_colView];
-        
-       // }
-    }
-    return self;
-}
-
-
-//-(UICollectionView *)collectionView {
-//    if(_collectionView == nil){
+//-(instancetype)initWithFrame:(CGRect)frame {
+//    if(self =[super initWithFrame:frame]){
+//        //if(_collectionView == nil){
+//            
+//            IndexViewLayout *indexViewLayout = [[IndexViewLayout alloc] init];
+//            indexViewLayout.minimumInteritemSpacing = 5.0;
+//            indexViewLayout.minimumLineSpacing = 8.0;
+//            indexViewLayout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
+//            indexViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+//            
+//            _colView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) collectionViewLayout:indexViewLayout];
+//            _colView.delegate  = self;
+//            _colView.dataSource =self;
+//            _colView.backgroundColor = [UIColor lightGrayColor];
+//            [_colView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:@"CellIdentifier"];
 //        
-//        IndexViewLayout *indexViewLayout = [[IndexViewLayout alloc] init];
-//        indexViewLayout.minimumInteritemSpacing = 5.0;
-//        indexViewLayout.minimumLineSpacing = 8.0;
-//        indexViewLayout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
-//        indexViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+//            [self addSubview:_colView];
 //        
-//        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.collectionView.frame.size.width, self.collectionView.frame.size.height) collectionViewLayout:indexViewLayout];
-//        _collectionView.delegate  = self;
-//        _collectionView.dataSource =self;
-//        _collectionView.backgroundColor = [UIColor lightGrayColor];
-//        [_collectionView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:@"CellIdentifier"];
-//        
-//        
+//       // }
 //    }
-//    return _collectionView;
+//    return self;
 //}
+
+-(UICollectionView *)collectionView {
+    if(_collectionView == nil){
+        
+        IndexViewLayout *indexViewLayout = [[IndexViewLayout alloc] init];
+        indexViewLayout.minimumInteritemSpacing = 5.0;
+        indexViewLayout.minimumLineSpacing = 8.0;
+        indexViewLayout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
+        indexViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+        
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.collectionView.frame.size.width, self.collectionView.frame.size.height) collectionViewLayout:indexViewLayout];
+        _collectionView.delegate  = self;
+        _collectionView.dataSource =self;
+        _collectionView.backgroundColor = [UIColor lightGrayColor];
+        [_collectionView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:@"CellIdentifier"];
+        
+        
+    }
+    return _collectionView;
+}
 
 
 
@@ -76,7 +75,7 @@
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    static  NSString  *identifier = @"indexCellIdentifier";
+    static  NSString  *identifier = @"CellIdentifier";
     IndexCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     cell.backgroundColor = [UIColor grayColor];
     

@@ -52,7 +52,7 @@
         [_sepView setBackgroundColor:[UIColor clearColor]];
         [self addSubview:self.sepView];
         [_sepView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(kCellHeight-1);
+            make.top.mas_equalTo(weakSelf.mas_bottom);
             make.height.mas_equalTo(height);
             make.width.mas_equalTo(weakSelf.mas_width);
         }];

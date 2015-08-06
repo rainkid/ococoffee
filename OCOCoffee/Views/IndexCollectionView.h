@@ -12,5 +12,6 @@
 
 @property(strong,nonatomic) NSMutableArray *items;
 @property(strong,nonatomic) UICollectionView *colView;
+@property(strong,nonatomic) UICollectionView *collectionView;
 
 @end

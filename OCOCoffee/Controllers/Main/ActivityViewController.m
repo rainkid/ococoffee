@@ -20,7 +20,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title =@"活动";
+    self.title =@"日程";
     _subView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     _subView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:_subView];

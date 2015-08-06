@@ -35,10 +35,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self getLocation];
+//    [self getLocation];
     
+<<<<<<< HEAD
     NSLog(@"did Load");
     [self.view addSubview:_collectionView];
+=======
+//    [self getView];
+>>>>>>> 25d14744ee1dc2a505ea6bd19bcfbdcacb29f55f
     
     
    }

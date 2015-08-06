@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+static const CGFloat kCellHeight = 154/3;
+
+
 @interface CenterTableViewCell : UITableViewCell
+
+@property(nonatomic, strong) UIImageView *limageView;
+@property(nonatomic, strong) UILabel *label;
 
 @end
