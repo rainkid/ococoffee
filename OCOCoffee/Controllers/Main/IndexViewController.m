@@ -32,9 +32,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self getLocation];
+//    [self getLocation];
     
-    [self getView];
+//    [self getView];
     
     
    }
