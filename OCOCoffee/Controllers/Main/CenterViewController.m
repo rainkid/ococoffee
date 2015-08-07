@@ -32,13 +32,17 @@ static const CGFloat kPhotoHeight = 82;
     __weak typeof(self) weakSelf = self;
     
     self.title = @"我的";
-    
-    UIImage *bg_image = [UIImage imageNamed:@"background.png"];
-    UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
-    [bg_imageView setFrame:self.view.bounds];
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    UIImageView *bg_imageView = [UIImageView new];
+    bg_imageView.image =[UIImage imageNamed:@"center_bg"];
     [self.view addSubview:bg_imageView];
+    [bg_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(274/2);
+        make.top.mas_equalTo(weakSelf.view.mas_top).offset(PHONE_TOP_HEIGHT);
+    }];
     
-    //photo
+    //photo cyctle
     UIView *photoView = [UIView new];
     long kPhotoSlide = 8;
     long kCPhotoHeight =kPhotoHeight+kPhotoSlide;
@@ -51,10 +55,10 @@ static const CGFloat kPhotoHeight = 82;
     [photoView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
         make.height.and.width.mas_equalTo(kCPhotoHeight);
-        make.top.mas_equalTo(PHONE_NAVIGATIONBAR_HEIGHT + 40);
+        make.top.mas_equalTo(bg_imageView.mas_top).offset(3);
     }];
     
-    //phone inner
+    //phone inner image
     _imageView = [UIImageView new];
     _imageView.image = [UIImage imageNamed:@"sample_logo"];
     _imageView.layer.cornerRadius = (kPhotoHeight) /2;
@@ -64,7 +68,7 @@ static const CGFloat kPhotoHeight = 82;
     [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
         make.top.mas_equalTo(photoView.mas_top).offset(kPhotoSlide/2);
-        make.height.and.width.mas_equalTo(kPhotoHeight);;
+        make.height.and.width.mas_equalTo(kPhotoHeight);
     }];
     
     //labels
@@ -93,8 +97,8 @@ static const CGFloat kPhotoHeight = 82;
 //    botView.backgroundColor = [UIColor redColor];
     [self.view addSubview:botView];
     [botView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(label_2.mas_bottom).offset(14/2);
-        make.height.mas_equalTo(PHONE_CONTENT_HEIGHT);
+        make.top.mas_equalTo(bg_imageView.mas_bottom);
+        make.bottom.equalTo(weakSelf.view.mas_bottom);
         make.left.right.mas_equalTo(weakSelf.view);
     }];
     
@@ -103,7 +107,7 @@ static const CGFloat kPhotoHeight = 82;
     [self.view addSubview:centerView];
     [centerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.width.mas_equalTo(weakSelf.view);
-        make.top.mas_equalTo(label_2.mas_bottom).offset(14/2);
+        make.top.mas_equalTo(bg_imageView.mas_bottom);
     }];
     
     int padding = 1;
@@ -167,55 +171,54 @@ static const CGFloat kPhotoHeight = 82;
     }];
     
     
-    //
-    UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    loginBtn.backgroundColor = [UIColor redColor];
-    [loginBtn setTitle:@"登录页"  forState:UIControlStateNormal];
-    [loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:loginBtn];
-    [loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(100);
-        make.centerX.equalTo(self.view);
-        make.height.mas_equalTo(40);
-    }];
-   
-    //
-    UIButton *oneBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-     [oneBtn setTitle:@"注册页1"  forState:UIControlStateNormal];
-    oneBtn.backgroundColor = [UIColor greenColor];
-    [oneBtn addTarget:self action:@selector(regisOne:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:oneBtn];
-    [oneBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(loginBtn.mas_bottom);
-        make.centerX.equalTo(self.view);
-        make.centerX.equalTo(self.view);
-
-        make.height.mas_equalTo(40);
-    }];
-    //
-    UIButton *twoBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [twoBtn setTitle:@"注册页2"  forState:UIControlStateNormal];
-    [twoBtn addTarget:self action:@selector(regisTwo:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:twoBtn];
-    [twoBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(oneBtn.mas_bottom);
-        make.centerX.equalTo(self.view);
-
-        make.height.mas_equalTo(40);
-    }];
-    //
-    UIButton *threeBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [threeBtn setTitle:@"注册页3"  forState:UIControlStateNormal];
-    [threeBtn addTarget:self action:@selector(regisThree:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:threeBtn];
-    [threeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(twoBtn.mas_bottom);
-        make.centerX.equalTo(self.view);
-
-        make.height.mas_equalTo(40);
-    }];
+//    //
+//    UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    loginBtn.backgroundColor = [UIColor redColor];
+//    [loginBtn setTitle:@"登录页"  forState:UIControlStateNormal];
+//    [loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:loginBtn];
+//    [loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.mas_equalTo(100);
+//        make.centerX.equalTo(self.view);
+//        make.height.mas_equalTo(40);
+//    }];
+//   
+//    //
+//    UIButton *oneBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//     [oneBtn setTitle:@"注册页1"  forState:UIControlStateNormal];
+//    oneBtn.backgroundColor = [UIColor greenColor];
+//    [oneBtn addTarget:self action:@selector(regisOne:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:oneBtn];
+//    [oneBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(loginBtn.mas_bottom);
+//        make.centerX.equalTo(self.view);
+//        make.centerX.equalTo(self.view);
+//
+//        make.height.mas_equalTo(40);
+//    }];
+//    //
+//    UIButton *twoBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    [twoBtn setTitle:@"注册页2"  forState:UIControlStateNormal];
+//    [twoBtn addTarget:self action:@selector(regisTwo:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:twoBtn];
+//    [twoBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(oneBtn.mas_bottom);
+//        make.centerX.equalTo(self.view);
+//
+//        make.height.mas_equalTo(40);
+//    }];
+//    //
+//    UIButton *threeBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    [threeBtn setTitle:@"注册页3"  forState:UIControlStateNormal];
+//    [threeBtn addTarget:self action:@selector(regisThree:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:threeBtn];
+//    [threeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(twoBtn.mas_bottom);
+//        make.centerX.equalTo(self.view);
+//
+//        make.height.mas_equalTo(40);
+//    }];
     
-//    [self.view addSubview:_mainView];
 }
 
 #pragma tableview delegate methods
