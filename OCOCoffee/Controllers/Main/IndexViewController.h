@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "IndexViewLayout.h"
 
-@interface IndexViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate>
+
+@interface IndexViewController : UIViewController
 
 @property(nonatomic,strong) UICollectionView *collectionView;
+@property(nonatomic,strong) NSMutableArray *dataList;
+
 
 @end

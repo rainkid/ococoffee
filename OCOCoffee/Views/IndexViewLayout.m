@@ -11,6 +11,10 @@
 @implementation IndexViewLayout
 
 
+-(void)prepareLayout
+{
+    NSLog(@"Prepare Layout");
+}
 
 //UICollectionViewLayout 必须实现的三个方法
 
@@ -34,33 +38,5 @@
 {
     return nil;
 }
-
-
--(void)prepareLayout
-{
-    NSLog(@"Prepare Layout!");
-}
-
-
--(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
-{
-    return UIEdgeInsetsMake(5, 5, 5, 5);
-}
-
-
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake((self.collectionView.bounds.size.width -15)/2, 120);
-}
-
--(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
-{
-    return 10.0f;
-}
-
--(CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
-{
-    return 8.0f;
-}
-
 
 @end

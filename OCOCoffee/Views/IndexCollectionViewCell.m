@@ -14,9 +14,10 @@
 {
     if( self = [super initWithFrame:frame]){
     
-        _userImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 150, 120)];
+        _userImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetMaxX(self.contentView.bounds), CGRectGetMaxY(self.contentView.bounds))];
         _userImageView.backgroundColor = [UIColor blueColor];
         
+        _userImageView.contentMode  = UIViewContentModeScaleAspectFill;
         [self.contentView addSubview: _userImageView];
         
         _usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 123, 30, 20)];

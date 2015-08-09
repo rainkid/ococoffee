@@ -9,9 +9,8 @@
 #import "IndexViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "IndexCollectionView.h"
-#import "IndexViewLayout.h"
-#import "IndexCollectionViewCell.h"
+#import "IndexContentViewController.h"
+#import "BannerView.h"
 
 
 
@@ -22,9 +21,9 @@
     
     double userLogitude;
     double userLatitude;
+    IndexContentViewController *_contentViewController;
     
-    IndexCollectionView *_indexCollectionView ;
-    IndexViewLayout *_indexViewLayout;
+    UIScrollView *_cycleScrollView;
 }
 
 @end
@@ -33,26 +32,29 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
-//    [self getLocation];
+    if(_cycleScrollView == nil){
+        _cycleScrollView = [[UIScrollView alloc ] init];
+        _cycleScrollView.frame = CGRectMake(0, 0, self.view.bounds.size.width, 75);
+    }
     
-<<<<<<< HEAD
-    NSLog(@"did Load");
-    [self.view addSubview:_collectionView];
-=======
-//    [self getView];
->>>>>>> 25d14744ee1dc2a505ea6bd19bcfbdcacb29f55f
     
+
+    _contentViewController = [[IndexContentViewController alloc] init];
+    _contentViewController.view.frame= self.view.bounds;
+    _contentViewController.view.backgroundColor = [UIColor yellowColor];
+    [self.view addSubview:_contentViewController.view];
     
    }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"ddd");
-    [self.collectionView reloadData];
    
 }
+
+
+
+
 
 -(void)getLocation {
     _locationManager = [[CLLocationManager alloc] init];
@@ -88,41 +90,6 @@
 
 }
 
-
--(UICollectionView *)collectionView {
-    if(_collectionView == nil){
-         _indexViewLayout = [[IndexViewLayout alloc] init];
-        _indexViewLayout.minimumInteritemSpacing = 5.0;
-        _indexViewLayout.minimumLineSpacing = 8.0;
-        _indexViewLayout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
-        _indexViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
-        
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) collectionViewLayout:_indexViewLayout];
-        _collectionView.delegate  = self;
-        _collectionView.dataSource =self;
-        _collectionView.backgroundColor = [UIColor lightGrayColor];
-        [_collectionView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:@"CellIdentifier"];
-    }
-    return _collectionView;
-}
-
-
--(void)getView {
-    
-    
-    
-}
-
--(NSMutableArray *)getTestData {
-    NSMutableArray *mutableArr = [[NSMutableArray alloc] initWithCapacity:0];
-    for(int i = 0;i< 5;i++){
-        [mutableArr addObject:[UIImage imageNamed:@"001.png"]];
-        [mutableArr addObject:[UIImage imageNamed:@"002.png"]];
-    }
-    return mutableArr;
-    
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -149,33 +116,5 @@
 }
 
 
--(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
-    return 2;
-}
-
--(NSInteger)numberOfItemsInSection:(NSInteger)section
-{
-    return 10;
-}
-
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    return 10;
-}
-
-
--(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    static  NSString  *identifier = @"CellIdentifier";
-    IndexCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor grayColor];
-//    
-//    cell.userImageView.image = [UIImage imageNamed:[_items objectAtIndex:indexPath.row]];
-//    
-//    NSLog(@"%@",cell.userImageView.image);
-    cell.userImageView.image = [UIImage imageNamed:@"001.png"];
-    return cell;
-}
 
 @end
