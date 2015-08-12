@@ -11,6 +11,7 @@
 #import "CenterViewController.h"
 #import "CenterTableViewCell.h"
 #import "ActivityTableViewController.h"
+#import "FriendTableViewController.h";
 #import <Masonry/Masonry.h>
 
 static const CGFloat kPhotoHeight = 82;
@@ -252,7 +253,8 @@ static const CGFloat kPhotoHeight = 82;
         }
             break;
         case CENTER_MY_FRIEND: {
-            
+            FriendTableViewController *friend = [[FriendTableViewController alloc] init];
+            [self.navigationController pushViewController:friend animated:nil];
         }
             break;
         case CENTER_SYS_MSG:{

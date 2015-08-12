@@ -7,7 +7,6 @@
 //
 
 #import "Golbal.h"
-#import "SeparatorView.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
 #import <MJRefresh/MJRefresh.h>
@@ -67,7 +66,6 @@ static const CGFloat kCellHeight = 522/2;
     self.tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         [weakSelf loadMoreData];
     }];
-    // 设置footer
 }
 
 #pragma mark 
@@ -139,7 +137,6 @@ static const CGFloat kCellHeight = 522/2;
     NSString *desc =[cellData objectAtIndex:6];
     NSString *timeBefore = [cellData objectAtIndex:7];
     NSString *status = [cellData objectAtIndex:8];
-
     NSString *sex = @"sex_girl";
     
 
