@@ -33,6 +33,8 @@ PODS:
   - MagicalRecord (2.3.0)
   - Masonry (0.6.2)
   - MBProgressHUD (0.9.1)
+  - MJExtension (2.5.6)
+  - MJRefresh (2.4.3)
   - MWPhotoBrowser (1.4.1):
     - DACircularProgress
     - MBProgressHUD (~> 0.8)
@@ -55,6 +57,8 @@ DEPENDENCIES:
   - MagicalRecord (~> 2.2)
   - Masonry
   - MBProgressHUD (~> 0.9)
+  - MJExtension
+  - MJRefresh
   - MWPhotoBrowser (~> 1.4.1)
   - PKRevealController (~> 2.0.6)
   - SDWebImage (~> 3.7.1)
@@ -70,6 +74,8 @@ SPEC CHECKSUMS:
   MagicalRecord: 89eb7d7ead39fb37f01c3d010665ee94d17f8dba
   Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
+  MJExtension: 5ea3e326162ccc07c60afe8cc36c936bba20d0d5
+  MJRefresh: d652e909f7182e306d445ec39868ff03a1ae36ce
   MWPhotoBrowser: 2531e682860d62b8a7ba8659de02eb9040e431e5
   PKRevealController: ffb45a16f5a5032ad90a3d16e5cbb0d8e035bd58
   PSTCollectionView: 6749df92885353521f55279a7ce2b293762e2be4
