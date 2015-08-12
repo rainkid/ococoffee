@@ -11,7 +11,8 @@
 #import "CenterViewController.h"
 #import "CenterTableViewCell.h"
 #import "ActivityTableViewController.h"
-#import "FriendTableViewController.h";
+#import "FriendTableViewController.h"
+#import "MessageViewController.h"
 #import <Masonry/Masonry.h>
 
 static const CGFloat kPhotoHeight = 82;
@@ -258,7 +259,8 @@ static const CGFloat kPhotoHeight = 82;
         }
             break;
         case CENTER_SYS_MSG:{
-            
+            MessageViewController *message = [[MessageViewController alloc] init];
+            [self.navigationController pushViewController:message animated:nil];
         }
             break;
         case CENTER_SETTING:{

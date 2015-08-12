@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface MessageViewController : UIViewController
+@property(nonatomic, strong) NSMutableArray *tableData;
 
 @end
