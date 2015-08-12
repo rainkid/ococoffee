@@ -22,8 +22,8 @@
 		0AB7D7261B61248D00CFF4FF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0AB7D7251B61248D00CFF4FF /* Images.xcassets */; };
 		0AB7D7291B61248D00CFF4FF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0AB7D7271B61248D00CFF4FF /* LaunchScreen.xib */; };
 		0AB7D7351B61248D00CFF4FF /* OCOCoffeeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AB7D7341B61248D00CFF4FF /* OCOCoffeeTests.m */; };
+		0AB82BC51B7B4E4900D3C66A /* IndexCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AB82BC41B7B4E4900D3C66A /* IndexCollectionViewController.m */; };
 		0AD23F561B6A54DF00515C38 /* ActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD23F3E1B6A54DF00515C38 /* ActivityViewController.m */; };
-		0AD23F571B6A54DF00515C38 /* CenterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD23F401B6A54DF00515C38 /* CenterViewController.m */; };
 		0AD23F5A1B6A54DF00515C38 /* IndexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD23F461B6A54DF00515C38 /* IndexViewController.m */; };
 		0AD23F5B1B6A54DF00515C38 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD23F481B6A54DF00515C38 /* MessageViewController.m */; };
 		0AD23F5C1B6A54DF00515C38 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD23F4A1B6A54DF00515C38 /* RootViewController.m */; };
@@ -99,10 +99,10 @@
 		0AB7D72E1B61248D00CFF4FF /* OCOCoffeeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OCOCoffeeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AB7D7331B61248D00CFF4FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0AB7D7341B61248D00CFF4FF /* OCOCoffeeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OCOCoffeeTests.m; sourceTree = "<group>"; };
+		0AB82BC31B7B4E4900D3C66A /* IndexCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexCollectionViewController.h; sourceTree = "<group>"; };
+		0AB82BC41B7B4E4900D3C66A /* IndexCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexCollectionViewController.m; sourceTree = "<group>"; };
 		0AD23F3D1B6A54DF00515C38 /* ActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityViewController.h; sourceTree = "<group>"; };
 		0AD23F3E1B6A54DF00515C38 /* ActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityViewController.m; sourceTree = "<group>"; };
-		0AD23F3F1B6A54DF00515C38 /* CenterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenterViewController.h; sourceTree = "<group>"; };
-		0AD23F401B6A54DF00515C38 /* CenterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenterViewController.m; sourceTree = "<group>"; };
 		0AD23F451B6A54DF00515C38 /* IndexViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexViewController.h; sourceTree = "<group>"; };
 		0AD23F461B6A54DF00515C38 /* IndexViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexViewController.m; sourceTree = "<group>"; };
 		0AD23F471B6A54DF00515C38 /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
@@ -314,14 +314,14 @@
 		0AD23F3C1B6A54DF00515C38 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				0AB82BC31B7B4E4900D3C66A /* IndexCollectionViewController.h */,
+				0AB82BC41B7B4E4900D3C66A /* IndexCollectionViewController.m */,
 				0A3A68271B7354DF0077A2A8 /* CityViewController.h */,
 				0A3A68281B7354DF0077A2A8 /* CityViewController.m */,
 				0A3A68291B7354DF0077A2A8 /* CountryViewController.h */,
 				0A3A682A1B7354DF0077A2A8 /* CountryViewController.m */,
 				0AD23F3D1B6A54DF00515C38 /* ActivityViewController.h */,
 				0AD23F3E1B6A54DF00515C38 /* ActivityViewController.m */,
-				0AD23F3F1B6A54DF00515C38 /* CenterViewController.h */,
-				0AD23F401B6A54DF00515C38 /* CenterViewController.m */,
 				0AD23F451B6A54DF00515C38 /* IndexViewController.h */,
 				0AD23F461B6A54DF00515C38 /* IndexViewController.m */,
 				0AD23F471B6A54DF00515C38 /* MessageViewController.h */,
@@ -633,8 +633,8 @@
 				22F0E3921B7230BA00ACF5D7 /* CenterTableViewCell.m in Sources */,
 				22F066D51B6903D600BB66EE /* IndexCollectionView.m in Sources */,
 				0A3A682F1B73657E0077A2A8 /* BannerView.m in Sources */,
+				0AB82BC51B7B4E4900D3C66A /* IndexCollectionViewController.m in Sources */,
 				22F066D61B6903D600BB66EE /* IndexCollectionViewCell.m in Sources */,
-				0AD23F571B6A54DF00515C38 /* CenterViewController.m in Sources */,
 				22F066D71B6903D600BB66EE /* IndexViewLayout.m in Sources */,
 				0AA3A0351B6F92D3006054E1 /* RefreshingTableView.m in Sources */,
 				0A3A68261B7348040077A2A8 /* IndexContentViewController.m in Sources */,

@@ -9,11 +9,8 @@
 #import "Golbal.h"
 #import "UIColor+colorBuild.h"
 #import "CenterViewController.h"
-#import "RegisStepThreeViewController.h"
-#import "RegisStepTwoViewController.h"
-#import "RegisStepOneViewController.h"
-#import "LoginViewController.h"
 #import "CenterTableViewCell.h"
+#import "ActivityTableViewController.h"
 #import <Masonry/Masonry.h>
 
 static const CGFloat kPhotoHeight = 82;
@@ -169,6 +166,7 @@ static const CGFloat kPhotoHeight = 82;
         make.height.mas_equalTo(kCellHeight*4 + 32);
         make.top.mas_equalTo(msgView.mas_bottom).offset(28/3);
     }];
+<<<<<<< HEAD:OCOCoffee/Controllers/Main/CenterViewController.m
     
 
 //    //
@@ -219,6 +217,8 @@ static const CGFloat kPhotoHeight = 82;
 //        make.height.mas_equalTo(40);
 //    }];
     
+=======
+>>>>>>> d97d67e274530a3687dbfe829a983938c770e288:OCOCoffee/Controllers/Center/CenterViewController.m
 }
 
 #pragma tableview delegate methods
@@ -236,28 +236,35 @@ static const CGFloat kPhotoHeight = 82;
         switch (row) {
             case 0:{
                 [cell.limageView setImage:[UIImage imageNamed:@"center_01"]];
+                cell.tag = CENTER_MY_ACTIVITY;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"我的活动";
-            }
-            break;
+            } break;
                 
             case 1:{
                 [cell.limageView setImage:[UIImage imageNamed:@"center_02"]];
+                cell.tag = CENTER_MY_FRIEND;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"我的好友";
 
-            }
-            break;
+            } break;
         }
         
     }else if (section == 1){
         switch (row) {
             case 0:{
                 [cell.limageView setImage:[UIImage imageNamed:@"center_03"]];
+                cell.tag = CENTER_SYS_MSG;
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                cell.label.text = @"系统消息";
+            } break;
+                
+            case 1:{
+                [cell.limageView setImage:[UIImage imageNamed:@"center_03"]];
+                cell.tag = CENTER_SETTING;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"设置";
-            }
-                break;
+            } break;
         }
     }
     
@@ -273,13 +280,7 @@ static const CGFloat kPhotoHeight = 82;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (section == 0) {
-        return 2;
-    } else if (section == 1) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return 2;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -301,29 +302,31 @@ static const CGFloat kPhotoHeight = 82;
     }
 }
 
-
-#pragma mark - nextBtn action
-- (IBAction)regisThree:(id)sender {
-    RegisStepThreeViewController *one = [[RegisStepThreeViewController alloc] init];
-    [self presentViewController:one animated:YES completion:^{
-        NSLog(@"a");
-    }];
-}
-
-- (IBAction)regisOne:(id)sender {
-    RegisStepOneViewController *one = [[RegisStepOneViewController alloc] init];
-    [self presentViewController:one animated:YES completion:nil];
-}
-
-
-- (IBAction)login:(id)sender {
-    LoginViewController *one = [[LoginViewController alloc] init];
-    [self presentViewController:one animated:YES completion:nil];
-}
-
-- (IBAction)regisTwo:(id)sender {
-    RegisStepTwoViewController *one = [[RegisStepTwoViewController alloc] init];
-    [self presentViewController:one animated:YES completion:nil];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CenterTableViewCell *cell = (CenterTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    switch (cell.tag) {
+        case CENTER_MY_ACTIVITY:{
+            ActivityTableViewController *activity = [[ActivityTableViewController alloc] init];
+            [self.navigationController pushViewController:activity animated:YES];
+        }
+            break;
+        case CENTER_MY_FRIEND: {
+            
+        }
+            break;
+        case CENTER_SYS_MSG:{
+            
+        }
+            break;
+        case CENTER_SETTING:{
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
