@@ -15,8 +15,9 @@
 
 @end
 
-@interface BannerView : UIView<KDCycleBannerViewDelegate,KDCycleBannerViewDataource>
+@interface BannerView : UICollectionReusableView <KDCycleBannerViewDelegate,KDCycleBannerViewDataource>
 
-@property(nonatomic,strong) id<BannerViewDelegate>delegate;
+@property(nonatomic,assign) id<BannerViewDelegate>delegate;
+@property(nonatomic,strong) NSArray *bannerList;
 
 @end

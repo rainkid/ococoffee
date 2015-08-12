@@ -53,6 +53,8 @@
                                     ];
     _indexViewController.navigationItem.rightBarButtonItem = rightButton;
     
+    self.navigationController.navigationBar.barTintColor= [UIColor blueColor];
+    
     [self.view addSubview:_rootNavigationController.view];
 }
 

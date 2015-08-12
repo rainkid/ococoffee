@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "IndexViewLayout.h"
 
 
 @interface IndexViewController : UIViewController

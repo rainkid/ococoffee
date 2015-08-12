@@ -11,7 +11,6 @@
 @interface BannerView (){
     
     KDCycleBannerView *_cycleBannerView;
-    NSMutableArray *_dataList;
     
 }
 
@@ -33,7 +32,7 @@
 
 -(NSArray*)numberOfKDCycleBannerView:(KDCycleBannerView *)bannerView
 {
-    return _dataList;
+    return _bannerList;
 }
 
 -(UIViewContentMode)contentModeForImageIndex:(NSUInteger)index

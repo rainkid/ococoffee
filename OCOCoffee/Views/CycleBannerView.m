@@ -18,6 +18,7 @@
     if(self){
         
         _bannerView = [[KDCycleBannerView alloc] initWithFrame:self.bounds];
+        _bannerView.backgroundColor = [UIColor redColor];
         _bannerView.delegate = self;
         _bannerView.datasource = self;
         _bannerView.continuous = YES;

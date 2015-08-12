@@ -63,6 +63,9 @@
     _tabBarController.delegate = self;
     _tabBarController.viewControllers = @[_rootViewController,_messageNavController,_activityNavController,_centerNavController];
     
+    
+    //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.window setBackgroundColor:[UIColor clearColor]];
     [self.window setRootViewController:_tabBarController];

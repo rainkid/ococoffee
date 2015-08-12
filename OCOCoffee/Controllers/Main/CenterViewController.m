@@ -32,13 +32,17 @@ static const CGFloat kPhotoHeight = 82;
     __weak typeof(self) weakSelf = self;
     
     self.title = @"我的";
-    
-    UIImage *bg_image = [UIImage imageNamed:@"background.png"];
-    UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
-    [bg_imageView setFrame:self.view.bounds];
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    UIImageView *bg_imageView = [UIImageView new];
+    bg_imageView.image =[UIImage imageNamed:@"center_bg"];
     [self.view addSubview:bg_imageView];
+    [bg_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(274/2);
+        make.top.mas_equalTo(weakSelf.view.mas_top).offset(PHONE_TOP_HEIGHT);
+    }];
     
-    //photo
+    //photo cyctle
     UIView *photoView = [UIView new];
     long kPhotoSlide = 8;
     long kCPhotoHeight =kPhotoHeight+kPhotoSlide;
@@ -51,10 +55,10 @@ static const CGFloat kPhotoHeight = 82;
     [photoView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
         make.height.and.width.mas_equalTo(kCPhotoHeight);
-        make.top.mas_equalTo(PHONE_NAVIGATIONBAR_HEIGHT + 40);
+        make.top.mas_equalTo(bg_imageView.mas_top).offset(3);
     }];
     
-    //phone inner
+    //phone inner image
     _imageView = [UIImageView new];
     _imageView.image = [UIImage imageNamed:@"sample_logo"];
     _imageView.layer.cornerRadius = (kPhotoHeight) /2;
@@ -64,7 +68,7 @@ static const CGFloat kPhotoHeight = 82;
     [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
         make.top.mas_equalTo(photoView.mas_top).offset(kPhotoSlide/2);
-        make.height.and.width.mas_equalTo(kPhotoHeight);;
+        make.height.and.width.mas_equalTo(kPhotoHeight);
     }];
     
     //labels
@@ -93,8 +97,8 @@ static const CGFloat kPhotoHeight = 82;
 //    botView.backgroundColor = [UIColor redColor];
     [self.view addSubview:botView];
     [botView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(label_2.mas_bottom).offset(14/2);
-        make.height.mas_equalTo(PHONE_CONTENT_HEIGHT);
+        make.top.mas_equalTo(bg_imageView.mas_bottom);
+        make.bottom.equalTo(weakSelf.view.mas_bottom);
         make.left.right.mas_equalTo(weakSelf.view);
     }];
     
@@ -103,7 +107,7 @@ static const CGFloat kPhotoHeight = 82;
     [self.view addSubview:centerView];
     [centerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.width.mas_equalTo(weakSelf.view);
-        make.top.mas_equalTo(label_2.mas_bottom).offset(14/2);
+        make.top.mas_equalTo(bg_imageView.mas_bottom);
     }];
     
     int padding = 1;
@@ -178,7 +182,6 @@ static const CGFloat kPhotoHeight = 82;
 //        make.centerX.equalTo(self.view);
 //        make.height.mas_equalTo(40);
 //    }];
-//    
 //   
 //    //
 //    UIButton *oneBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -216,7 +219,6 @@ static const CGFloat kPhotoHeight = 82;
 //        make.height.mas_equalTo(40);
 //    }];
     
-   
 }
 
 #pragma tableview delegate methods
@@ -232,17 +234,15 @@ static const CGFloat kPhotoHeight = 82;
     NSLog(@"%ld==%ld", section, row);
     if(section == 0){
         switch (row) {
-            case 0:
-            {
+            case 0:{
                 [cell.limageView setImage:[UIImage imageNamed:@"center_01"]];
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"我的活动";
             }
             break;
                 
-            case 1:
-            {
-                [cell.limageView setImage:[UIImage imageNamed:@"center_01"]];
+            case 1:{
+                [cell.limageView setImage:[UIImage imageNamed:@"center_02"]];
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"我的好友";
 
@@ -252,9 +252,8 @@ static const CGFloat kPhotoHeight = 82;
         
     }else if (section == 1){
         switch (row) {
-            case 0:
-            {
-                [cell.limageView setImage:[UIImage imageNamed:@"center_01"]];
+            case 0:{
+                [cell.limageView setImage:[UIImage imageNamed:@"center_03"]];
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"设置";
             }
@@ -313,24 +312,18 @@ static const CGFloat kPhotoHeight = 82;
 
 - (IBAction)regisOne:(id)sender {
     RegisStepOneViewController *one = [[RegisStepOneViewController alloc] init];
-    [self presentViewController:one animated:YES completion:^{
-        NSLog(@"a");
-    }];
+    [self presentViewController:one animated:YES completion:nil];
 }
 
 
 - (IBAction)login:(id)sender {
     LoginViewController *one = [[LoginViewController alloc] init];
-    [self presentViewController:one animated:YES completion:^{
-        NSLog(@"a");
-    }];
+    [self presentViewController:one animated:YES completion:nil];
 }
 
 - (IBAction)regisTwo:(id)sender {
     RegisStepTwoViewController *one = [[RegisStepTwoViewController alloc] init];
-    [self presentViewController:one animated:YES completion:^{
-        NSLog(@"a");
-    }];
+    [self presentViewController:one animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
