@@ -96,7 +96,7 @@ static const CGFloat kCellHeight = 522/2;
 
 - (void) initTableData {
     
-    [_tableData addObject:[NSArray arrayWithObjects:@"sample_logo", @"随银风",@"28",@"巨蟹座", @"福田深南大道7008号阳光高尔夫大厦15F星吧克咖啡厅一号厅楼", @"7月15号周一下午17:00", @"记得带名片",@"15分钟前", @"center_pending",nil]];
+    [_tableData addObject:[NSArray arrayWithObjects:@"sample_logo", @"随银风",@"28",@"巨蟹座", @"福田深南大道7008号阳光高尔夫大厦15F星吧克", @"7月15号周一下午17:00", @"记得带名片",@"15分钟前", @"center_pending",nil]];
     
     [_tableData addObject:[NSArray arrayWithObjects:@"sample_logo", @"随银风",@"28",@"巨蟹座", @"福田深南大道7008号阳光高尔夫大厦15F星吧克咖啡厅一号厅楼", @"7月15号周一下午17:00", @"记得带名片",@"15分钟前",@"center_cancel", nil]];
     
@@ -144,14 +144,14 @@ static const CGFloat kCellHeight = 522/2;
     
 
     //用户图像
-    UIImageView *imageView = [UIImageView new];
-    imageView.image = [UIImage imageNamed:image];
-    imageView.layer.cornerRadius = (kPhotoHeight) /2;
-    imageView.layer.masksToBounds = YES;
-    imageView.userInteractionEnabled = YES;
-    [cell addSubview:imageView];
+    UIImageView *headerImageView = [UIImageView new];
+    headerImageView.image = [UIImage imageNamed:image];
+    headerImageView.layer.cornerRadius = (kPhotoHeight) /2;
+    headerImageView.layer.masksToBounds = YES;
+    headerImageView.userInteractionEnabled = YES;
+    [cell addSubview:headerImageView];
     
-    [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [headerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.mas_equalTo(weakSelf).offset(32/2);
         make.width.height.mas_equalTo(kPhotoHeight);
     }];
@@ -163,51 +163,51 @@ static const CGFloat kCellHeight = 522/2;
     [statusImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.top.mas_equalTo(cell);
     }];
-    
+
     //用户昵称
     UILabel *nicknameLabel = [UILabel new];
     nicknameLabel.text = nickname;
     nicknameLabel.font = [UIFont systemFontOfSize:16];
     [cell addSubview:nicknameLabel];
     [nicknameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(imageView.mas_top).offset(22/2);
-        make.left.mas_equalTo(imageView.mas_right).offset(36/2);
+        make.top.mas_equalTo(headerImageView.mas_top).offset(22/2);
+        make.left.mas_equalTo(headerImageView.mas_right).offset(36/2);
     }];
-    
+
     //用户性别,星座
-    UIView *view = [UIView new];
-    view.backgroundColor = [UIColor redColor];
-    [cell addSubview:view];
-    [view mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIView *firstView = [UIView new];
+    firstView.backgroundColor = [UIColor redColor];
+    [cell addSubview:firstView];
+    [firstView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(nicknameLabel.mas_bottom).offset(24/2);
         make.height.left.mas_equalTo(nicknameLabel);
     }];
-    
+
     UIImageView *sexView = [UIImageView new];
     sexView.image = [UIImage imageNamed:sex];
-    [view addSubview:sexView];
+    [firstView addSubview:sexView];
     [sexView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(view);
-        make.left.mas_equalTo(view);
+        make.centerY.equalTo(firstView);
+        make.left.mas_equalTo(firstView);
     }];
-    
+
     UILabel *ageLabel = [UILabel new];
     ageLabel.font = font;
     ageLabel.text = age;
     ageLabel.textColor = [UIColor colorFromHexString:@"#f16681"];
-    [view addSubview:ageLabel];
+    [firstView addSubview:ageLabel];
     [ageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(view);
+        make.centerY.equalTo(firstView);
         make.left.mas_equalTo(sexView.mas_right).offset(14/2);
     }];
-    
+
     UILabel *conLabel =[UILabel new];
     conLabel.text = con;
     conLabel.font = font;
     conLabel.textColor = [UIColor colorFromHexString:@"#f16681"];
-    [view addSubview:conLabel];
+    [firstView addSubview:conLabel];
     [conLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(view);
+        make.centerY.equalTo(firstView);
         make.left.mas_equalTo(ageLabel.mas_right).offset(14/2);
     }];
     
@@ -218,11 +218,11 @@ static const CGFloat kCellHeight = 522/2;
     [cell addSubview:line];
     [line mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(1);
-        make.left.mas_equalTo(imageView);
-        make.right.width.mas_equalTo(weakSelf);
-        make.top.mas_equalTo(imageView.mas_bottom).offset(24/2);
+        make.left.mas_equalTo(headerImageView.mas_left);
+        make.right.mas_equalTo(weakSelf.mas_right);
+        make.top.mas_equalTo(headerImageView.mas_bottom).offset(24/2);
     }];
-    
+
     
     //计算address的高度
     CGSize constraint = CGSizeMake(line.frame.size.width, MAXFLOAT);
@@ -231,24 +231,24 @@ static const CGFloat kCellHeight = 522/2;
     float textHeight = textsize.size.height;
     
     //
-    UIView *addressView = [UIView new];
-    [cell addSubview:addressView];
-    [addressView mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIView *secondView = [UIView new];
+    [cell addSubview:secondView];
+    [secondView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(textHeight+20);
         make.right.mas_equalTo(weakSelf.mas_right).offset(-20);
         make.top.mas_equalTo(line.mas_bottom).offset(24/2);
-        make.left.mas_equalTo(imageView);
+        make.left.mas_equalTo(headerImageView);
     }];
 
     
     UIImageView *addressImageView = [UIImageView new];
     addressImageView.image = [UIImage imageNamed:@"center_address"];
-    [addressView addSubview:addressImageView];
+    [secondView addSubview:addressImageView];
     [addressImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(28/2);
-        make.left.top.mas_equalTo(addressView);
+        make.width.mas_equalTo(26/2);
+        make.left.top.mas_equalTo(secondView);
     }];
-    
+
     
     //address标签
     UILabel *addressLabel = [UILabel new];
@@ -257,78 +257,76 @@ static const CGFloat kCellHeight = 522/2;
     addressLabel.numberOfLines = 0;
     addressLabel.textColor = labelTextCollor;
     addressLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [addressView addSubview:addressLabel];
+    [secondView addSubview:addressLabel];
     [addressLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(addressImageView.mas_right).offset(24/2);
-        make.right.mas_equalTo(addressView.mas_right);
-        make.top.mas_equalTo(addressView);
+        make.right.mas_equalTo(secondView.mas_right);
+        make.top.mas_equalTo(secondView.mas_top);
     }];
-    
+
     //timeview
-    UIView *timeView = [UIView new];
-    [cell addSubview:timeView];
-    [timeView mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIView *threeView = [UIView new];
+    [cell addSubview:threeView];
+    [threeView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(28/2);
-        make.top.mas_equalTo(addressView.mas_bottom).offset(24/2);
-        make.left.right.mas_equalTo(addressView);
+        make.top.mas_equalTo(secondView.mas_bottom).offset(24/2);
+        make.left.right.mas_equalTo(secondView);
     }];
-    
+
     UIImageView *timeImageView = [UIImageView new];
     timeImageView.image= [UIImage imageNamed:@"center_time"];
-    [timeView addSubview:timeImageView];
+    [threeView addSubview:timeImageView];
     [timeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-         make.centerY.mas_equalTo(timeView);
-        make.left.mas_equalTo(timeView);
+         make.centerY.mas_equalTo(threeView.mas_centerY);
+        make.left.mas_equalTo(threeView.mas_left);
     }];
-    
+
     UILabel *timeLabel = [UILabel new];
     timeLabel.text = time;
     timeLabel.font = font;
     timeLabel.textColor = labelTextCollor;
-    [timeView addSubview:timeLabel];
+    [threeView addSubview:timeLabel];
     [timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(timeImageView.mas_right).offset(24/2);
-        make.centerY.mas_equalTo(timeView);
+        make.centerY.mas_equalTo(threeView.mas_centerY);
     }];
-    
+
     //descview
     
-    UIView *descView = [UIView new];
-    [cell addSubview:descView];
-    [descView mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIView *fourView = [UIView new];
+    [cell addSubview:fourView];
+    [fourView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(30/2);
-        make.top.mas_equalTo(timeView.mas_bottom).offset(24/2);
-        make.left.right.mas_equalTo(timeView);
+        make.top.mas_equalTo(threeView.mas_bottom).offset(24/2);
+        make.left.right.mas_equalTo(threeView);
     }];
     
     UIImageView *descImageView = [UIImageView new];
     descImageView.image= [UIImage imageNamed:@"center_desc"];
-    [descView addSubview:descImageView];
+    [fourView addSubview:descImageView];
     [descImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(descView);
-        make.left.mas_equalTo(descView);
+        make.centerY.mas_equalTo(fourView);
+        make.left.mas_equalTo(fourView);
     }];
-    
+
     UILabel *descLabel = [UILabel new];
     descLabel.text = desc;
     descLabel.font = font;
     descLabel.textColor = labelTextCollor;
-    [descView addSubview:descLabel];
+    [fourView addSubview:descLabel];
     [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(descImageView.mas_right).offset(24/2);
-        make.centerY.mas_equalTo(descView);
+        make.centerY.mas_equalTo(fourView);
     }];
-    
+
     UIView *lineTwo = [UIView new];
     lineTwo.backgroundColor = [UIColor colorFromHexString:@"#f5f5f5"];
     [cell addSubview:lineTwo];
     [lineTwo mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(1);
-        make.left.mas_equalTo(imageView);
-        make.right.width.mas_equalTo(weakSelf);
-        make.top.mas_equalTo(descView.mas_bottom).offset(24/2);
+        make.height.width.left.mas_equalTo(line);
+        make.top.mas_equalTo(fourView.mas_bottom).offset(24/2);
     }];
-    
+
     UILabel *beforeLabel = [UILabel new];
     beforeLabel.text = timeBefore;
     beforeLabel.textColor = labelTextCollor;
@@ -338,7 +336,7 @@ static const CGFloat kCellHeight = 522/2;
         make.top.mas_equalTo(lineTwo.mas_bottom).offset(24/2);
         make.right.mas_equalTo(weakSelf.mas_right).offset(-2);
     }];
-    
+
     UIView *bottom = [UIView new];
     bottom.backgroundColor = [UIColor colorFromHexString:@"#f5f5f5"];
     [cell addSubview:bottom];
