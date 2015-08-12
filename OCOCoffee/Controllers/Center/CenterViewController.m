@@ -9,11 +9,8 @@
 #import "Golbal.h"
 #import "UIColor+colorBuild.h"
 #import "CenterViewController.h"
-#import "RegisStepThreeViewController.h"
-#import "RegisStepTwoViewController.h"
-#import "RegisStepOneViewController.h"
-#import "LoginViewController.h"
 #import "CenterTableViewCell.h"
+#import "ActivityTableViewController.h"
 #import <Masonry/Masonry.h>
 
 static const CGFloat kPhotoHeight = 82;
@@ -169,56 +166,6 @@ static const CGFloat kPhotoHeight = 82;
         make.height.mas_equalTo(kCellHeight*4 + 32);
         make.top.mas_equalTo(msgView.mas_bottom).offset(28/3);
     }];
-    
-    
-//    //
-//    UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    loginBtn.backgroundColor = [UIColor redColor];
-//    [loginBtn setTitle:@"登录页"  forState:UIControlStateNormal];
-//    [loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:loginBtn];
-//    [loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.mas_equalTo(100);
-//        make.centerX.equalTo(self.view);
-//        make.height.mas_equalTo(40);
-//    }];
-//   
-//    //
-//    UIButton *oneBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//     [oneBtn setTitle:@"注册页1"  forState:UIControlStateNormal];
-//    oneBtn.backgroundColor = [UIColor greenColor];
-//    [oneBtn addTarget:self action:@selector(regisOne:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:oneBtn];
-//    [oneBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(loginBtn.mas_bottom);
-//        make.centerX.equalTo(self.view);
-//        make.centerX.equalTo(self.view);
-//
-//        make.height.mas_equalTo(40);
-//    }];
-//    //
-//    UIButton *twoBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    [twoBtn setTitle:@"注册页2"  forState:UIControlStateNormal];
-//    [twoBtn addTarget:self action:@selector(regisTwo:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:twoBtn];
-//    [twoBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(oneBtn.mas_bottom);
-//        make.centerX.equalTo(self.view);
-//
-//        make.height.mas_equalTo(40);
-//    }];
-//    //
-//    UIButton *threeBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    [threeBtn setTitle:@"注册页3"  forState:UIControlStateNormal];
-//    [threeBtn addTarget:self action:@selector(regisThree:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:threeBtn];
-//    [threeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(twoBtn.mas_bottom);
-//        make.centerX.equalTo(self.view);
-//
-//        make.height.mas_equalTo(40);
-//    }];
-    
 }
 
 #pragma tableview delegate methods
@@ -236,28 +183,35 @@ static const CGFloat kPhotoHeight = 82;
         switch (row) {
             case 0:{
                 [cell.limageView setImage:[UIImage imageNamed:@"center_01"]];
+                cell.tag = CENTER_MY_ACTIVITY;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"我的活动";
-            }
-            break;
+            } break;
                 
             case 1:{
                 [cell.limageView setImage:[UIImage imageNamed:@"center_02"]];
+                cell.tag = CENTER_MY_FRIEND;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"我的好友";
 
-            }
-            break;
+            } break;
         }
         
     }else if (section == 1){
         switch (row) {
             case 0:{
                 [cell.limageView setImage:[UIImage imageNamed:@"center_03"]];
+                cell.tag = CENTER_SYS_MSG;
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                cell.label.text = @"系统消息";
+            } break;
+                
+            case 1:{
+                [cell.limageView setImage:[UIImage imageNamed:@"center_03"]];
+                cell.tag = CENTER_SETTING;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 cell.label.text = @"设置";
-            }
-                break;
+            } break;
         }
     }
     
@@ -273,13 +227,7 @@ static const CGFloat kPhotoHeight = 82;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (section == 0) {
-        return 2;
-    } else if (section == 1) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return 2;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -301,29 +249,31 @@ static const CGFloat kPhotoHeight = 82;
     }
 }
 
-
-#pragma mark - nextBtn action
-- (IBAction)regisThree:(id)sender {
-    RegisStepThreeViewController *one = [[RegisStepThreeViewController alloc] init];
-    [self presentViewController:one animated:YES completion:^{
-        NSLog(@"a");
-    }];
-}
-
-- (IBAction)regisOne:(id)sender {
-    RegisStepOneViewController *one = [[RegisStepOneViewController alloc] init];
-    [self presentViewController:one animated:YES completion:nil];
-}
-
-
-- (IBAction)login:(id)sender {
-    LoginViewController *one = [[LoginViewController alloc] init];
-    [self presentViewController:one animated:YES completion:nil];
-}
-
-- (IBAction)regisTwo:(id)sender {
-    RegisStepTwoViewController *one = [[RegisStepTwoViewController alloc] init];
-    [self presentViewController:one animated:YES completion:nil];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CenterTableViewCell *cell = (CenterTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    switch (cell.tag) {
+        case CENTER_MY_ACTIVITY:{
+            ActivityTableViewController *activity = [[ActivityTableViewController alloc] init];
+            [self.navigationController pushViewController:activity animated:YES];
+        }
+            break;
+        case CENTER_MY_FRIEND: {
+            
+        }
+            break;
+        case CENTER_SYS_MSG:{
+            
+        }
+            break;
+        case CENTER_SETTING:{
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
