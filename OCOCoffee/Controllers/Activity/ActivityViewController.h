@@ -10,7 +10,7 @@
 
 
 
-@interface ActivityTableViewController : UIViewController
+@interface ActivityViewController : UIViewController
 
 @property(nonatomic, strong) NSMutableArray *tableData;
 

@@ -10,7 +10,7 @@
 #import "UIColor+colorBuild.h"
 #import "CenterViewController.h"
 #import "CenterTableViewCell.h"
-#import "ActivityTableViewController.h"
+#import "ActivityViewController.h"
 #import "FriendTableViewController.h"
 #import "MessageViewController.h"
 #import <Masonry/Masonry.h>
@@ -249,7 +249,7 @@ static const CGFloat kPhotoHeight = 82;
     CenterTableViewCell *cell = (CenterTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     switch (cell.tag) {
         case CENTER_MY_ACTIVITY:{
-            ActivityTableViewController *activity = [[ActivityTableViewController alloc] init];
+            ActivityViewController *activity = [[ActivityViewController alloc] init];
             [self.navigationController pushViewController:activity animated:nil];
         }
             break;

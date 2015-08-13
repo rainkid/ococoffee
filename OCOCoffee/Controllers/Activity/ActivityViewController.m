@@ -11,19 +11,19 @@
 #import <Masonry/Masonry.h>
 #import <MJRefresh/MJRefresh.h>
 #import "UIScrollView+MJRefresh.h"
-#import "ActivityTableViewController.h"
+#import "ActivityViewController.h"
 
 
 static const CGFloat kPhotoHeight = 126/2;
 static const CGFloat kCellHeight = 522/2;
 
-@interface ActivityTableViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface ActivityViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property(nonatomic, strong) UITableView *tableView;
 
 @end
 
-@implementation ActivityTableViewController
+@implementation ActivityViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
