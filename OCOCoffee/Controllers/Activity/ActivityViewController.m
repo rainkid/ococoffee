@@ -11,6 +11,7 @@
 #import <Masonry/Masonry.h>
 #import <MJRefresh/MJRefresh.h>
 #import "UIScrollView+MJRefresh.h"
+#import "DetailViewController.h"
 #import "ActivityViewController.h"
 
 
@@ -36,6 +37,8 @@ static const CGFloat kCellHeight = 522/2;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.title = @"日程";
     
     [self initSubViews];
     [self initTableData];
@@ -348,6 +351,13 @@ static const CGFloat kCellHeight = 522/2;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return kCellHeight;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = (UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    DetailViewController *detail = [[DetailViewController alloc] init];
+    [self.navigationController pushViewController:detail animated:YES];
 }
 
 @end

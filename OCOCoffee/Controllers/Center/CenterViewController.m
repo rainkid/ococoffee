@@ -250,17 +250,17 @@ static const CGFloat kPhotoHeight = 82;
     switch (cell.tag) {
         case CENTER_MY_ACTIVITY:{
             ActivityViewController *activity = [[ActivityViewController alloc] init];
-            [self.navigationController pushViewController:activity animated:nil];
+            [self.navigationController pushViewController:activity animated:YES];
         }
             break;
         case CENTER_MY_FRIEND: {
             FriendTableViewController *friend = [[FriendTableViewController alloc] init];
-            [self.navigationController pushViewController:friend animated:nil];
+            [self.navigationController pushViewController:friend animated:YES];
         }
             break;
         case CENTER_SYS_MSG:{
             MessageViewController *message = [[MessageViewController alloc] init];
-            [self.navigationController pushViewController:message animated:nil];
+            [self.navigationController pushViewController:message animated:YES];
         }
             break;
         case CENTER_SETTING:{
@@ -277,6 +277,5 @@ static const CGFloat kPhotoHeight = 82;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 @end
