@@ -194,7 +194,6 @@ static const CGFloat kCellHeight = 188/2;
         make.left.mas_equalTo(nicknameLabel);
     }];
     
-    
     //
     UIView *line = [UIView new];
     line.backgroundColor = [UIColor colorFromHexString:@"#f5f5f5"];
@@ -202,7 +201,7 @@ static const CGFloat kCellHeight = 188/2;
     [line mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(1);
         make.left.mas_equalTo(msgLabel.mas_left);
-        make.right.mas_equalTo(msgLabel.mas_right);
+        make.right.mas_equalTo(weakSelf.mas_right);
         make.top.mas_equalTo(msgLabel.mas_bottom).offset(26/2);
     }];
     

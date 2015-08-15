@@ -10,7 +10,7 @@
 #import "UIColor+colorBuild.h"
 #import "CenterViewController.h"
 #import "CenterTableViewCell.h"
-#import "ActivityTableViewController.h"
+#import "ActivityViewController.h"
 #import "FriendTableViewController.h"
 #import "MessageViewController.h"
 #import <Masonry/Masonry.h>
@@ -299,18 +299,18 @@ static const CGFloat kPhotoHeight = 82;
     CenterTableViewCell *cell = (CenterTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     switch (cell.tag) {
         case CENTER_MY_ACTIVITY:{
-            ActivityTableViewController *activity = [[ActivityTableViewController alloc] init];
-            [self.navigationController pushViewController:activity animated:nil];
+            ActivityViewController *activity = [[ActivityViewController alloc] init];
+            [self.navigationController pushViewController:activity animated:YES];
         }
             break;
         case CENTER_MY_FRIEND: {
             FriendTableViewController *friend = [[FriendTableViewController alloc] init];
-            [self.navigationController pushViewController:friend animated:nil];
+            [self.navigationController pushViewController:friend animated:YES];
         }
             break;
         case CENTER_SYS_MSG:{
             MessageViewController *message = [[MessageViewController alloc] init];
-            [self.navigationController pushViewController:message animated:nil];
+            [self.navigationController pushViewController:message animated:YES];
         }
             break;
         case CENTER_SETTING:{
@@ -327,6 +327,5 @@ static const CGFloat kPhotoHeight = 82;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 @end

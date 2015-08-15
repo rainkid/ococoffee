@@ -82,17 +82,19 @@ alpha:(a)]
  */
 #define PHONE_NAVIGATIONBAR_HEIGHT 44
 
-/*
- * iPhone 头部高度
- */
- 
-#define PHONE_TOP_HEIGHT (PHONE_STATUSBAR_HEIGHT + PHONE_NAVIGATIONBAR_HEIGHT)
+
 
 
 /*
  * iPhone 在显示导航栏时内容区域的高度
  */
 #define PHONE_CONTENT_HEIGHT (SCREEN_HEIGHT - PHONE_STATUSBAR_HEIGHT - PHONE_NAVIGATIONBAR_HEIGHT)
+
+/*
+ * iPhone 头部高度
+ */
+
+#define PHONE_TOP_HEIGHT (PHONE_STATUSBAR_HEIGHT + PHONE_NAVIGATIONBAR_HEIGHT)
 
 /*
  * iPhone 在显示导航栏时内容区域的高度
