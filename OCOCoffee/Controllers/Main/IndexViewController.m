@@ -15,6 +15,7 @@
 #import "BannerView.h"
 #import "IndexCollectionViewCell.h"
 #import "CenterViewController.h"
+#import <MJRefresh/MJRefresh.h>
 
 static NSString *kCycleBannerIdentifier= @"kbannerIdentifier";
 static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
@@ -32,44 +33,22 @@ static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+     __weak __typeof(self) weakSelf = self;
+    self.title = @"一杯啡咖";
     
-   // self.navigationController.navigationBar.tintColor = [UIColor blueColor];
-    
-   // [self.navigationController.navigationBar setBarStyle:UIBarStyleBlackTranslucent];
-    
-//    UIImageView *titleImageView = [[UIImageView alloc] init];
-//    titleImageView.image  = [UIImage imageNamed:@"location"];
-//    self.navigationController.navigationItem.titleView = titleImageView;
-//
-    
-//    if([self.navigationController.navigationBar respondsToSelector:@selector(setBarTintColor:)]){
-//        NSLog(@"set bar tint color");
-//        
-//        [self.navigationController.navigationBar setBarTintColor:[UIColor redColor]];
-//    }
-    
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, -20)];
-    view.backgroundColor = [UIColor colorWithRed:211.0f/255.0f green:95.0f/255.0f blue:117.0f/255.0f alpha:1];
-
-    [self.navigationController.navigationBar addSubview:view];
-    
-    if([self.navigationController.navigationBar respondsToSelector:@selector(setBackgroundColor:)]){
-        NSLog(@"set background color");
-        [self.navigationController.navigationBar setBackgroundColor:[UIColor colorWithRed:211.0f/255.0f green:95.0f/255.0f blue:117.0f/255.0f alpha:1]];
-    }
-    
-//    if([self.navigationController.navigationBar respondsToSelector:@selector(setBackgroundImage:forBarMetrics:)]){
-//        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"title"] forBarMetrics:UIBarMetricsDefault];
-//    }
-    
-    UIImageView *titleView = [[UIImageView alloc] init];
-    titleView.image = [UIImage imageNamed:@"title"];
-    if([self.navigationController.navigationItem respondsToSelector:@selector(setTitleView:)]){
-        NSLog(@"set title view");
-        [self.navigationController.navigationItem setTitleView:titleView];
-    }
-    
-    
+   [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:241.0/255.0 green:94.0/255.0 blue:118.0/255.0 alpha:1.0]];
+    NSShadow *shadow = [[NSShadow alloc] init];
+    [shadow setShadowOffset:CGSizeZero];
+    UIFont* font = [UIFont fontWithName:@"Courier" size:21.0];
+    NSDictionary *dict = @{
+                           NSForegroundColorAttributeName:[UIColor whiteColor],
+                        NSShadowAttributeName:shadow,
+                           NSFontAttributeName:font,
+                           };
+    [self.navigationController.navigationBar setTitleTextAttributes:dict];
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+     
     if(_collectionView == nil){
         UICollectionViewFlowLayout *indexLayout = [[UICollectionViewFlowLayout alloc] init];
         indexLayout.minimumInteritemSpacing = 2.0;
@@ -88,12 +67,46 @@ static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
         [_collectionView registerClass:[BannerView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCycleBannerIdentifier];
         [_collectionView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:kIndexCollectionIdentifier];
         [self.view addSubview:_collectionView];
+    
     }
+    
+    _collectionView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^(void){
+        NSLog(@"Refreshing");
+        [weakSelf loadNewData];
+    }];
+    NSLog(@"begin");
+    [_collectionView.header beginRefreshing];
+    
+    
+    _collectionView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^(void){
+       
+        NSLog(@"Pushing");
+        
+        for (int i = 0; i< 5; i++) {
+            [_dataList addObject:[NSNumber numberWithInt:i]];
+        }
+        
+        [_collectionView reloadData];
+        [_collectionView.footer endRefreshing];
+    }];
+    
+    _collectionView.footer.hidden = YES;
     
     _dataList = [[NSMutableArray alloc] initWithCapacity:0];
     
    }
 
+
+-(void)loadNewData {
+    
+    for (int i = 0; i<5; i++) {
+        [_dataList addObject:[NSNumber numberWithInt:i]];
+    }
+    
+    [_collectionView reloadData];
+    [self.collectionView.header endRefreshing];
+    
+}
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -107,19 +120,22 @@ static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 10;
+    return [_dataList count];
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     IndexCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kIndexCollectionIdentifier forIndexPath:indexPath];
    //UIImage *image = [_dataList objectAtIndex:[indexPath row]];
-    cell.userImageView.image = [UIImage imageNamed:@"img2.png"];
+    int value = (arc4random() % 3) + 1;
+    NSLog(@"%d",value);
+    cell.userImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"img%d.png",value]];
     cell.usernameLabel.text = @"文胆剑心";
     return cell;
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     return CGSizeMake(self.view.bounds.size.width/2 -5 , 270);
 }
 

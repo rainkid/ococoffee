@@ -6,7 +6,6 @@
 //
 
 #import "SKTagView.h"
-#import "SKTag.h"
 #import "SKTagButton.h"
 #import <Masonry/Masonry.h>
 
@@ -115,26 +114,28 @@
         return;
     }
     
-    //Remove old ones
-    [self.tagsConstraints enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    //Remove old constraints
+    for (id obj in self.tagsConstraints)
+    {
         if([obj isKindOfClass:MASConstraint.class])
         {
             [(MASConstraint *)obj uninstall];
         }
         else if([obj isKindOfClass:NSArray.class])
         {
-            [(NSArray *)obj enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                [(MASConstraint *)obj uninstall];
-            }];
+            for (MASConstraint * constraint in (NSArray *)obj)
+            {
+                [constraint uninstall];
+            }
         }
         else
         {
-            NSAssert(NO, @"Error:unknown class type:%@",obj);
+            NSAssert(NO, @"Error:unknown class type: %@",obj);
         }
-    }];
+    }
     [self.tagsConstraints removeAllObjects];
     
-    //Install new ones
+    //Install new constraints
     NSArray *subviews = self.subviews;
     UIView *previewsView = nil;
     UIView *superView = self;
@@ -150,6 +151,11 @@
     {
         for (UIView *view in subviews)
         {
+            [view mas_makeConstraints:^(MASConstraintMaker *make)
+             {
+                 SAVE_C(make.trailing.lessThanOrEqualTo(superView).with.offset(-rightOffset));
+             }];
+            
             CGSize size = view.intrinsicContentSize;
             if (previewsView)
             {
@@ -166,7 +172,7 @@
                 }
                 else
                 {
-                    //换行
+                    //new line
                     [view mas_makeConstraints:^(MASConstraintMaker *make)
                     {
                         SAVE_C(make.top.greaterThanOrEqualTo(previewsView.mas_bottom).with.offset(itemVerticalMargin));
@@ -205,7 +211,7 @@
             }
             else
             {
-                //第一次添加
+                //first one
                 [view mas_makeConstraints:^(MASConstraintMaker *make)
                  {
                      SAVE_C(make.top.equalTo(superView.mas_top).with.offset(topPadding));
@@ -253,10 +259,19 @@
     }
 }
 
+- (void)onTag:(UIButton *)btn
+{
+    if (self.didClickTagAtIndex)
+    {
+        self.didClickTagAtIndex([self.subviews indexOfObject:btn]);
+    }
+}
+
 #pragma mark - Public methods
 - (void)addTag:(SKTag *)tag
 {
     SKTagButton *btn = [SKTagButton buttonWithTag:tag];
+    [btn addTarget:self action:@selector(onTag:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:btn];
     [self.tags addObject:tag];
     
@@ -273,6 +288,7 @@
     else
     {
         SKTagButton *btn = [SKTagButton buttonWithTag:tag];
+        [btn addTarget:self action:@selector(onTag:) forControlEvents:UIControlEventTouchUpInside];
         [self insertSubview:btn atIndex:index];
         [self.tags insertObject:tag atIndex:index];
         
@@ -313,9 +329,10 @@
 - (void)removeAllTags
 {
     [self.tags removeAllObjects];
-    [self.subviews enumerateObjectsUsingBlock:^(UIView *v, NSUInteger idx, BOOL *stop) {
+    for (UIView *v in self.subviews)
+    {
         [v removeFromSuperview];
-    }];
+    }
     
     self.didSetup = NO;
     [self invalidateIntrinsicContentSize];

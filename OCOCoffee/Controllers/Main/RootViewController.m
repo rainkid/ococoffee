@@ -11,6 +11,7 @@
 #import "SearchViewController.h"
 #import "IndexViewController.h"
 #import "IndexView.h"
+#import "IndexNavigationController.h"
 
 @interface RootViewController (){
     

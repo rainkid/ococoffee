@@ -8,16 +8,23 @@
 
 @interface SKTag : NSObject
 
-///Your custom data
-@property (nonatomic, copy) id data;
 @property (nonatomic, copy) NSString *text;
+@property (nonatomic, copy) NSAttributedString *attributedText;
 @property (nonatomic, strong) UIColor *textColor;
+///backgound color
 @property (nonatomic, strong) UIColor *bgColor;
+///background image
+@property (nonatomic, strong) UIImage *bgImg;
 @property (nonatomic) CGFloat cornerRadius;
+@property (nonatomic, strong) UIColor *borderColor;
+@property (nonatomic) CGFloat borderWidth;
+///like padding in css
 @property (nonatomic) UIEdgeInsets padding;
-@property (nonatomic) float fontSize;
-@property (nonatomic, weak) id target;
-@property (nonatomic) SEL action;
+@property (nonatomic, strong) UIFont *font;
+///if no font is specified, system font with fontSize is used
+@property (nonatomic) CGFloat fontSize;
+///default:YES
+@property (nonatomic) BOOL enable;
 
 - (instancetype)initWithText:(NSString *)text;
 + (instancetype)tagWithText:(NSString *)text;

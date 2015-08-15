@@ -6,9 +6,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SKTag.h"
 
-@class SKTag;
 @interface SKTagView : UIView
+
 @property (nonatomic) UIEdgeInsets padding;
 @property (nonatomic) int lineSpace;
 @property (nonatomic) CGFloat insets;

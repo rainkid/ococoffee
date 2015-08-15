@@ -166,7 +166,6 @@ static const CGFloat kPhotoHeight = 82;
         make.height.mas_equalTo(kCellHeight*4 + 32);
         make.top.mas_equalTo(msgView.mas_bottom).offset(28/3);
     }];
-<<<<<<< HEAD:OCOCoffee/Controllers/Main/CenterViewController.m
     
 
 //    //
@@ -217,8 +216,6 @@ static const CGFloat kPhotoHeight = 82;
 //        make.height.mas_equalTo(40);
 //    }];
     
-=======
->>>>>>> d97d67e274530a3687dbfe829a983938c770e288:OCOCoffee/Controllers/Center/CenterViewController.m
 }
 
 #pragma tableview delegate methods
