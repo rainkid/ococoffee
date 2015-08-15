@@ -11,6 +11,8 @@
 #import "CenterViewController.h"
 #import "CenterTableViewCell.h"
 #import "ActivityTableViewController.h"
+#import "FriendTableViewController.h"
+#import "MessageViewController.h"
 #import <Masonry/Masonry.h>
 
 static const CGFloat kPhotoHeight = 82;
@@ -88,10 +90,8 @@ static const CGFloat kPhotoHeight = 82;
         make.centerX.equalTo(weakSelf.view);
     }];
     
-    
     UIView * botView= [UIView new];
     botView.backgroundColor = [UIColor colorFromHexString:@"#f5f5f5"];
-//    botView.backgroundColor = [UIColor redColor];
     [self.view addSubview:botView];
     [botView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(bg_imageView.mas_bottom);
@@ -103,22 +103,19 @@ static const CGFloat kPhotoHeight = 82;
     UIView *centerView = [UIView new];
     [self.view addSubview:centerView];
     [centerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(80.2);
         make.left.right.width.mas_equalTo(weakSelf.view);
         make.top.mas_equalTo(bg_imageView.mas_bottom);
     }];
-    
-    int padding = 1;
+
     //notice view
-    UIView *noticeView = [UIImageView new];
+    UIView *noticeView = [UIView new];
     noticeView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:noticeView];
     [noticeView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(centerView.mas_top);
-        make.centerY.mas_equalTo(centerView);
-        make.left.equalTo(centerView.mas_left);
-        make.right.equalTo(noticeView.mas_left).with.offset(-padding);
-        make.height.mas_equalTo(80.2);
-        make.width.equalTo(noticeView);
+        make.height.top.mas_equalTo(centerView);
+        make.left.mas_equalTo(centerView);
+        make.width.mas_equalTo(SCREEN_WIDTH/2 - 1);
     }];
     
     //notice image view
@@ -134,12 +131,10 @@ static const CGFloat kPhotoHeight = 82;
     msgView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:msgView];
     [msgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(centerView.mas_top);
-        make.centerY.mas_equalTo(centerView.mas_centerY);
-        make.left.equalTo(noticeView.mas_right).with.offset(padding);
+        make.height.top.mas_equalTo(centerView);
+        make.centerY.mas_equalTo(centerView);
         make.right.equalTo(centerView.mas_right);
-        make.height.mas_equalTo(80.2);
-        make.width.equalTo(noticeView);
+        make.width.mas_equalTo(SCREEN_WIDTH/2 - 1);
     }];
     
     //msg image view
@@ -305,15 +300,17 @@ static const CGFloat kPhotoHeight = 82;
     switch (cell.tag) {
         case CENTER_MY_ACTIVITY:{
             ActivityTableViewController *activity = [[ActivityTableViewController alloc] init];
-            [self.navigationController pushViewController:activity animated:YES];
+            [self.navigationController pushViewController:activity animated:nil];
         }
             break;
         case CENTER_MY_FRIEND: {
-            
+            FriendTableViewController *friend = [[FriendTableViewController alloc] init];
+            [self.navigationController pushViewController:friend animated:nil];
         }
             break;
         case CENTER_SYS_MSG:{
-            
+            MessageViewController *message = [[MessageViewController alloc] init];
+            [self.navigationController pushViewController:message animated:nil];
         }
             break;
         case CENTER_SETTING:{
