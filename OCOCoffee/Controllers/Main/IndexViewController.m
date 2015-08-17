@@ -127,9 +127,14 @@ static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
     IndexCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kIndexCollectionIdentifier forIndexPath:indexPath];
    //UIImage *image = [_dataList objectAtIndex:[indexPath row]];
     int value = (arc4random() % 3) + 1;
-    NSLog(@"%d",value);
+   // NSLog(@"%d",value);
     cell.userImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"img%d.png",value]];
     cell.usernameLabel.text = @"文胆剑心";
+    
+    NSInteger tagNumber = [cell.tagCounts integerValue];
+    float tagRowHeight = [cell.tagRowHeight floatValue];
+    float tagHeight = ((int)(tagNumber / 4 ) + 1 ) *tagRowHeight + 3.00;
+    NSLog(@"%f",tagHeight);
     return cell;
 }
 
@@ -172,6 +177,8 @@ static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
     CenterViewController *centerViewController = [[CenterViewController alloc] init];
     [self.navigationController pushViewController:centerViewController animated:YES];
 }
+
+
 
 -(void)getLocation {
     _locationManager = [[CLLocationManager alloc] init];

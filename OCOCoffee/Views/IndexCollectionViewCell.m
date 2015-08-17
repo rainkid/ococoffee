@@ -6,11 +6,15 @@
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
 
-#define SEXIMAGEWIDTH 11
+#define SEXIMAGEWIDTH           11
+
+#define kTagviewMarginTop       3
+#define kTagPaddingTop          2
+#define kTagPaddingBottom       3
 
 #import "IndexCollectionViewCell.h"
 #import <Masonry/Masonry.h>
-#import <SKTagView/SKTagView.h>
+
 #import "UIColor+colorBuild.h"
 
 @implementation IndexCollectionViewCell
@@ -101,13 +105,13 @@
             
         }];
         
-        SKTagView *tagView = [SKTagView new];
-        tagView.backgroundColor = [UIColor clearColor];
-        tagView.padding = UIEdgeInsetsMake(3,3 ,0, 3);
-        tagView.insets = 5;
-        tagView.lineSpace = 2;
-        [self addSubview:tagView];
-        [tagView mas_makeConstraints:^(MASConstraintMaker *make){
+         _tagView = [SKTagView new];
+        _tagView.backgroundColor = [UIColor clearColor];
+        _tagView.padding = UIEdgeInsetsMake(kTagviewMarginTop,3 ,0, 3);
+        _tagView.insets = 5;
+        _tagView.lineSpace = 2;
+        [self addSubview:_tagView];
+        [_tagView mas_makeConstraints:^(MASConstraintMaker *make){
             make.top.mas_equalTo(_sexImageView.mas_bottom).offset(3.6);
             make.left.mas_equalTo(weakSelf.mas_left).offset(5);
             make.width.equalTo(weakSelf.mas_width);
@@ -123,18 +127,26 @@
             tag.borderWidth     = 0;
              NSString *colorStr  = [self randColor];
             tag.bgColor         = [UIColor colorFromHexString:colorStr];
-            tag.font            = [UIFont fontWithName:@"Helvetica" size:11.0];
-            tag.padding         = UIEdgeInsetsMake(2, 2, 3, 3);
-            [tagView addTag:tag];
+            
+            UIFont *font = [UIFont fontWithName:@"Helvetica" size:11.0];
+            tag.font            = font;
+            tag.padding         = UIEdgeInsetsMake(kTagPaddingTop, kTagPaddingTop, kTagPaddingBottom, kTagPaddingBottom);
+            CGSize size = CGSizeMake(80, 20);
+            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil];
+            size = [tag.text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:dict context:nil].size;
+            float Height = size.height;
+            float rowHeight = Height + kTagPaddingBottom + kTagPaddingTop;
+            _tagRowHeight = [[NSNumber alloc] initWithFloat:rowHeight];
+            _tagCounts =  [[NSNumber alloc] initWithInteger:[tagValues count]];
+            [_tagView addTag:tag];
         }];
-
         
         _locationImageView = [[UIImageView alloc] init];
         _locationImageView.backgroundColor = [UIColor clearColor];
         _locationImageView.image = [UIImage imageNamed:@"location"];
         [self addSubview:_locationImageView];
         [_locationImageView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagView.mas_bottom).offset(6);
+            make.top.mas_equalTo(_tagView.mas_bottom).offset(6);
             make.left.mas_equalTo(weakSelf.mas_left).offset(7);
             make.width.mas_equalTo(@16);
             make.height.mas_equalTo(@18);
@@ -148,7 +160,7 @@
         _locationLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         [self addSubview:_locationLabel];
         [_locationLabel mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagView.mas_bottom).offset(8);
+            make.top.mas_equalTo(_tagView.mas_bottom).offset(8);
             make.left.mas_equalTo(_locationImageView.mas_right).offset(4);
         }];
         
@@ -160,7 +172,7 @@
         _timeLabel.textColor= [UIColor lightGrayColor];
         [self addSubview:_timeLabel];
         [_timeLabel mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagView.mas_bottom).offset(8);
+            make.top.mas_equalTo(_tagView.mas_bottom).offset(8);
             make.right.mas_equalTo(weakSelf.mas_right).offset(-6);
         }];
         
@@ -168,7 +180,7 @@
         _timeImageView.image = [UIImage imageNamed:@"time"];
         [self addSubview:_timeImageView];
         [_timeImageView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagView.mas_bottom).offset(6);
+            make.top.mas_equalTo(_tagView.mas_bottom).offset(6);
             make.right.mas_equalTo(_timeLabel.mas_left).offset(-6);
             make.width.mas_equalTo(@15);
             make.height.mas_equalTo(@16);
