@@ -35,7 +35,7 @@
     if(_rootNavigationController == nil){
         _rootNavigationController = [[UINavigationController alloc] initWithRootViewController:_indexViewController];
         _rootNavigationController.view.frame = self.view.frame;
-        _rootNavigationController.view.backgroundColor = [UIColor whiteColor];
+        _rootNavigationController.view.backgroundColor = [UIColor colorWithRed:239.0/255 green:239.0/255.0 blue:239.0/255.0 alpha:1];
     }
     
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"筛选"

@@ -22,7 +22,7 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - DACircularProgress (2.3.1)
-  - DZNEmptyDataSet (1.7)
+  - DZNEmptyDataSet (1.7.1)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
   - FMDB/common (2.5)
@@ -33,7 +33,7 @@ PODS:
   - MagicalRecord (2.3.0)
   - Masonry (0.6.2)
   - MBProgressHUD (0.9.1)
-  - MJRefresh (2.4.5)
+  - MJRefresh (2.4.7)
   - MWPhotoBrowser (2.1.1):
     - DACircularProgress (~> 2.3)
     - MBProgressHUD (~> 0.9)
@@ -64,13 +64,13 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 6516052442fc8ca8f3cc4b3c7aa0436de12373df
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
-  DZNEmptyDataSet: 896f8efb3b0961c5ccb59d4959ccf9280854aa3d
+  DZNEmptyDataSet: 2a398066c2bf5848f7f693fb50954b5064debd12
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   KDCycleBannerView: 6dbac2cda6b1a6f4e27b65d66249ecd966403b8b
   MagicalRecord: 89eb7d7ead39fb37f01c3d010665ee94d17f8dba
   Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
-  MJRefresh: 8f022877bfcb4132ce260422eee6835dce896edb
+  MJRefresh: 6eb2f61338f89f64fd628fd43debcf479381ff59
   MWPhotoBrowser: ba0d0c09ffda3a7ea10093518738c502c1c7141c
   PKRevealController: ffb45a16f5a5032ad90a3d16e5cbb0d8e035bd58
   SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84

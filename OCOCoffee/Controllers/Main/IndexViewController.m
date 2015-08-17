@@ -51,9 +51,9 @@ static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
      
     if(_collectionView == nil){
         UICollectionViewFlowLayout *indexLayout = [[UICollectionViewFlowLayout alloc] init];
-        indexLayout.minimumInteritemSpacing = 2.0;
-        indexLayout.minimumLineSpacing = 2.0;
-        indexLayout.sectionInset = UIEdgeInsetsMake(2, 2, 3, 3);
+        indexLayout.minimumInteritemSpacing = 5.0;
+        indexLayout.minimumLineSpacing = 5.0;
+        indexLayout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
         indexLayout.itemSize  =self.view.bounds.size;
         
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:indexLayout];
@@ -136,7 +136,7 @@ static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    return CGSizeMake(self.view.bounds.size.width/2 -5 , 270);
+    return CGSizeMake(self.view.bounds.size.width/2 -10 , 285);
 }
 
 

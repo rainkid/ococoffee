@@ -10,6 +10,8 @@
 
 #import "IndexCollectionViewCell.h"
 #import <Masonry/Masonry.h>
+#import <SKTagView/SKTagView.h>
+#import "UIColor+colorBuild.h"
 
 @implementation IndexCollectionViewCell
 
@@ -19,7 +21,9 @@
          __weak typeof(self) weakSelf = self;
         
         UIView *view1 = [UIView new];
-        view1.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
+        view1.backgroundColor = [UIColor whiteColor];
+        view1.layer.cornerRadius = 3;
+        view1.layer.masksToBounds = YES;
         [self.contentView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make){
             make.center.equalTo(weakSelf.contentView);
@@ -27,7 +31,7 @@
             
         }];
         
-        long kMainImageHeight = self.contentView.bounds.size.height- 85;
+        long kMainImageHeight = self.contentView.bounds.size.height- 108;
         _userImageView = [UIImageView new];
         _userImageView.backgroundColor = [UIColor redColor];
         [view1 addSubview:_userImageView];
@@ -97,27 +101,40 @@
             
         }];
         
-        UILabel *tagLabel1 = [[UILabel alloc] init];
-        tagLabel1.backgroundColor = [UIColor purpleColor];
-        tagLabel1.layer.cornerRadius = 2;
-        tagLabel1.text = @"阅读控";
-        tagLabel1.textAlignment = NSTextAlignmentCenter;
-        tagLabel1.font = [UIFont fontWithName:@"Helvetica" size:13.0];
-        tagLabel1.textColor = [UIColor whiteColor];
-        [self addSubview:tagLabel1];
-        [tagLabel1 mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(_sexImageView.mas_bottom).offset(3.5);
-            make.left.mas_equalTo(weakSelf.mas_left).offset(6);
-            make.width.mas_equalTo(@48);
-            make.height.mas_equalTo(@15);
+        SKTagView *tagView = [SKTagView new];
+        tagView.backgroundColor = [UIColor clearColor];
+        tagView.padding = UIEdgeInsetsMake(3,3 ,0, 3);
+        tagView.insets = 5;
+        tagView.lineSpace = 2;
+        [self addSubview:tagView];
+        [tagView mas_makeConstraints:^(MASConstraintMaker *make){
+            make.top.mas_equalTo(_sexImageView.mas_bottom).offset(3.6);
+            make.left.mas_equalTo(weakSelf.mas_left).offset(5);
+            make.width.equalTo(weakSelf.mas_width);
         }];
+        
+        
+        NSMutableArray *tagValues = [self getRandTags];
+        [tagValues enumerateObjectsUsingBlock:^(id obj,NSUInteger idx,BOOL *stop){
+            
+            SKTag *tag          = [SKTag tagWithText:obj];
+            tag.textColor       = [UIColor whiteColor];
+            tag.cornerRadius    = 2;
+            tag.borderWidth     = 0;
+             NSString *colorStr  = [self randColor];
+            tag.bgColor         = [UIColor colorFromHexString:colorStr];
+            tag.font            = [UIFont fontWithName:@"Helvetica" size:11.0];
+            tag.padding         = UIEdgeInsetsMake(2, 2, 3, 3);
+            [tagView addTag:tag];
+        }];
+
         
         _locationImageView = [[UIImageView alloc] init];
         _locationImageView.backgroundColor = [UIColor clearColor];
         _locationImageView.image = [UIImage imageNamed:@"location"];
         [self addSubview:_locationImageView];
         [_locationImageView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagLabel1.mas_bottom).offset(6);
+            make.top.mas_equalTo(tagView.mas_bottom).offset(6);
             make.left.mas_equalTo(weakSelf.mas_left).offset(7);
             make.width.mas_equalTo(@16);
             make.height.mas_equalTo(@18);
@@ -131,7 +148,7 @@
         _locationLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         [self addSubview:_locationLabel];
         [_locationLabel mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagLabel1.mas_bottom).offset(8);
+            make.top.mas_equalTo(tagView.mas_bottom).offset(8);
             make.left.mas_equalTo(_locationImageView.mas_right).offset(4);
         }];
         
@@ -143,7 +160,7 @@
         _timeLabel.textColor= [UIColor lightGrayColor];
         [self addSubview:_timeLabel];
         [_timeLabel mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagLabel1.mas_bottom).offset(8);
+            make.top.mas_equalTo(tagView.mas_bottom).offset(8);
             make.right.mas_equalTo(weakSelf.mas_right).offset(-6);
         }];
         
@@ -151,121 +168,50 @@
         _timeImageView.image = [UIImage imageNamed:@"time"];
         [self addSubview:_timeImageView];
         [_timeImageView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagLabel1.mas_bottom).offset(6);
+            make.top.mas_equalTo(tagView.mas_bottom).offset(6);
             make.right.mas_equalTo(_timeLabel.mas_left).offset(-6);
             make.width.mas_equalTo(@15);
             make.height.mas_equalTo(@16);
             
         }];
         
-//        UIView *view2 = [UIView new];
-//        view2.backgroundColor = [UIColor whiteColor];
-//        [view1 addSubview:view2];
-//        [view2 mas_makeConstraints:^(MASConstraintMaker *make){
-//            make.centerX.mas_equalTo(view1.mas_centerX);
-//            make.width.mas_equalTo(@60);
-//            make.top.mas_equalTo(_userImageView.bounds.size.height);
-//            
-//        }];
-//        
-//        _usernameLabel = [UILabel new];
-//        _usernameLabel.backgroundColor = [UIColor clearColor];
-//        [view2 addSubview:_usernameLabel];
-//        [_usernameLabel mas_makeConstraints:^(MASConstraintMaker *make){
-//            make.centerX.mas_equalTo(view2.mas_centerX);
-//            make.width.equalTo(@100);
-//            make.height.equalTo(@20);
-//            make.edges.equalTo(self).with.insets(UIEdgeInsetsMake(5, 0, 0, 0));
-//        }];
-//        
-//
-//        UIView *view3 = [UIView new];
-//        view3.backgroundColor = [UIColor whiteColor];
-//        [view2 addSubview:view3];
-//        [view3 mas_makeConstraints:^(MASConstraintMaker *make){
-//            make.centerX.mas_equalTo(view2.mas_centerX);
-//            make.top.equalTo(view2.mas_top).with.offset(3);
-//            make.bottom.equalTo(view2.mas_bottom).with.offset(-3);
-//            make.width.equalTo(view2);
-//            make.height.mas_equalTo(@20);
-//        }];
-//        
-//        _sexImageView = [UIImageView new];
-//        [view3 addSubview:_sexImageView];
-//        [_sexImageView mas_makeConstraints:^(MASConstraintMaker *make){
-//            make.width.mas_equalTo(@10);
-//            
-//        }];
-//        
-//        _ageLabel = [[UILabel alloc] init];
-//        _ageLabel.backgroundColor=[UIColor whiteColor];
-//        _ageLabel.text = @"20";
-//        _ageLabel.textAlignment = NSTextAlignmentCenter;
-//        _ageLabel.font = [UIFont fontWithName:@"Haviera" size:12.0];
-//        _ageLabel.textColor = [UIColor redColor];
-//        [view3 addSubview:_ageLabel];
-//        [_ageLabel mas_makeConstraints:^(MASConstraintMaker *make){
-//            
-//        }];
-//        
-//        _constellation = [UILabel new];
-//        _constellation.backgroundColor = [UIColor whiteColor];
-//        _constellation.text = @"双鱼座";
-//        _constellation.textColor = [UIColor orangeColor];
-//        _constellation.textAlignment = NSTextAlignmentCenter;
-//        [view3 addSubview:_constellation];
-//        [_constellation mas_makeConstraints:^(MASConstraintMaker *make){
-//            
-//        }];
-//    
-//        UIView *view4 = [UIView new];
-//        view4.backgroundColor = [UIColor whiteColor];
-//        [view2 addSubview:view4];
-//        [view4 mas_makeConstraints:^(MASConstraintMaker *make){
-//            
-//        }];
-//        
-//        UIView *view5 = [UIView new];
-//        view5.backgroundColor = [UIColor clearColor];
-//        [view2 addSubview:view5];
-//        [view5 mas_makeConstraints:^(MASConstraintMaker *make){
-//            
-//        }];
-//        
-//        UIImageView *locImageview = [[UIImageView alloc]init];
-//        locImageview.backgroundColor = [UIColor clearColor];
-//        locImageview.image = [UIImage imageNamed:@"location"];
-//        [view5 addSubview:locImageview];
-//        [locImageview mas_makeConstraints:^(MASConstraintMaker *make){
-//            
-//        }];
-//        
-//        UILabel *locLabel = [[UILabel alloc] init];
-//        locLabel.backgroundColor = [UIColor clearColor];
-//        [view5 addSubview:locLabel];
-//        [locLabel mas_makeConstraints:^(MASConstraintMaker *make){
-//        
-//        }];
-//        
-//        
-//        UIImageView *loginImageView = [[UIImageView alloc]init];
-//        loginImageView.backgroundColor = [UIColor clearColor];
-//        loginImageView.image = [UIImage imageNamed:@"time"];
-//        [view5 addSubview:loginImageView];
-//        [loginImageView mas_makeConstraints:^(MASConstraintMaker *make){
-//            
-//        }];
-//        
-//        UILabel *loginLabel = [[UILabel alloc] init];
-//        loginLabel.backgroundColor = [UIColor clearColor];
-//        [view5 addSubview:loginLabel];
-//        [loginLabel mas_makeConstraints:^(MASConstraintMaker *make){
-//            
-//        }];
+
         
     }
     
     return self;
 };
 
+
+
+-(NSMutableArray *)getRandTags {
+    NSArray *tmp = @[@"逛街",@"购物狂",@"科技达人",@"cosplay",@"爱音乐",@"电影迷",@"户外运动",@"阅读"];
+    
+    NSMutableArray *tags = [[NSMutableArray alloc] initWithArray:tmp];
+
+     NSUInteger total = [tags count];
+    int rand = ( arc4random() % (total - 1)) + 1;
+    for (int i = 0; i< total ; i++) {
+        [tags exchangeObjectAtIndex:i withObjectAtIndex:rand];
+    }
+    
+    NSMutableArray *randTags = [[NSMutableArray alloc] initWithCapacity:5];
+    int num = (arc4random() % 5) + 1 ;
+    for (int j=0; j < num ; j++) {
+        [randTags addObject:tags[j]];
+    }
+    return randTags;
+}
+
+-(NSString *)randColor{
+     NSArray *colorList = @[@"#fab965",@"#a7c5e7",@"#ffa99c",@"#a5dbdb",@"#b3de5d"];
+    NSMutableArray *mutlist = [[NSMutableArray alloc] initWithArray:colorList];
+    int rand = (arc4random() % ([mutlist count] -1) +1);
+    for (int i = 0; i< [mutlist count]; i++) {
+        [mutlist exchangeObjectAtIndex:i withObjectAtIndex:rand];
+    }
+    int index  = (arc4random() % 5);
+    NSString *color = [colorList objectAtIndex: index];
+    return color;
+}
 @end
