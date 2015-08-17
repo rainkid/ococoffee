@@ -57,18 +57,10 @@ static const CGFloat slide = 20/2;
 }
 
 - (void) initSubViews {
-    [self.view setBackgroundColor:[UIColor colorFromHexString:@"#f5f5f5"]];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     
     __weak typeof(self) weakSelf = self;
     self.title = @"活动详情";
-    
-    UIImageView *bg_imageView = [UIImageView new];
-    bg_imageView.image =[UIImage imageNamed:@"center_bg"];
-    [self.view addSubview:bg_imageView];
-    [bg_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(380/2);
-        make.top.mas_equalTo(weakSelf.view.mas_top).offset(PHONE_TOP_HEIGHT);
-    }];
     
     //用户图像
     UIImageView *headerImageView = [UIImageView new];
@@ -156,21 +148,19 @@ static const CGFloat slide = 20/2;
     
     [self.view addSubview:imgCollectionView];
     [imgCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(tagView.mas_bottom).offset(48/2);
+        make.top.mas_equalTo(tagView.mas_bottom).offset(24/2);
         make.left.mas_equalTo(weakSelf.view).offset(slide);
         make.right.mas_equalTo(weakSelf.view).offset(-slide);
         make.height.mas_equalTo(imgViewHeight);
     }];
     
     UIView *address = [UIView new];
-    address.layer.cornerRadius = 3;
-    address.backgroundColor = [UIColor whiteColor];
-    
+    address.backgroundColor = [UIColor colorFromHexString:@"#f5f5f5"];
     address.layer.masksToBounds = NO;
     address.layer.shadowColor =  [UIColor blackColor].CGColor;
-    address.layer.shadowOffset = CGSizeMake(0, 1);
+    address.layer.shadowOffset = CGSizeMake(1, 1);
     address.layer.shadowOpacity = 0.1;
-    address.layer.shadowRadius = 3;
+    address.layer.shadowRadius = 1;
     
     
     [self.view addSubview:address];
@@ -180,12 +170,52 @@ static const CGFloat slide = 20/2;
         make.right.mas_equalTo(weakSelf.view).offset(-slide);
         make.top.mas_equalTo(imgCollectionView.mas_bottom).offset(24/2);
     }];
+    
+    UIImageView *adrsImgView = [UIImageView new];
+    adrsImgView.image = [UIImage imageNamed:@"center_address"];
+    [address addSubview:adrsImgView];
+    [adrsImgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(address).offset(24/2);
+        make.centerY.mas_equalTo(address);
+    }];
+    
+    UILabel *adsLabel = [UILabel new];
+    adsLabel.text = @"阳光高尔夫大厦";
+    adsLabel.font = font;
+    adsLabel.textColor = [UIColor colorFromHexString:@"#888888"];
+    [address addSubview:adsLabel];
+    [adsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(adrsImgView.mas_right).offset(24/2);
+        make.centerY.mas_equalTo(address);
+    }];
+    
+    UILabel *lonsLabel = [UILabel new];
+    lonsLabel.text = @"0.54km  刚刚";
+    lonsLabel.font = font;
+    lonsLabel.textColor = [UIColor colorFromHexString:@"#888888"];
+    [address addSubview:lonsLabel];
+    [lonsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(address.mas_right).offset(-(24/2));
+        make.centerY.mas_equalTo(address);
+    }];
+    
+    UIButton *btn = [UIButton new];
+    btn.backgroundColor = [UIColor colorFromHexString:@"#f16681"];
+    [btn setTitle:@"请他喝咖啡" forState:UIControlStateNormal];
+    btn.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:btn];
+    [btn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(weakSelf.view);
+        make.bottom.mas_equalTo(weakSelf.view).offset(-PHONE_NAVIGATIONBAR_HEIGHT);
+        make.height.mas_equalTo(106/2);
+    }];
+    
 }
 
 - (void)setupTagView
 {
     //Add Tags
-    [@[@"电烧友", @"电影控", @"吃货", @"旅游达人"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
+    [@[@"电烧友", @"电影控", @"吃货", @"旅游达人", @"好人一个"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
      {
          [self addTagWithObj:obj];
      }];
@@ -218,26 +248,19 @@ static const CGFloat slide = 20/2;
 {
     static NSString * CellIdentifier = @"imgCollectionCell";
     UICollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor clearColor];
-    
-    UIImageView *imgView = [[UIImageView alloc] initWithFrame:cell.bounds];
-    imgView.layer.cornerRadius = 8;
-    imgView.layer.borderWidth = 1;
-    imgView.layer.borderColor = [UIColor colorFromHexString:@"#efefef"].CGColor;
+    cell.layer.shadowColor =  [UIColor blackColor].CGColor;
+    cell.layer.shadowOffset = CGSizeMake(1, 1);
+    cell.layer.shadowOpacity = 0.1;
+    cell.layer.shadowRadius = 3;
+
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    imgView.image = [UIImage imageNamed:@"sample_p"];
     imgView.layer.masksToBounds = YES;
-    imgView.backgroundColor = [UIColor clearColor];
-
-    imgView.layer.masksToBounds = NO;
-    imgView.layer.shadowColor =  [UIColor blackColor].CGColor;
-    imgView.layer.shadowOffset = CGSizeMake(0, 1);
-    imgView.layer.shadowOpacity = 1;
-    imgView.layer.shadowRadius = 2;
-
-    imgView.image = [UIImage imageNamed:@"sample_logo"];
+    imgView.layer.cornerRadius = 3;
     [cell addSubview:imgView];
-//    [imgView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.width.height.mas_equalTo(cell);
-//    }];
+    [imgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.height.mas_equalTo(cell);
+    }];
     
     return cell;
 }
