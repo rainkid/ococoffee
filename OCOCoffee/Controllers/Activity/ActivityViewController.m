@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 sam. All rights reserved.
 //
 
-#import "Golbal.h"
+#import "Global.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
 #import <MJRefresh/MJRefresh.h>
@@ -45,10 +45,11 @@ static const CGFloat kCellHeight = 440/2;
 }
 
 - (void) initSubViews {
-    [self.view setBackgroundColor:[UIColor whiteColor]];
     
     __weak typeof(self) weakSelf = self;
-    
+    [self.view setBackgroundColor:[UIColor whiteColor]];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+
     //tableview
     UITableView *tableView = [UITableView new];
     tableView.dataSource = self;
@@ -129,7 +130,7 @@ static const CGFloat kCellHeight = 440/2;
     
     cell.headerImageView.image = [UIImage imageNamed:[cellData objectAtIndex:0]];
     cell.nicknameLabel.text = [cellData objectAtIndex:1];
-    cell.ageLabel.text =[cellData objectAtIndex:2];
+    cell.sexAgeLabel.text =[NSString stringWithFormat:@"%@ %@",@"♀", [cellData objectAtIndex:2]];
     cell.conLabel.text =[cellData objectAtIndex:3];
     cell.addressLabel.text =[cellData objectAtIndex:4];
     cell.nearTimeLabel.text = [cellData objectAtIndex:5];
@@ -137,14 +138,6 @@ static const CGFloat kCellHeight = 440/2;
     cell.beforeLabel.text = [cellData objectAtIndex:7];
     cell.statusImageView.image = [UIImage imageNamed:[cellData objectAtIndex:8]];
     cell.sexImageView.image = [UIImage imageNamed:@"sex_girl"];
-    
-    //set address label line space
-//    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:cell.addressLabel.text];
-//    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-//    [paragraphStyle setLineSpacing:5];
-//    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [cell.addressLabel.text length])];
-//    cell.addressLabel.attributedText = attributedString;
-    
     return cell;
 }
 
@@ -155,13 +148,14 @@ static const CGFloat kCellHeight = 440/2;
     NSDictionary *attrbute = @{NSFontAttributeName:[UIFont systemFontOfSize:14]};
     CGFloat textHeight = [addressStr boundingRectWithSize:CGSizeMake(SCREEN_WIDTH, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attrbute context:nil].size.height;
     
-    return textHeight+kCellHeight;
+    return textHeight + kCellHeight;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    ActivityTableViewCell *cell = (ActivityTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     DetailViewController *detail = [[DetailViewController alloc] init];
+//    [self.parentViewController presentViewController:detail animated:YES completion:nil];
     [self.navigationController pushViewController:detail animated:YES];
 }
 

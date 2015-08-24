@@ -1,14 +1,15 @@
 //
-//  DetailViewController.m
+//  InfoDetailViewController.m
 //  OCOCoffee
 //
-//  Created by sam on 15/8/13.
+//  Created by sam on 15/8/21.
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
+
 #import "Global.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
-#import "DetailViewController.h"
+#import "InfoViewController.h"
 #import <SKTagView/SKTagView.h>
 
 
@@ -16,7 +17,7 @@ static const CGFloat kPhotoHeight = 146/2;
 static const CGFloat slide = 20/2;
 static const CGFloat buttonHeight = 106/2;
 
-@interface DetailViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
+@interface InfoViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
 
 @property(nonatomic, strong) NSDictionary *activityData;
 
@@ -33,7 +34,7 @@ static const CGFloat buttonHeight = 106/2;
 
 
 
-@implementation DetailViewController
+@implementation InfoViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -49,7 +50,7 @@ static const CGFloat buttonHeight = 106/2;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    [self initData];
+    //    [self initData];
     [self initSubViews];
     
     [self setupTagView];
@@ -62,7 +63,7 @@ static const CGFloat buttonHeight = 106/2;
 }
 
 - (void) initData {
-
+    
 }
 
 - (void) initSubViews {
@@ -72,9 +73,9 @@ static const CGFloat buttonHeight = 106/2;
                                              style:UIBarButtonItemStylePlain
                                              target:nil
                                              action:nil];
-    self.title = @"活动详情";
-    [self.view setBackgroundColor:[UIColor colorFromHexString:@"#f5f5f5"]];
-
+    self.title = @"个人详情";
+    [self.view setBackgroundColor:[UIColor whiteColor]];
+    
     UIScrollView *scrollView = [UIScrollView new];
     scrollView.scrollEnabled = YES;
     [scrollView setContentOffset:CGPointZero animated:YES];
@@ -211,7 +212,7 @@ static const CGFloat buttonHeight = 106/2;
         make.top.mas_equalTo(imgCollectionView.mas_bottom).offset(24/2);
     }];
     self.centerViewHeight = imgCollectionViewHeight;
-
+    
     
     UIImageView *addressImgView = [UIImageView new];
     addressImgView.image = [UIImage imageNamed:@"center_address"];
@@ -244,129 +245,6 @@ static const CGFloat buttonHeight = 106/2;
     [centerView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(addressView.mas_bottom).offset(24/2);
     }];
-
-    //botview
-    UIView *botView = [UIView new];
-    botView.backgroundColor = [UIColor whiteColor];
-    [scrollView addSubview:botView];
-    [botView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(330/2);
-        make.width.mas_equalTo(scrollView);
-        make.top.mas_equalTo(centerView.mas_bottom).offset(30/2);
-    }];
-    
-    UILabel *botLabel = [UILabel new];
-    botLabel.textColor = labelTextCollor;
-    botLabel.text = @"详细信息";
-    botLabel.font = font;
-    [botView addSubview:botLabel];
-    [botLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(62/2);
-        make.width.top.mas_equalTo(botView);
-        make.height.mas_equalTo(62/2);
-    }];
-    
-    UIView *botSplit = [UIView new];
-    botSplit.backgroundColor = [UIColor colorFromHexString:@"#8f413b"];
-    [botLabel addSubview:botSplit];
-    [botSplit mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(28/2);
-        make.width.mas_equalTo(12/2);
-        make.left.mas_equalTo(weakSelf.view.mas_left).offset(20/2);
-        make.centerY.mas_equalTo(botLabel.mas_centerY);
-    }];
-    
-    UIImageView *coffeeTimeImageView = [UIImageView new];
-    coffeeTimeImageView.image = [UIImage imageNamed:@"center_time"];
-    [botView addSubview:coffeeTimeImageView];
-    [coffeeTimeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(botLabel.mas_bottom).offset(14/2);
-        make.left.mas_equalTo(weakSelf.view).offset(28/2);
-    }];
-    
-    UILabel *coffeeTimeLabel = [UILabel new];
-    coffeeTimeLabel.text = @"7月15日周一下午1:00";
-    coffeeTimeLabel.font = font;
-    coffeeTimeLabel.textColor = labelTextCollor;
-    [botView addSubview:coffeeTimeLabel];
-    [coffeeTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(coffeeTimeImageView);
-        make.left.mas_equalTo(coffeeTimeImageView.mas_right).offset(28/2);
-    }];
-    
-    UIImageView *coffeeAddressImageView = [UIImageView new];
-    coffeeAddressImageView.image = [UIImage imageNamed:@"center_address"];
-    [botView addSubview:coffeeAddressImageView];
-    [coffeeAddressImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(coffeeTimeLabel.mas_bottom).offset(30/2);
-        make.left.mas_equalTo(coffeeTimeImageView);
-    }];
-    
-    UILabel *coffeeAddressLabel = [UILabel new];
-    coffeeAddressLabel.text = @"深圳福田深南大道700号深圳福田深南大道700号深圳福田深南大道700号深圳福田深南大道700号";
-    coffeeAddressLabel.font = font;
-    coffeeAddressLabel.textColor = labelTextCollor;
-    coffeeAddressLabel.lineBreakMode = NSLineBreakByCharWrapping;
-    coffeeAddressLabel.numberOfLines = 0;
-    [botView addSubview:coffeeAddressLabel];
-    [coffeeAddressLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(SCREEN_WIDTH - (208/2));
-        make.top.mas_equalTo(coffeeAddressImageView.mas_top);
-        make.left.mas_equalTo(coffeeTimeLabel);
-    }];
-    
-    UIImageView *coffeeDescImageView = [UIImageView new];
-    coffeeDescImageView.image = [UIImage imageNamed:@"center_address"];
-    [botView addSubview:coffeeDescImageView];
-    [coffeeDescImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(coffeeAddressLabel.mas_bottom).offset(30/2);
-        make.left.mas_equalTo(coffeeAddressImageView);
-    }];
-    
-    UILabel *coffeeDescLabel = [UILabel new];
-    coffeeDescLabel.text = @"这里是描述";
-    coffeeDescLabel.font = font;
-    coffeeDescLabel.textColor = labelTextCollor;
-    [botView addSubview:coffeeDescLabel];
-    [coffeeDescLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(coffeeDescImageView.mas_top);
-        make.left.mas_equalTo(coffeeAddressLabel);
-    }];
-    
-    CGFloat sliceWidth = SCREEN_WIDTH/4;
-    UIButton *refuseButton = [UIButton new];
-    [refuseButton setTitle:@"拒绝" forState:UIControlStateNormal];
-    refuseButton.backgroundColor = [UIColor whiteColor];
-    [refuseButton setTitleColor:labelTextCollor forState:UIControlStateNormal];
-    [scrollView addSubview:refuseButton];
-    [refuseButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(weakSelf.view.mas_bottom);
-        make.width.mas_equalTo(sliceWidth);
-        make.height.mas_equalTo(buttonHeight);
-        make.left.mas_equalTo(weakSelf.view.mas_left);
-    }];
-    
-    UIButton *cancelButton = [UIButton new];
-    [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
-    cancelButton.backgroundColor = [UIColor whiteColor];
-    [cancelButton setTitleColor:labelTextCollor forState:UIControlStateNormal];
-    [scrollView addSubview:cancelButton];
-    [cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(sliceWidth);
-        make.top.height.mas_equalTo(refuseButton);
-        make.left.mas_equalTo(refuseButton.mas_right);
-    }];
-    
-    UIButton *acceptButton = [UIButton new];
-    [acceptButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [acceptButton setTitle:@"接受" forState:UIControlStateNormal];
-    acceptButton.backgroundColor = [UIColor colorFromHexString:@"#b8524a"];
-    [scrollView addSubview:acceptButton];
-    [acceptButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(weakSelf.view);
-        make.top.height.mas_equalTo(refuseButton);
-        make.left.mas_equalTo(cancelButton.mas_right);
-    }];
 }
 
 - (void)setupTagView
@@ -390,7 +268,7 @@ static const CGFloat buttonHeight = 106/2;
     [self.tagView addTag:tag];
 }
 
-#pragma mark -- UICollectionViewDataSource 
+#pragma mark -- UICollectionViewDataSource
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return 6;
@@ -409,7 +287,7 @@ static const CGFloat buttonHeight = 106/2;
     cell.layer.shadowOffset = CGSizeMake(1, 1);
     cell.layer.shadowOpacity = 0.1;
     cell.layer.shadowRadius = 3;
-
+    
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectZero];
     imgView.image = [UIImage imageNamed:@"sample_p"];
     imgView.layer.masksToBounds = YES;

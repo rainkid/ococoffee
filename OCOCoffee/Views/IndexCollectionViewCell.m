@@ -6,8 +6,6 @@
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
 
-#define SEXIMAGEWIDTH 11
-
 #import "IndexCollectionViewCell.h"
 #import <Masonry/Masonry.h>
 #import <SKTagView/SKTagView.h>
@@ -17,127 +15,95 @@
 
 -(instancetype)initWithFrame:(CGRect)frame
 {
-    if( self = [super initWithFrame:frame]){
+    if(self = [super initWithFrame:frame]){
          __weak typeof(self) weakSelf = self;
         
-        UIView *view1 = [UIView new];
-        view1.backgroundColor = [UIColor whiteColor];
-        view1.layer.cornerRadius = 3;
-        view1.layer.masksToBounds = YES;
-        [self.contentView addSubview:view1];
-        [view1 mas_makeConstraints:^(MASConstraintMaker *make){
-            make.center.equalTo(weakSelf.contentView);
-            make.size.mas_equalTo(self.contentView.bounds.size);
-            
-        }];
-        
-        long kMainImageHeight = self.contentView.bounds.size.height- 108;
+        self.backgroundColor = [UIColor whiteColor];
+        self.layer.masksToBounds = YES;
+        self.layer.shadowColor =  [UIColor blackColor].CGColor;
+        self.layer.shadowOffset = CGSizeMake(1, 1);
+        self.layer.shadowOpacity = 0.1;
+        self.layer.shadowRadius = 3;
+
         _userImageView = [UIImageView new];
-        _userImageView.backgroundColor = [UIColor redColor];
-        [view1 addSubview:_userImageView];
+        [self addSubview:_userImageView];
         [_userImageView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.centerX.mas_equalTo(view1.mas_centerX);
-            make.height.mas_equalTo(kMainImageHeight);
-            make.width.mas_equalTo(self.contentView.bounds.size.width);
-            
+            make.centerX.mas_equalTo(weakSelf.mas_centerX);
+            make.height.width.mas_equalTo(weakSelf.contentView.bounds.size.width);
         }];
         
-        _usernameLabel = [UILabel new];
-        _usernameLabel.textColor = [UIColor brownColor];
-        _usernameLabel.textAlignment = NSTextAlignmentCenter;
-        _usernameLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
-        [self.contentView addSubview:_usernameLabel];
-        [_usernameLabel mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(_userImageView.mas_bottom).offset(3.0);
-            make.centerX.mas_equalTo(weakSelf.contentView);
-            
+        _nicknameLabel = [UILabel new];
+        _nicknameLabel.textColor = [UIColor colorFromHexString:@"#666666"];
+        _nicknameLabel.textAlignment = NSTextAlignmentCenter;
+        _nicknameLabel.font = [UIFont systemFontOfSize:16];
+        [self.contentView addSubview:_nicknameLabel];
+        [_nicknameLabel mas_makeConstraints:^(MASConstraintMaker *make){
+            make.top.mas_equalTo(_userImageView.mas_bottom).offset(16/2);
+            make.centerX.mas_equalTo(_userImageView.mas_centerX);
         }];
         
-        
-        
-        UIImageView *backGroudView = [[UIImageView alloc] init];
-        backGroudView.image = [UIImage imageNamed:@"background"];
-        backGroudView.backgroundColor= [UIColor clearColor];
-        [self addSubview:backGroudView];
-        [backGroudView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(_usernameLabel.mas_bottom).offset(4.2);
-            make.centerX.mas_equalTo(weakSelf);
-            make.width.mas_equalTo(@1);
-            make.height.mas_equalTo(@12);
+        UILabel *lineLabel = [UILabel new];
+        lineLabel.text = @"|";
+        lineLabel.font = [UIFont systemFontOfSize:12];
+        lineLabel.textColor= [UIColor blackColor];
+        [self addSubview:lineLabel];
+        [lineLabel mas_makeConstraints:^(MASConstraintMaker *make){
+            make.centerX.mas_equalTo(_userImageView.mas_centerX);
+            make.top.mas_equalTo(_nicknameLabel.mas_bottom).offset(18/2);
         }];
-        
         
         _ageLabel = [[UILabel alloc] init];
-        _ageLabel.text = @"20";
         _ageLabel.textAlignment = NSTextAlignmentCenter;
         _ageLabel.textColor = [UIColor grayColor];
-        _ageLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
+        _ageLabel.font = [UIFont systemFontOfSize:12];
         [self addSubview:_ageLabel];
         [_ageLabel mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(_usernameLabel.mas_bottom).offset(3.6);
-            make.right.mas_equalTo(backGroudView.mas_left).offset(-12);
+            make.top.mas_equalTo(lineLabel);
+            make.right.mas_equalTo(lineLabel.mas_left).offset(-(12/2));
         }];
         
-        _sexImageView = [[UIImageView alloc] init];
-        _sexImageView.backgroundColor = [UIColor clearColor];
-        _sexImageView.image = [UIImage imageNamed:@"woman"];
-        [self addSubview:_sexImageView];
-        [_sexImageView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(_usernameLabel.mas_bottom).offset(4.5);
-            make.width.mas_equalTo(SEXIMAGEWIDTH);
-            make.height.mas_equalTo(SEXIMAGEWIDTH);
-            make.right.mas_equalTo(_ageLabel.mas_left).offset(-8);
+        _sexLabel = [UILabel new];
+        _sexLabel.backgroundColor = [UIColor clearColor];
+        _sexLabel.font = [UIFont systemFontOfSize:12];
+        _sexLabel.textColor = [UIColor colorFromHexString:@"#f15e76"];
+        [self addSubview:_sexLabel];
+        [_sexLabel mas_makeConstraints:^(MASConstraintMaker *make){
+            make.top.mas_equalTo(lineLabel);
+            make.right.mas_equalTo(_ageLabel.mas_left).offset(-(12/2));
         }];
         
         _constellation = [[UILabel alloc] init];
         _constellation.textColor = [UIColor lightGrayColor];
         _constellation.text = @"双鱼座";
-        _constellation.font=[UIFont fontWithName:@"Helvetica" size:14.0];
+        _constellation.font=[UIFont fontWithName:@"Helvetica" size:12.0];
         _constellation.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_constellation];
         [_constellation mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(_usernameLabel.mas_bottom).offset(3.6);
-            make.left.mas_equalTo(backGroudView.mas_right).offset(13);
-            
+            make.top.mas_equalTo(lineLabel);
+            make.left.mas_equalTo(lineLabel.mas_right).offset(12/2);
         }];
         
         SKTagView *tagView = [SKTagView new];
         tagView.backgroundColor = [UIColor clearColor];
-        tagView.padding = UIEdgeInsetsMake(3,3 ,0, 3);
-        tagView.insets = 5;
-        tagView.lineSpace = 2;
+        tagView.padding = UIEdgeInsetsMake(3, tagViewRightPading ,3, tagViewLeftPading);
+        tagView.insets = tagViewInserts;
+        tagView.lineSpace = tagViewLineSpace;
+        self.tagView = tagView;
         [self addSubview:tagView];
         [tagView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(_sexImageView.mas_bottom).offset(3.6);
-            make.left.mas_equalTo(weakSelf.mas_left).offset(5);
+            make.centerX.mas_equalTo(_userImageView.mas_centerX);
+            make.top.mas_equalTo(_sexLabel.mas_bottom).offset(12/2);
+            make.left.mas_equalTo(weakSelf.mas_left);
             make.width.equalTo(weakSelf.mas_width);
         }];
         
-        
-        NSMutableArray *tagValues = [self getRandTags];
-        [tagValues enumerateObjectsUsingBlock:^(id obj,NSUInteger idx,BOOL *stop){
-            
-            SKTag *tag          = [SKTag tagWithText:obj];
-            tag.textColor       = [UIColor whiteColor];
-            tag.cornerRadius    = 2;
-            tag.borderWidth     = 0;
-             NSString *colorStr  = [self randColor];
-            tag.bgColor         = [UIColor colorFromHexString:colorStr];
-            tag.font            = [UIFont fontWithName:@"Helvetica" size:11.0];
-            tag.padding         = UIEdgeInsetsMake(2, 2, 3, 3);
-            [tagView addTag:tag];
-        }];
-
-        
         _locationImageView = [[UIImageView alloc] init];
         _locationImageView.backgroundColor = [UIColor clearColor];
-        _locationImageView.image = [UIImage imageNamed:@"location"];
+        _locationImageView.image = [UIImage imageNamed:@"index_location"];
         [self addSubview:_locationImageView];
         [_locationImageView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagView.mas_bottom).offset(6);
-            make.left.mas_equalTo(weakSelf.mas_left).offset(7);
-            make.width.mas_equalTo(@16);
-            make.height.mas_equalTo(@18);
+            make.top.mas_equalTo(tagView.mas_bottom).offset(18/2);
+            make.left.mas_equalTo(weakSelf.mas_left).offset(18/2);
         }];
         
         _locationLabel = [[UILabel alloc] init];
@@ -148,10 +114,10 @@
         _locationLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         [self addSubview:_locationLabel];
         [_locationLabel mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagView.mas_bottom).offset(8);
+            make.centerY.mas_equalTo(_locationImageView.mas_centerY);
+            make.top.mas_equalTo(_locationImageView.mas_top);
             make.left.mas_equalTo(_locationImageView.mas_right).offset(4);
         }];
-        
     
         _timeLabel = [[UILabel alloc] init];
         _timeLabel.text = @"10分钟前";
@@ -160,58 +126,21 @@
         _timeLabel.textColor= [UIColor lightGrayColor];
         [self addSubview:_timeLabel];
         [_timeLabel mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagView.mas_bottom).offset(8);
-            make.right.mas_equalTo(weakSelf.mas_right).offset(-6);
+            make.centerY.mas_equalTo(_locationImageView.mas_centerY);
+            make.top.mas_equalTo(_locationImageView);
+            make.right.mas_equalTo(weakSelf.mas_right).offset(-4);
         }];
         
-        _timeImageView = [[UIImageView alloc] init];
-        _timeImageView.image = [UIImage imageNamed:@"time"];
+        _timeImageView = [UIImageView new];
+        _timeImageView.image = [UIImage imageNamed:@"index_time"];
         [self addSubview:_timeImageView];
         [_timeImageView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.top.mas_equalTo(tagView.mas_bottom).offset(6);
-            make.right.mas_equalTo(_timeLabel.mas_left).offset(-6);
-            make.width.mas_equalTo(@15);
-            make.height.mas_equalTo(@16);
-            
+            make.centerY.mas_equalTo(_locationImageView.mas_centerY);
+            make.top.mas_equalTo(_locationImageView);
+            make.right.mas_equalTo(_timeLabel.mas_left).offset(-(4));
         }];
-        
-
-        
     }
     
     return self;
 };
-
-
-
--(NSMutableArray *)getRandTags {
-    NSArray *tmp = @[@"逛街",@"购物狂",@"科技达人",@"cosplay",@"爱音乐",@"电影迷",@"户外运动",@"阅读"];
-    
-    NSMutableArray *tags = [[NSMutableArray alloc] initWithArray:tmp];
-
-     NSUInteger total = [tags count];
-    int rand = ( arc4random() % (total - 1)) + 1;
-    for (int i = 0; i< total ; i++) {
-        [tags exchangeObjectAtIndex:i withObjectAtIndex:rand];
-    }
-    
-    NSMutableArray *randTags = [[NSMutableArray alloc] initWithCapacity:5];
-    int num = (arc4random() % 5) + 1 ;
-    for (int j=0; j < num ; j++) {
-        [randTags addObject:tags[j]];
-    }
-    return randTags;
-}
-
--(NSString *)randColor{
-     NSArray *colorList = @[@"#fab965",@"#a7c5e7",@"#ffa99c",@"#a5dbdb",@"#b3de5d"];
-    NSMutableArray *mutlist = [[NSMutableArray alloc] initWithArray:colorList];
-    int rand = (arc4random() % ([mutlist count] -1) +1);
-    for (int i = 0; i< [mutlist count]; i++) {
-        [mutlist exchangeObjectAtIndex:i withObjectAtIndex:rand];
-    }
-    int index  = (arc4random() % 5);
-    NSString *color = [colorList objectAtIndex: index];
-    return color;
-}
 @end

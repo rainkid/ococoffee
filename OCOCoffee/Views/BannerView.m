@@ -8,11 +8,11 @@
 
 #import "BannerView.h"
 
-@interface BannerView (){
+@interface BannerView ()<KDCycleBannerViewDelegate,KDCycleBannerViewDataource>
     
-    KDCycleBannerView *_cycleBannerView;
-    
-}
+@property (nonatomic, strong) KDCycleBannerView *cycleBannerView;
+@property (nonatomic, strong) NSArray *bannerArray;
+@property (nonatomic, strong) NSMutableArray *bannerImageArray;
 
 @end
 
@@ -30,22 +30,39 @@
     return self;
 }
 
--(NSArray*)numberOfKDCycleBannerView:(KDCycleBannerView *)bannerView
-{
-    return _bannerList;
+- (NSArray *)numberOfKDCycleBannerView:(KDCycleBannerView *)bannerView{
+    return self.bannerImageArray;
 }
 
--(UIViewContentMode)contentModeForImageIndex:(NSUInteger)index
-{
+- (UIViewContentMode)contentModeForImageIndex:(NSUInteger)index{
     return UIViewContentModeScaleToFill;
 }
 
--(void)cycleBannerView:(KDCycleBannerView *)bannerView didSelectedAtIndex:(NSUInteger)index
-{
-    NSLog(@"Click The Ads");
-    if(self.delegate && [self.delegate respondsToSelector:@selector(clickedAdAtIndex:)]){
-        NSLog(@"广告点击成功!");
+- (void)cycleBannerView:(KDCycleBannerView *)bannerView didSelectedAtIndex:(NSUInteger)index{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(clickedBanner:)]) {
+        [self.delegate clickedBanner:self.bannerArray[index]];
     }
 }
+
+- (void)forceRefresh:(NSArray *)adArray{
+    self.bannerArray = adArray;
+    NSMutableArray *imageArray = [NSMutableArray arrayWithCapacity:self.bannerArray.count];
+    for (NSDictionary *dict in adArray) {
+        [imageArray addObject:dict[@"img"]];
+    }
+    self.bannerImageArray = imageArray;
+    if (self.bannerImageArray.count> 1) {
+        _cycleBannerView.continuous = YES;
+        _cycleBannerView.autoPlayTimeInterval = kAutoPlayTimeInterval;
+    }else{
+        _cycleBannerView.continuous = NO;
+        _cycleBannerView.autoPlayTimeInterval = -1;
+    }
+    
+    [self.cycleBannerView reloadDataWithCompleteBlock:^{
+        
+    }];
+}
+
 
 @end
