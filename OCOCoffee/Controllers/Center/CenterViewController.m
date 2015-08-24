@@ -33,6 +33,8 @@ static const CGFloat kPhotoHeight = 82;
     self.title = @"我的";
     self.view.backgroundColor = [UIColor whiteColor];
 
+    self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    
     UIImageView *bg_imageView = [UIImageView new];
     bg_imageView.image =[UIImage imageNamed:@"center_bg"];
     [self.view addSubview:bg_imageView];

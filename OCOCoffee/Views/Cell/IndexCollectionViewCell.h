@@ -32,6 +32,9 @@ const static CGFloat tagViewInserts = 5;
 @property(strong,nonatomic) UILabel    *locationLabel;
 @property(strong,nonatomic) UIImageView *timeImageView;
 @property(strong,nonatomic) UILabel    *timeLabel;
-@property(strong,nonatomic) SKTagView *tagView;
+@property(strong,nonatomic) SKTagView   *tagView;
+
+@property(strong,nonatomic) NSNumber *tagRowHeight;
+@property(strong,nonatomic) NSNumber *tagCounts;
 
 @end

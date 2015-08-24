@@ -333,6 +333,7 @@ static const CGFloat kBanerHeight = 65;
 }
 
 #pragma mark -CLLocationManagerDelegate
+
 -(void)getLocation {
     _locationManager = [[CLLocationManager alloc] init];
     
