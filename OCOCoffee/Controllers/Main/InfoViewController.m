@@ -75,11 +75,14 @@ static const CGFloat slide = 20/2;
                                              action:nil];
     [self.view setBackgroundColor:[UIColor colorFromHexString:@"#f5f5f5"]];
     
-    UIScrollView *scrollView = [UIScrollView new];
-    scrollView.scrollEnabled = YES;
-    scrollView.showsVerticalScrollIndicator = NO;
-    [scrollView setContentOffset:CGPointZero animated:YES];
-    scrollView.contentSize = CGSizeMake(weakSelf.view.frame.size.width, weakSelf.view.frame.size.height-PHONE_NAVIGATIONBAR_HEIGHT-PHONE_STATUSBAR_HEIGHT);
+    UIScrollView *scrollView = ({
+        UIScrollView *view = [UIScrollView new];
+        view.scrollEnabled = YES;
+        view.showsVerticalScrollIndicator = NO;
+        [view setContentOffset:CGPointZero animated:YES];
+        view.contentSize = CGSizeMake(weakSelf.view.frame.size.width, weakSelf.view.frame.size.height-PHONE_NAVIGATIONBAR_HEIGHT-PHONE_STATUSBAR_HEIGHT);
+        view;
+    });
     [self.view addSubview:scrollView];
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.width.mas_equalTo(weakSelf.view);
@@ -95,13 +98,15 @@ static const CGFloat slide = 20/2;
     }];
     
     //用户图像
-    UIImageView *headerImageView = [UIImageView new];
-    headerImageView.image = [UIImage imageNamed:@"sample_logo"];
-    headerImageView.layer.cornerRadius = (kPhotoHeight) /2;
-    headerImageView.layer.masksToBounds = YES;
-    headerImageView.userInteractionEnabled = YES;
+    UIImageView *headerImageView = ({
+        UIImageView *imageView = [UIImageView new];
+        imageView.image = [UIImage imageNamed:@"sample_logo"];
+        imageView.layer.cornerRadius = (kPhotoHeight) /2;
+        imageView.layer.masksToBounds = YES;
+        imageView.userInteractionEnabled = YES;
+        imageView;
+    });
     [topView addSubview:headerImageView];
-    
     [headerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(32/2);
         make.width.height.mas_equalTo(kPhotoHeight);
@@ -112,24 +117,30 @@ static const CGFloat slide = 20/2;
     UIColor *labelTextCollor = [UIColor colorFromHexString:@"#888888"];
     
     
-    UILabel *nicknameLabel = [UILabel new];
-    nicknameLabel.text = @"董事长";
-    nicknameLabel.textColor = labelTextCollor;
-    nicknameLabel.font = [UIFont systemFontOfSize:18];
+    UILabel *nicknameLabel = ({
+        UILabel *label = [UILabel new];
+        label.text = @"董事长";
+        label.textColor = labelTextCollor;
+        label.font = [UIFont systemFontOfSize:18];
+        label;
+    });
     [topView addSubview:nicknameLabel];
     [nicknameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(headerImageView.mas_bottom).offset(24/2);
         make.right.mas_equalTo(topView.mas_centerX).offset(-1);
     }];
     
-    UILabel *sexAgeLabel = [UILabel new];
-    sexAgeLabel.layer.cornerRadius = 3;
-    sexAgeLabel.layer.masksToBounds = YES;
-    sexAgeLabel.textColor = [UIColor colorFromHexString:@"#f16681"];
-    sexAgeLabel.layer.borderColor = [UIColor colorFromHexString:@"#f16681"].CGColor;
-    sexAgeLabel.layer.borderWidth = 1;
-    sexAgeLabel.text = [NSString stringWithFormat:@" %@%@ ", @"♀", @"18"];
-    sexAgeLabel.font = font;
+    UILabel *sexAgeLabel = ({
+        UILabel *label = [UILabel new];
+        label.layer.cornerRadius = 3;
+        label.layer.masksToBounds = YES;
+        label.textColor = [UIColor colorFromHexString:@"#f16681"];
+        label.layer.borderColor = [UIColor colorFromHexString:@"#f16681"].CGColor;
+        label.layer.borderWidth = 1;
+        label.text = [NSString stringWithFormat:@" %@%@ ", @"♀", @"18"];
+        label.font = font;
+        label;
+    });
     [topView addSubview:sexAgeLabel];
     [sexAgeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(headerImageView.mas_bottom).offset(24/2);
@@ -138,80 +149,92 @@ static const CGFloat slide = 20/2;
     }];
     
     
-    UILabel *jobLabel = [UILabel new];
-    jobLabel.text = @"巨蟹座 | 本科 | 商业/服务业/个体经营";
-    jobLabel.font = font;
-    jobLabel.textColor =labelTextCollor;
-    jobLabel.textAlignment = NSTextAlignmentCenter;
+    UILabel *jobLabel = ({
+        UILabel *label = [UILabel new];
+        label.text = @"巨蟹座 | 本科 | 商业/服务业/个体经营";
+        label.font = font;
+        label.textColor =labelTextCollor;
+        label.textAlignment = NSTextAlignmentCenter;
+        label;
+    });
     [topView addSubview:jobLabel];
     [jobLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(nicknameLabel.mas_bottom).offset(24/2);
         make.left.right.mas_equalTo(topView);
     }];
     
-    SKTagView *tagView = [SKTagView new];
-    tagView.padding    = UIEdgeInsetsMake(0, 0, 0, 0);
-    tagView.insets    = 5;
-    tagView.lineSpace = 5;
-    self.tagView = tagView;
-    [topView addSubview:tagView];
-    [tagView mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.tagView = ({
+        SKTagView * tagView = [SKTagView new];
+        tagView.padding    = UIEdgeInsetsMake(0, 0, 0, 0);
+        tagView.insets    = 5;
+        tagView.lineSpace = 5;
+        tagView;
+    });
+    [topView addSubview:self.tagView];
+    [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(jobLabel.mas_bottom).offset(24/2);
         make.centerX.mas_equalTo(topView);
     }];
     
-    UIView *centerView = [UIView new];
-    centerView.backgroundColor = [UIColor whiteColor];
-    self.centerView = centerView;
-    [scrollView addSubview:centerView];
-    [centerView mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.centerView = ({
+        UIView *view = [UIView new];
+        view.backgroundColor = [UIColor whiteColor];
+        view;
+    });
+    [scrollView addSubview:self.centerView];
+    [self.centerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(topView.mas_bottom);
         make.width.mas_equalTo(scrollView);
     }];
     
     [topView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(tagView.mas_bottom);
+        make.bottom.mas_equalTo(weakSelf.tagView.mas_bottom);
     }];
     
     //img collection view
     CGFloat aImgHeight = (SCREEN_WIDTH - (4 * slide))/3;
     CGFloat imgCollectionViewHeight = (aImgHeight*2) + slide;
     
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
+    self.imgCollectionView = ({
+        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+        [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
+        
+        UICollectionView *imgCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+        [imgCollectionView setCollectionViewLayout:layout];
+        imgCollectionView.dataSource = self;
+        imgCollectionView.delegate = self;
+        imgCollectionView.backgroundColor = [UIColor clearColor];
+        //register cell
+        [imgCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"imgCollectionCell"];
+        imgCollectionView;
+    });
     
-    UICollectionView *imgCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-    [imgCollectionView setCollectionViewLayout:layout];
-    imgCollectionView.dataSource = self;
-    imgCollectionView.delegate = self;
-    imgCollectionView.backgroundColor = [UIColor clearColor];
-    //register cell
-    [imgCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"imgCollectionCell"];
-    self.imgCollectionView = imgCollectionView;
-    [centerView addSubview:imgCollectionView];
-    [imgCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(tagView.mas_bottom).offset(24/2);
-        make.left.mas_equalTo(centerView).offset(slide);
-        make.right.mas_equalTo(centerView).offset(-slide);
+    
+    [self.centerView addSubview:self.imgCollectionView];
+    [self.imgCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.tagView.mas_bottom).offset(24/2);
+        make.left.mas_equalTo(weakSelf.centerView).offset(slide);
+        make.right.mas_equalTo(weakSelf.centerView).offset(-slide);
         make.height.mas_equalTo(imgCollectionViewHeight);
     }];
     
     CGFloat addressViewHeight = 72/2;
-    UIView *addressView = [UIView new];
-    addressView.backgroundColor = [UIColor colorFromHexString:@"#f5f5f5"];
-    addressView.layer.masksToBounds = NO;
-    addressView.layer.shadowColor =  [UIColor blackColor].CGColor;
-    addressView.layer.shadowOffset = CGSizeMake(1, 1);
-    addressView.layer.shadowOpacity = 0.1;
-    addressView.layer.shadowRadius = 1;
-    
-    [centerView addSubview:addressView];
+    UIView *addressView = ({
+        UIView *view  = [UIView new];
+        view.backgroundColor = [UIColor colorFromHexString:@"#f5f5f5"];
+        view.layer.masksToBounds = NO;
+        view.layer.shadowColor =  [UIColor blackColor].CGColor;
+        view.layer.shadowOffset = CGSizeMake(1, 1);
+        view.layer.shadowOpacity = 0.1;
+        view.layer.shadowRadius = 1;
+        view;
+    });
+    [self.centerView addSubview:addressView];
     [addressView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(addressViewHeight);
-        make.right.left.mas_equalTo(imgCollectionView);
-        make.top.mas_equalTo(imgCollectionView.mas_bottom).offset(24/2);
+        make.right.left.mas_equalTo(weakSelf.imgCollectionView);
+        make.top.mas_equalTo(weakSelf.imgCollectionView.mas_bottom).offset(24/2);
     }];
-    self.centerViewHeight = imgCollectionViewHeight;
     
     
     UIImageView *addressImgView = [UIImageView new];
@@ -221,28 +244,36 @@ static const CGFloat slide = 20/2;
         make.left.mas_equalTo(addressView).offset(24/2);
         make.centerY.mas_equalTo(addressView);
     }];
-    
-    UILabel *addressLabel = [UILabel new];
-    addressLabel.text = @"阳光高尔夫大厦";
-    addressLabel.font = font;
-    addressLabel.textColor = [UIColor colorFromHexString:@"#aeaeae"];
-    [addressView addSubview:addressLabel];
+
+    //
+    UILabel *addressLabel = ({
+        UILabel *label = [UILabel new];
+        label.text = @"阳光高尔夫大厦";
+        label.font = font;
+        label.textColor = [UIColor colorFromHexString:@"#aeaeae"];
+        [addressView addSubview:label];
+        label;
+    });
     [addressLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(addressImgView.mas_right).offset(24/2);
         make.centerY.mas_equalTo(addressView);
     }];
     
-    UILabel *lonsLabel = [UILabel new];
-    lonsLabel.text = @"0.54km  刚刚";
-    lonsLabel.font = font;
-    lonsLabel.textColor = labelTextCollor;
-    [addressView addSubview:lonsLabel];
+    //
+    UILabel *lonsLabel = ({
+        UILabel *label = [UILabel new];
+        label.text = @"0.54km  刚刚";
+        label.font = font;
+        label.textColor = labelTextCollor;
+        [addressView addSubview:label];
+        label;
+    });
     [lonsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(addressView.mas_right).offset(-(24/2));
         make.centerY.mas_equalTo(addressView);
     }];
     
-    [centerView mas_updateConstraints:^(MASConstraintMaker *make) {
+    [self.centerView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(addressView.mas_bottom).offset(24/2);
     }];
 }

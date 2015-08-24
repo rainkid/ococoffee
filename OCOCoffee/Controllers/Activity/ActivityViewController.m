@@ -128,7 +128,6 @@ static const CGFloat kCellHeight = 440/2;
     // Configure the cell...
     NSArray * cellData = [self.tableData objectAtIndex:indexPath.row];    
 
-    
     cell.headerImageView.image = [UIImage imageNamed:[cellData objectAtIndex:0]];
     cell.nicknameLabel.text = [cellData objectAtIndex:1];
     cell.sexAgeLabel.text =[NSString stringWithFormat:@"%@ %@",@"♀", [cellData objectAtIndex:2]];
