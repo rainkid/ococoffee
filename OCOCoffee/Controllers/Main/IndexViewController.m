@@ -11,13 +11,12 @@
 #import "Global.h"
 #import "IndexViewController.h"
 #import <CoreLocation/CoreLocation.h>
-#import <MobileCoreServices/MobileCoreServices.h>
-#import "IndexViewLayout.h"
 #import "BannerView.h"
 #import <Masonry/Masonry.h>
 #import "UIColor+colorBuild.h"
 #import "IndexCollectionViewCell.h"
 #import "InfoViewController.h"
+#import "SearchViewController.h"
 #import "IndexListItem.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <AFNetworking/AFNetworking.h>
@@ -28,8 +27,11 @@
 static NSString *kCycleBannerIdentifier= @"kbannerIdentifier";
 static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
 static const CGFloat kBanerHeight = 65;
+
 @interface IndexViewController ()<IndexCollectionViewDelegateFlowLayout,CLLocationManagerDelegate,UICollectionViewDelegate,UICollectionViewDataSource, BannerClickedProtocol>
-    
+
+@property(nonatomic,strong) UICollectionView *collectionView;
+
 @property(nonatomic, strong) CLLocationManager *locationManager;
 @property(nonatomic, strong) BannerView *bannerView;
 
@@ -49,66 +51,69 @@ static const CGFloat kBanerHeight = 65;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.title = @"一杯咖啡";
+   
+    [self initTopBar];
     [self initSubViews];
+}
+
+- (void) initTopBar
+{
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"筛选"
+                                                                      style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(search)
+                                      ];
+    self.navigationItem.leftBarButtonItem = leftBarButton;
+    
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"设置"
+                                                                    style:UIBarButtonItemStylePlain
+                                                                   target:self
+                                                                   action:@selector(settings)
+                                    ];
+    self.navigationItem.rightBarButtonItem = rightButton;
 }
 
 - (void) initSubViews
 {
     __weak __typeof(self) weakSelf = self;
 
-    self.title = @"一杯啡咖";
     self.itemWidth = SCREEN_WIDTH/2 -10;
     self.listDataArray = [NSMutableArray array];
-   
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:241.0/255.0 green:94.0/255.0 blue:118.0/255.0 alpha:1.0]];
-    NSShadow *shadow = [[NSShadow alloc] init];
-    [shadow setShadowOffset:CGSizeZero];
     
-    UIFont* font = [UIFont fontWithName:@"Courier" size:21.0];
-    NSDictionary *dict = @{
-                           NSForegroundColorAttributeName:[UIColor whiteColor],
-                           NSShadowAttributeName:shadow,
-                           NSFontAttributeName:font,
-                           };
-    [self.navigationController.navigationBar setTitleTextAttributes:dict];
-    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [self.view setBackgroundColor:[UIColor colorFromHexString:@"#f5f5f5"]];
     
-    if(_collectionView == nil){
+    self.collectionView = ({
         UICollectionViewFlowLayout *indexLayout = [[UICollectionViewFlowLayout alloc] init];
-        indexLayout.minimumInteritemSpacing = 5.0;
-        indexLayout.minimumLineSpacing = 5.0;
         indexLayout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
         indexLayout.itemSize  =self.view.bounds.size;
         
-        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:indexLayout];
-        _collectionView.delegate  = self;
-        _collectionView.dataSource = self;
-        _collectionView.scrollEnabled = YES;
-        _collectionView.scrollsToTop = YES;
-        _collectionView.backgroundColor = [UIColor clearColor];
-        _collectionView.showsVerticalScrollIndicator = NO;
+        UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:indexLayout];
+        collectionView.delegate  = self;
+        collectionView.dataSource = self;
+        collectionView.scrollEnabled = YES;
+        collectionView.scrollsToTop = YES;
+        collectionView.frame = weakSelf.view.frame;
+        collectionView.backgroundColor = [UIColor clearColor];
+        collectionView.showsVerticalScrollIndicator = NO;
         
-        [_collectionView registerClass:[BannerView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCycleBannerIdentifier];
-        [_collectionView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:kIndexCollectionIdentifier];
-        [self.view addSubview:_collectionView];
-    }
+        [collectionView registerClass:[BannerView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCycleBannerIdentifier];
+        [collectionView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:kIndexCollectionIdentifier];
+        collectionView;
+    });
+    [self.view addSubview:self.collectionView];
     
     //load data
-    _collectionView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^(void){
+    self.collectionView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^(void){
         [weakSelf loadAdFromServer];
         [weakSelf getLocation];
     }];
 
-    [_collectionView.header beginRefreshing];
+    [self.collectionView.header beginRefreshing];
     
-    _collectionView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^(void){
+    self.collectionView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^(void){
         [self loadListFromServer];
     }];
-    
-    _collectionView.footer.hidden = YES;
-    
 }
 
 -(void) loadAdFromServer
@@ -121,6 +126,20 @@ static const CGFloat kBanerHeight = 65;
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error with %@ : %@", indexAdUrl, error);
     }];
+}
+
+-(void)search {
+    
+    SearchViewController *searchViewController = [[SearchViewController alloc] init];
+    UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchViewController];
+    
+    [self presentViewController:searchNavigationController animated:YES completion:^(void){
+        NSLog(@"sessued");
+    }];
+}
+
+-(void)settings {
+    
 }
 
 - (void) loadListFromServer
@@ -185,11 +204,6 @@ static const CGFloat kBanerHeight = 65;
 -(void) reloadBanerData
 {
     [self.bannerView forceRefresh:self.adDataArray];
-}
-
--(void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
 }
 
 #pragma mark - BannerClickedProtocol
@@ -312,8 +326,10 @@ static const CGFloat kBanerHeight = 65;
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"%ld-- %ld",indexPath.section,indexPath.row);
+    
     InfoViewController *infoViewController = [[InfoViewController alloc] init];
     [self.navigationController pushViewController:infoViewController animated:YES];
+    NSLog(@"asdfasdfas");
 }
 
 #pragma mark -CLLocationManagerDelegate

@@ -8,19 +8,17 @@
 
 #import "AppDelegate.h"
 
-#import "RootViewController.h"
 #import "IndexViewController.h"
 #import "MessageViewController.h"
 #import "ActivityViewController.h"
 #import "CenterViewController.h"
 
-@interface AppDelegate (){
+@interface AppDelegate ()<UIApplicationDelegate,UITabBarControllerDelegate>
 
-    UINavigationController *_rootNavController;
-    UINavigationController *_activityNavController;
-    UINavigationController *_centerNavController;
-    UINavigationController *_messageNavController;
-}
+@property(nonatomic, strong) UINavigationController *indexNavController;
+@property(nonatomic, strong) UINavigationController *activityNavController;
+@property(nonatomic, strong) UINavigationController *centerNavController;
+@property(nonatomic, strong) UINavigationController *messageNavController;
 
 @end
 
@@ -29,48 +27,51 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
-    
-    
+
     UIImage *imageNormal;
     UIImage *imageSelected;
     
+    //
     imageNormal       = [UIImage imageNamed:@"home_origin"];
     imageSelected     = [UIImage imageNamed:@"home_clicked"];
-    _rootViewController = [[RootViewController alloc] init];
-    _rootViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"首页" image:imageNormal selectedImage:imageSelected];
+    _indexViewController = [[IndexViewController alloc]  initWithNibName:nil bundle:nil];
+    _indexViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"首页" image:imageNormal selectedImage:imageSelected];
+    _indexNavController = [[UINavigationController alloc] initWithRootViewController:_indexViewController];
     
+    //
     imageNormal       = [UIImage imageNamed:@"msg_origin"];
     imageSelected     = [UIImage imageNamed:@"msg_clicked"];
-    _messageViewController = [[MessageViewController alloc] init];
+    _messageViewController = [[MessageViewController alloc]  initWithNibName:nil bundle:nil];
     _messageViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"消息" image:imageNormal selectedImage:imageSelected];
     _messageNavController = [[UINavigationController alloc] initWithRootViewController:_messageViewController];
     
+    //
     imageNormal       = [UIImage imageNamed:@"schedule_origin"];
     imageSelected     = [UIImage imageNamed:@"schedule_clicked"];
-    _activityViewController = [[ActivityViewController alloc] init];
+    _activityViewController = [[ActivityViewController alloc]  initWithNibName:nil bundle:nil];
     _activityViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"日程" image:imageNormal selectedImage:imageSelected];
     _activityNavController = [[UINavigationController alloc] initWithRootViewController:_activityViewController];
     
+    //
     imageNormal       = [UIImage imageNamed:@"my_origin"];
     imageSelected     = [UIImage imageNamed:@"my_clicked"];
-    _centerViewController = [[CenterViewController alloc] init];
+    _centerViewController = [[CenterViewController alloc] initWithNibName:nil bundle:nil];
     _centerViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"我的" image:imageNormal selectedImage:imageSelected];
     _centerNavController = [[UINavigationController alloc] initWithRootViewController:_centerViewController];
 
+    //
+    _mainController = [[UITabBarController alloc] init];
+    _mainController.delegate = self;
+    _mainController.viewControllers = @[_indexNavController, _messageNavController, _activityNavController,_centerNavController];
     
-    UITabBarController *_tabBarController = [[UITabBarController alloc] init];
-    _tabBarController.delegate = self;
-    _tabBarController.viewControllers = @[_rootViewController,_messageNavController,_activityNavController,_centerNavController];
-    
-    
-    //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    
+    //
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    [self.window setBackgroundColor:[UIColor clearColor]];
-    [self.window setRootViewController:_tabBarController];
+    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.rootViewController = self.mainController;
+    self.mainController.delegate = self;
     [self.window makeKeyAndVisible];
-    
+
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     return YES;
 }
 

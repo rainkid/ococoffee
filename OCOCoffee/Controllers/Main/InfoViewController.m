@@ -15,14 +15,13 @@
 
 static const CGFloat kPhotoHeight = 146/2;
 static const CGFloat slide = 20/2;
-static const CGFloat buttonHeight = 106/2;
+//static const CGFloat buttonHeight = 106/2;
 
 @interface InfoViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
 
-@property(nonatomic, strong) NSDictionary *activityData;
+@property(nonatomic, strong) NSDictionary *userData;
 
 @property(nonatomic, strong) SKTagView *tagView;
-@property(nonatomic, assign) bool isCenterHidden;
 
 @property(nonatomic, strong) UIButton *upButton;
 @property(nonatomic, strong) UIView *topView;
@@ -40,9 +39,8 @@ static const CGFloat buttonHeight = 106/2;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        _activityData = [[NSDictionary alloc] init];
+        _userData = [[NSDictionary alloc] init];
         self.hidesBottomBarWhenPushed = YES;
-        _isCenterHidden = false;
     }
     return self;
 }
@@ -68,18 +66,20 @@ static const CGFloat buttonHeight = 106/2;
 
 - (void) initSubViews {
     __weak typeof(self) weakSelf = self;
+    self.title = @"个人详情";
+    
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]
                                              initWithTitle:@""
                                              style:UIBarButtonItemStylePlain
                                              target:nil
                                              action:nil];
-    self.title = @"个人详情";
-    [self.view setBackgroundColor:[UIColor whiteColor]];
+    [self.view setBackgroundColor:[UIColor colorFromHexString:@"#f5f5f5"]];
     
     UIScrollView *scrollView = [UIScrollView new];
     scrollView.scrollEnabled = YES;
+    scrollView.showsVerticalScrollIndicator = NO;
     [scrollView setContentOffset:CGPointZero animated:YES];
-    scrollView.contentSize = CGSizeMake(weakSelf.view.frame.size.width, weakSelf.view.frame.size.height+PHONE_NAVIGATIONBAR_HEIGHT+PHONE_STATUSBAR_HEIGHT + buttonHeight);
+    scrollView.contentSize = CGSizeMake(weakSelf.view.frame.size.width, weakSelf.view.frame.size.height-PHONE_NAVIGATIONBAR_HEIGHT-PHONE_STATUSBAR_HEIGHT);
     [self.view addSubview:scrollView];
     [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.left.width.mas_equalTo(weakSelf.view);
@@ -305,15 +305,18 @@ static const CGFloat buttonHeight = 106/2;
     CGFloat width = (SCREEN_WIDTH - (4 * slide))/3;
     return CGSizeMake(width, width);
 }
+
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
     return UIEdgeInsetsMake(0, 0, 0, 0);
 }
+
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell * cell = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
 }
+
 -(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     return YES;

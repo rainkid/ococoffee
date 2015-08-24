@@ -80,6 +80,7 @@ static const CGFloat kPhotoHeight = 82;
         make.top.mas_equalTo(_imageView.mas_bottom).offset(14/3);
         make.centerX.equalTo(weakSelf.view);
     }];
+    
     UILabel *label_2 = [UILabel new];
     label_2.text = @"ID:123456";
     label_2.font = [UIFont systemFontOfSize:15];

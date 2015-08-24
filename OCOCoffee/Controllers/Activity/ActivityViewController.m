@@ -51,15 +51,17 @@ static const CGFloat kCellHeight = 440/2;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
     //tableview
-    UITableView *tableView = [UITableView new];
-    tableView.dataSource = self;
-    tableView.delegate = self;
-    tableView.estimatedRowHeight = kCellHeight;
-    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    tableView.rowHeight = UITableViewAutomaticDimension;
-    [self.view addSubview:tableView];
-    self.tableView = tableView;
-    [tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.tableView = ({
+        UITableView *tableView = [UITableView new];
+        tableView.dataSource = self;
+        tableView.delegate = self;
+        tableView.estimatedRowHeight = kCellHeight;
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        tableView.rowHeight = UITableViewAutomaticDimension;
+        tableView;
+    });
+    [self.view addSubview:self.tableView];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(weakSelf.view);
     }];
     
@@ -153,9 +155,7 @@ static const CGFloat kCellHeight = 440/2;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    ActivityTableViewCell *cell = (ActivityTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     DetailViewController *detail = [[DetailViewController alloc] init];
-//    [self.parentViewController presentViewController:detail animated:YES completion:nil];
     [self.navigationController pushViewController:detail animated:YES];
 }
 

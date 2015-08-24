@@ -11,6 +11,5 @@
 
 @interface IndexViewController : UIViewController
 
-@property(nonatomic,strong) UICollectionView *collectionView;
 
 @end

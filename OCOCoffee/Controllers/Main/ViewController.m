@@ -32,13 +32,6 @@
 //初始化视图
 -(void)viewInitlize {
 
-    UIView *_subView = [[UIView alloc] initWithFrame:self.view.frame];
-    _subView.backgroundColor = [UIColor whiteColor];
-    self.title = @"一杯咖啡";
-    [self.view addSubview:_subView];
-    
-    
-    
 }
 
 @end
