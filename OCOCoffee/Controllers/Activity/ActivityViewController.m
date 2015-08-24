@@ -47,8 +47,7 @@ static const CGFloat kCellHeight = 440/2;
 - (void) initSubViews {
     
     __weak typeof(self) weakSelf = self;
-    [self.view setBackgroundColor:[UIColor whiteColor]];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [self.view setBackgroundColor:[UIColor colorFromHexString:@"#f5f5f5"]];
 
     //tableview
     self.tableView = ({
