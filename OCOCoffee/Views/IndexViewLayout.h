@@ -11,5 +11,8 @@
 @interface IndexViewLayout : UICollectionViewFlowLayout<UICollectionViewDelegateFlowLayout>
 
 
+@property(nonatomic,strong) NSMutableArray *columnHeights;
+
+
 
 @end

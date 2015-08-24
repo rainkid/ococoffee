@@ -11,9 +11,11 @@
 @implementation IndexViewLayout
 
 
+
 -(void)prepareLayout
 {
     NSLog(@"Prepare Layout");
+    
 }
 
 //UICollectionViewLayout 必须实现的三个方法
@@ -38,5 +40,17 @@
 {
     return nil;
 }
+
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+    return CGSizeMake(self.collectionView.frame.size.width, 70);
+}
+
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(5, 5, 5, 5);
+}
+
 
 @end

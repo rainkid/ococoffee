@@ -38,9 +38,9 @@
         long kMainImageHeight = self.contentView.bounds.size.height- 108;
         _userImageView = [UIImageView new];
         _userImageView.backgroundColor = [UIColor redColor];
-        [view1 addSubview:_userImageView];
+        [weakSelf addSubview:_userImageView];
         [_userImageView mas_makeConstraints:^(MASConstraintMaker *make){
-            make.centerX.mas_equalTo(view1.mas_centerX);
+            make.centerX.mas_equalTo(weakSelf.mas_centerX);
             make.height.mas_equalTo(kMainImageHeight);
             make.width.mas_equalTo(self.contentView.bounds.size.width);
             
@@ -50,10 +50,10 @@
         _usernameLabel.textColor = [UIColor brownColor];
         _usernameLabel.textAlignment = NSTextAlignmentCenter;
         _usernameLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
-        [self.contentView addSubview:_usernameLabel];
+        [weakSelf addSubview:_usernameLabel];
         [_usernameLabel mas_makeConstraints:^(MASConstraintMaker *make){
             make.top.mas_equalTo(_userImageView.mas_bottom).offset(3.0);
-            make.centerX.mas_equalTo(weakSelf.contentView);
+            make.centerX.mas_equalTo(self.contentView);
             
         }];
         
@@ -62,7 +62,7 @@
         UIImageView *backGroudView = [[UIImageView alloc] init];
         backGroudView.image = [UIImage imageNamed:@"background"];
         backGroudView.backgroundColor= [UIColor clearColor];
-        [self addSubview:backGroudView];
+        [weakSelf addSubview:backGroudView];
         [backGroudView mas_makeConstraints:^(MASConstraintMaker *make){
             make.top.mas_equalTo(_usernameLabel.mas_bottom).offset(4.2);
             make.centerX.mas_equalTo(weakSelf);
@@ -76,7 +76,7 @@
         _ageLabel.textAlignment = NSTextAlignmentCenter;
         _ageLabel.textColor = [UIColor grayColor];
         _ageLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
-        [self addSubview:_ageLabel];
+        [weakSelf addSubview:_ageLabel];
         [_ageLabel mas_makeConstraints:^(MASConstraintMaker *make){
             make.top.mas_equalTo(_usernameLabel.mas_bottom).offset(3.6);
             make.right.mas_equalTo(backGroudView.mas_left).offset(-12);
@@ -85,7 +85,7 @@
         _sexImageView = [[UIImageView alloc] init];
         _sexImageView.backgroundColor = [UIColor clearColor];
         _sexImageView.image = [UIImage imageNamed:@"woman"];
-        [self addSubview:_sexImageView];
+        [weakSelf addSubview:_sexImageView];
         [_sexImageView mas_makeConstraints:^(MASConstraintMaker *make){
             make.top.mas_equalTo(_usernameLabel.mas_bottom).offset(4.5);
             make.width.mas_equalTo(SEXIMAGEWIDTH);
@@ -118,28 +118,29 @@
         }];
         
         
-        NSMutableArray *tagValues = [self getRandTags];
-        [tagValues enumerateObjectsUsingBlock:^(id obj,NSUInteger idx,BOOL *stop){
-            
-            SKTag *tag          = [SKTag tagWithText:obj];
-            tag.textColor       = [UIColor whiteColor];
-            tag.cornerRadius    = 2;
-            tag.borderWidth     = 0;
-             NSString *colorStr  = [self randColor];
-            tag.bgColor         = [UIColor colorFromHexString:colorStr];
-            
-            UIFont *font = [UIFont fontWithName:@"Helvetica" size:11.0];
-            tag.font            = font;
-            tag.padding         = UIEdgeInsetsMake(kTagPaddingTop, kTagPaddingTop, kTagPaddingBottom, kTagPaddingBottom);
-            CGSize size = CGSizeMake(80, 20);
-            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil];
-            size = [tag.text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:dict context:nil].size;
-            float Height = size.height;
-            float rowHeight = Height + kTagPaddingBottom + kTagPaddingTop;
-            _tagRowHeight = [[NSNumber alloc] initWithFloat:rowHeight];
-            _tagCounts =  [[NSNumber alloc] initWithInteger:[tagValues count]];
-            [_tagView addTag:tag];
-        }];
+        //NSMutableArray *tagValues = [self getRandTags];
+//        [_tags enumerateObjectsUsingBlock:^(id obj,NSUInteger idx,BOOL *stop){
+//            NSDictionary *tagDict = obj;
+//            
+//            SKTag *tag          = [SKTag tagWithText:tagDict[@"name"]];
+//            tag.textColor       = [UIColor whiteColor];
+//            tag.cornerRadius    = 2;
+//            tag.borderWidth     = 0;
+//            //NSString *colorStr  = [self randColor];
+//            tag.bgColor         = [UIColor colorFromHexString:tagDict[@"bg_color"]];
+//            
+//            UIFont *font = [UIFont fontWithName:@"Helvetica" size:11.0];
+//            tag.font            = font;
+//            tag.padding         = UIEdgeInsetsMake(kTagPaddingTop, kTagPaddingTop, kTagPaddingBottom, kTagPaddingBottom);
+//            CGSize size = CGSizeMake(80, 20);
+//            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil];
+//            size = [tag.text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:dict context:nil].size;
+//            float Height = size.height;
+//            float rowHeight = Height + kTagPaddingBottom + kTagPaddingTop;
+//            _tagRowHeight = [[NSNumber alloc] initWithFloat:rowHeight];
+//            _tagCounts =  [[NSNumber alloc] initWithInteger:[_tags count]];
+//            [_tagView addTag:tag];
+//        }];
         
         _locationImageView = [[UIImageView alloc] init];
         _locationImageView.backgroundColor = [UIColor clearColor];
@@ -158,7 +159,7 @@
         _locationLabel.textAlignment = NSTextAlignmentCenter;
         _locationLabel.text =@"12.5Km";
         _locationLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-        [self addSubview:_locationLabel];
+        [weakSelf addSubview:_locationLabel];
         [_locationLabel mas_makeConstraints:^(MASConstraintMaker *make){
             make.top.mas_equalTo(_tagView.mas_bottom).offset(8);
             make.left.mas_equalTo(_locationImageView.mas_right).offset(4);
@@ -170,7 +171,7 @@
         _timeLabel.textAlignment = NSTextAlignmentCenter;
         _timeLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         _timeLabel.textColor= [UIColor lightGrayColor];
-        [self addSubview:_timeLabel];
+        [weakSelf addSubview:_timeLabel];
         [_timeLabel mas_makeConstraints:^(MASConstraintMaker *make){
             make.top.mas_equalTo(_tagView.mas_bottom).offset(8);
             make.right.mas_equalTo(weakSelf.mas_right).offset(-6);
@@ -178,7 +179,7 @@
         
         _timeImageView = [[UIImageView alloc] init];
         _timeImageView.image = [UIImage imageNamed:@"time"];
-        [self addSubview:_timeImageView];
+        [weakSelf addSubview:_timeImageView];
         [_timeImageView mas_makeConstraints:^(MASConstraintMaker *make){
             make.top.mas_equalTo(_tagView.mas_bottom).offset(6);
             make.right.mas_equalTo(_timeLabel.mas_left).offset(-6);
