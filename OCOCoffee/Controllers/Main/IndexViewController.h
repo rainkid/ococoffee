@@ -12,7 +12,7 @@
 @interface IndexViewController : UIViewController
 
 @property(nonatomic,strong) UICollectionView *collectionView;
-@property(nonatomic,strong) NSMutableArray *dataList;
+
 
 
 @end
