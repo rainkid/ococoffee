@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
 
-#import "Golbal.h"
+#import "Global.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
 #import <SKTagView/SKTag.h>

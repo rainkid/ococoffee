@@ -9,15 +9,17 @@
 #import <UIKit/UIKit.h>
 #import <KDCycleBannerView/KDCycleBannerView.h>
 
-@protocol BannerViewDelegate <NSObject>
+static const CGFloat kAutoPlayTimeInterval = 5;
 
--(void)clickedAdAtIndex:(NSInteger)index;
+@protocol BannerClickedProtocol <NSObject>
+
+- (void)clickedBanner:(NSDictionary *)dict;
 
 @end
 
-@interface BannerView : UICollectionReusableView <KDCycleBannerViewDelegate,KDCycleBannerViewDataource>
+@interface BannerView : UICollectionReusableView
 
-@property(nonatomic,assign) id<BannerViewDelegate>delegate;
-@property(nonatomic,strong) NSArray *bannerList;
+@property (nonatomic, assign) id<BannerClickedProtocol> delegate;
 
+- (void)forceRefresh:(NSArray *)adArray;
 @end

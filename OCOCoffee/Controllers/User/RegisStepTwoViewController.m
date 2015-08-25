@@ -7,7 +7,7 @@
 //
 
 
-#import "Golbal.h"
+#import "Global.h"
 #import <Masonry/Masonry.h>
 #import "UIColor+colorBuild.h"
 #import "RegisTableViewCell.h"

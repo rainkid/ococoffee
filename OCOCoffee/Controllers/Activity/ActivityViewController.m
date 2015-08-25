@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 sam. All rights reserved.
 //
 
-#import "Golbal.h"
+#import "Global.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
 #import <MJRefresh/MJRefresh.h>
@@ -45,20 +45,22 @@ static const CGFloat kCellHeight = 440/2;
 }
 
 - (void) initSubViews {
-    [self.view setBackgroundColor:[UIColor whiteColor]];
     
     __weak typeof(self) weakSelf = self;
-    
+    [self.view setBackgroundColor:[UIColor colorFromHexString:@"#f5f5f5"]];
+
     //tableview
-    UITableView *tableView = [UITableView new];
-    tableView.dataSource = self;
-    tableView.delegate = self;
-    tableView.estimatedRowHeight = kCellHeight;
-    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    tableView.rowHeight = UITableViewAutomaticDimension;
-    [self.view addSubview:tableView];
-    self.tableView = tableView;
-    [tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.tableView = ({
+        UITableView *tableView = [UITableView new];
+        tableView.dataSource = self;
+        tableView.delegate = self;
+        tableView.estimatedRowHeight = kCellHeight;
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        tableView.rowHeight = UITableViewAutomaticDimension;
+        tableView;
+    });
+    [self.view addSubview:self.tableView];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(weakSelf.view);
     }];
     
@@ -126,10 +128,9 @@ static const CGFloat kCellHeight = 440/2;
     // Configure the cell...
     NSArray * cellData = [self.tableData objectAtIndex:indexPath.row];    
 
-    
     cell.headerImageView.image = [UIImage imageNamed:[cellData objectAtIndex:0]];
     cell.nicknameLabel.text = [cellData objectAtIndex:1];
-    cell.ageLabel.text =[cellData objectAtIndex:2];
+    cell.sexAgeLabel.text =[NSString stringWithFormat:@"%@ %@",@"♀", [cellData objectAtIndex:2]];
     cell.conLabel.text =[cellData objectAtIndex:3];
     cell.addressLabel.text =[cellData objectAtIndex:4];
     cell.nearTimeLabel.text = [cellData objectAtIndex:5];
@@ -137,14 +138,6 @@ static const CGFloat kCellHeight = 440/2;
     cell.beforeLabel.text = [cellData objectAtIndex:7];
     cell.statusImageView.image = [UIImage imageNamed:[cellData objectAtIndex:8]];
     cell.sexImageView.image = [UIImage imageNamed:@"sex_girl"];
-    
-    //set address label line space
-//    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:cell.addressLabel.text];
-//    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-//    [paragraphStyle setLineSpacing:5];
-//    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [cell.addressLabel.text length])];
-//    cell.addressLabel.attributedText = attributedString;
-    
     return cell;
 }
 
@@ -155,12 +148,11 @@ static const CGFloat kCellHeight = 440/2;
     NSDictionary *attrbute = @{NSFontAttributeName:[UIFont systemFontOfSize:14]};
     CGFloat textHeight = [addressStr boundingRectWithSize:CGSizeMake(SCREEN_WIDTH, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attrbute context:nil].size.height;
     
-    return textHeight+kCellHeight;
+    return textHeight + kCellHeight;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    ActivityTableViewCell *cell = (ActivityTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     DetailViewController *detail = [[DetailViewController alloc] init];
     [self.navigationController pushViewController:detail animated:YES];
 }

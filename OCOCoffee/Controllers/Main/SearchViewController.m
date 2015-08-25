@@ -16,6 +16,7 @@
 
 #import "SearchViewController.h"
 #import "CountryViewController.h"
+#import "ViewStyles.h"
 
 @interface SearchViewController (){
     
@@ -41,6 +42,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"筛选";
+    
+    [ViewStyles setNaviControllerStyle:self.navigationController];
     
     UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
     topView.backgroundColor =[UIColor lightGrayColor];

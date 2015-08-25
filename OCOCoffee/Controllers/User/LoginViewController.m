@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 sam. All rights reserved.
 //
 
-#import "Golbal.h"
+#import "Global.h"
 #import <Masonry/Masonry.h>
 #import "LoginViewController.h"
 #import "LoginTableViewCell.h"

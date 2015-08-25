@@ -5,7 +5,7 @@
 //  Created by sam on 15/8/17.
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
-#import "Golbal.h"
+#import "Global.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
 #import "ActivityTableViewCell.h"
@@ -58,24 +58,15 @@ static const CGFloat kPhotoHeight = 126/2;
             make.left.mas_equalTo(headerImageView.mas_right).offset(36/2);
         }];
         
-        //性别
-        UIImageView *sexImageView = [UIImageView new];
-        self.sexImageView = sexImageView;
-        [self addSubview:sexImageView];
-        [sexImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(nicknameLabel.mas_bottom).offset(24/2);
-            make.left.mas_equalTo(nicknameLabel);
-        }];
-        
         //年龄
-        UILabel *ageLabel = [UILabel new];
-        ageLabel.font = font;
-        ageLabel.textColor = [UIColor colorFromHexString:@"#f16681"];
-        self.ageLabel = ageLabel;
-        [self addSubview:ageLabel];
-        [ageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(sexImageView);
-            make.left.mas_equalTo(sexImageView.mas_right).offset(14/2);
+        UILabel *sexAgeLabel = [UILabel new];
+        sexAgeLabel.font = font;
+        sexAgeLabel.textColor = [UIColor colorFromHexString:@"#f16681"];
+        self.sexAgeLabel = sexAgeLabel;
+        [self addSubview:sexAgeLabel];
+        [sexAgeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(nicknameLabel);
+            make.top.mas_equalTo(nicknameLabel.mas_bottom).offset(14/2);
         }];
         
         //星座
@@ -85,8 +76,8 @@ static const CGFloat kPhotoHeight = 126/2;
         self.conLabel = conLabel;
         [self addSubview:conLabel];
         [conLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(sexImageView);
-            make.left.mas_equalTo(ageLabel.mas_right).offset(14/2);
+            make.top.mas_equalTo(sexAgeLabel);
+            make.left.mas_equalTo(sexAgeLabel.mas_right).offset(14/2);
         }];
         
         //

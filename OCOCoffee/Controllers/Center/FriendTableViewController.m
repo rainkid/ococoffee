@@ -5,7 +5,7 @@
 //  Created by sam on 15/8/12.
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
-#import "Golbal.h"
+#import "Global.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
 #import <MJRefresh/MJRefresh.h>
@@ -28,6 +28,7 @@ static const CGFloat kCellHeight = 188/2;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _tableData = [[NSMutableArray alloc] init];
+        self.hidesBottomBarWhenPushed = YES;
     }
     return self;
 }
