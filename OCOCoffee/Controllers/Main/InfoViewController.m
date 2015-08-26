@@ -355,7 +355,6 @@ static const CGFloat slide = 20/2;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
         InfoCollectionCell * cell = (InfoCollectionCell *)[self.imgCollectionView cellForItemAtIndexPath:indexPath];
         [cell.imageView sd_setImageWithURL:[NSURL URLWithString:item[@"img"]]];
-        i++;
     }
 }
 
