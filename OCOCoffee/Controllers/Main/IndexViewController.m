@@ -391,7 +391,7 @@ static const CGFloat kBanerHeight = 65;
     cell.nicknameLabel.text = item.nickname;
     cell.ageLabel.text = [NSString stringWithFormat:@"%@", item.age];
     //cell.constellation.text= item.constellation;
-    if ([item.sex isEqualToString:@"1"]) {
+    if ([item.sex floatValue] == 1) {
         cell.sexLabel.text = @"♂";
     } else {
         cell.sexLabel.text = @"♀";
@@ -484,7 +484,11 @@ static const CGFloat kBanerHeight = 65;
 {
     
     InfoViewController *infoViewController = [[InfoViewController alloc] init];
-    infoViewController.userInfo = [self.listDataArray objectAtIndex:[indexPath row]];
+    IndexListItem *item = [self.listDataArray objectAtIndex:[indexPath row]];
+    infoViewController.userId = [item.userId floatValue];
+    infoViewController.latitude = self.latitude;
+    infoViewController.logitude = self.logitude;
+    
     [self.navigationController pushViewController:infoViewController animated:YES];
     NSLog(@"asdfasdfas");
 }

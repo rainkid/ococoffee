@@ -41,7 +41,7 @@ static const CGFloat kTableLeftSide = 23.3f;
 }
 
 - (void)addSubViews {
-    UIImage *bg_image = [UIImage imageNamed:@"background.png"];
+    UIImage *bg_image = [UIImage imageNamed:@"background"];
     UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
     [bg_imageView setFrame:self.view.bounds];
     [self.view addSubview:bg_imageView];

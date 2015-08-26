@@ -13,13 +13,21 @@
 #import "ActivityViewController.h"
 #import "FriendTableViewController.h"
 #import "MessageViewController.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "LoginViewController.h"
+#import <AFNetworking/AFNetworking.h>
 #import <Masonry/Masonry.h>
 
 static const CGFloat kPhotoHeight = 82;
 
-@interface CenterViewController ()<UITableViewDataSource, UITableViewDelegate>
+@interface CenterViewController ()<UITableViewDataSource, UITableViewDelegate, LoginSuccessProtocol>
     
 @property(nonatomic, strong) UIImageView *imageView;
+@property(nonatomic, strong) UILabel *nickname;
+@property(nonatomic, strong) UILabel *uniqueId;
+@property(nonatomic, strong) UILabel *sysPoint;
+@property(nonatomic, strong) UILabel *msgPoint;
+
 
 @end
 
@@ -28,13 +36,20 @@ static const CGFloat kPhotoHeight = 82;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    __weak typeof(self) weakSelf = self;
-    
     self.title = @"我的";
     self.view.backgroundColor = [UIColor whiteColor];
 
     self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     
+    [self loginOut];
+    [self initSubViews];
+    [self checkLogin];
+}
+
+-(void)initSubViews
+{
+    __weak typeof(self) weakSelf = self;
+
     UIImageView *bg_imageView = [UIImageView new];
     bg_imageView.image =[UIImage imageNamed:@"center_bg"];
     [self.view addSubview:bg_imageView];
@@ -44,9 +59,9 @@ static const CGFloat kPhotoHeight = 82;
     }];
     
     //photo cyctle
-    UIView *photoView = [UIView new];
     long kPhotoSlide = 8;
     long kCPhotoHeight =kPhotoHeight+kPhotoSlide;
+    UIView *photoView = [UIView new];
     photoView.layer.cornerRadius = kCPhotoHeight/2;
     photoView.layer.masksToBounds = YES;
     photoView.layer.borderWidth = 1.0f;
@@ -60,36 +75,42 @@ static const CGFloat kPhotoHeight = 82;
     }];
     
     //phone inner image
-    _imageView = [UIImageView new];
-    _imageView.image = [UIImage imageNamed:@"sample_logo"];
-    _imageView.layer.cornerRadius = (kPhotoHeight) /2;
-    _imageView.layer.masksToBounds = YES;    
+    self.imageView = ({
+        UIImageView *imageView = [UIImageView new];
+        imageView.layer.cornerRadius = (kPhotoHeight) /2;
+        imageView.layer.masksToBounds = YES;
+        imageView;
+    });
     
-    [self.view addSubview:_imageView];
-    [_imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.view addSubview:self.imageView];
+    [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
         make.top.mas_equalTo(photoView.mas_top).offset(kPhotoSlide/2);
         make.height.and.width.mas_equalTo(kPhotoHeight);
     }];
     
     //labels
-    UILabel *label_1 = [UILabel new];
-    label_1.text = @"董事长";
-    label_1.font = [UIFont systemFontOfSize:15];
-    label_1.textColor = [UIColor colorFromHexString:@"#7d4c28"];
-    [self.view addSubview:label_1];
-    [label_1 mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.nickname = ({
+        UILabel *label = [UILabel new];
+        label.font = [UIFont systemFontOfSize:15];
+        label.textColor = [UIColor colorFromHexString:@"#7d4c28"];
+        label;
+    });
+    [self.view addSubview:self.nickname];
+    [self.nickname mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_imageView.mas_bottom).offset(14/3);
         make.centerX.equalTo(weakSelf.view);
     }];
     
-    UILabel *label_2 = [UILabel new];
-    label_2.text = @"ID:123456";
-    label_2.font = [UIFont systemFontOfSize:15];
-    label_2.textColor = [UIColor colorFromHexString:@"#7d4c28"];
-    [self.view addSubview:label_2];
-    [label_2 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(label_1.mas_bottom).offset(2);
+    self.uniqueId = ({
+        UILabel *label = [UILabel new];
+        label.font = [UIFont systemFontOfSize:15];
+        label.textColor = [UIColor colorFromHexString:@"#7d4c28"];
+        label;
+    });
+    [self.view addSubview:self.uniqueId];
+    [self.uniqueId mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.nickname.mas_bottom).offset(2);
         make.centerX.equalTo(weakSelf.view);
     }];
     
@@ -110,7 +131,7 @@ static const CGFloat kPhotoHeight = 82;
         make.left.right.width.mas_equalTo(weakSelf.view);
         make.top.mas_equalTo(bg_imageView.mas_bottom);
     }];
-
+    
     //notice view
     UIView *noticeView = [UIView new];
     noticeView.backgroundColor = [UIColor whiteColor];
@@ -119,6 +140,24 @@ static const CGFloat kPhotoHeight = 82;
         make.height.top.mas_equalTo(centerView);
         make.left.mas_equalTo(centerView);
         make.width.mas_equalTo(SCREEN_WIDTH/2 - 1);
+    }];
+    
+    CGFloat pointWH = 35/2;
+    self.sysPoint = ({
+        UILabel *label = [UILabel new];
+        label.layer.cornerRadius = pointWH/2;
+        label.layer.masksToBounds = YES;
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = [UIColor whiteColor];
+        label.font = [UIFont systemFontOfSize:12];
+        label.backgroundColor = [UIColor colorFromHexString:@"#ee524d"];
+        label;
+    });
+    [self.view addSubview:self.sysPoint];
+    [self.sysPoint mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.height.mas_equalTo(pointWH);
+        make.centerX.mas_equalTo(noticeView.mas_centerX).offset(30);
+        make.centerY.mas_equalTo(noticeView.mas_centerY).offset(-25);
     }];
     
     //notice image view
@@ -140,6 +179,23 @@ static const CGFloat kPhotoHeight = 82;
         make.width.mas_equalTo(SCREEN_WIDTH/2 - 1);
     }];
     
+    self.msgPoint = ({
+        UILabel *label = [UILabel new];
+        label.layer.cornerRadius = pointWH/2;
+        label.layer.masksToBounds = YES;
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = [UIColor whiteColor];
+        label.font = [UIFont systemFontOfSize:12];
+        label.backgroundColor = [UIColor colorFromHexString:@"#ee524d"];
+        label;
+    });
+    [self.view addSubview:self.msgPoint];
+    [self.msgPoint mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.height.mas_equalTo(pointWH);
+        make.centerX.mas_equalTo(msgView.mas_centerX).offset(30);
+        make.centerY.mas_equalTo(msgView.mas_centerY).offset(-25);
+    }];
+    
     //msg image view
     UIImageView *msgImageView = [UIImageView new];
     msgImageView.image = [UIImage imageNamed:@"center_msg"];
@@ -147,12 +203,13 @@ static const CGFloat kPhotoHeight = 82;
     [msgImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.mas_equalTo(msgView);
     }];
-
+    
     
     //table view
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     tableView.delegate = self;
     tableView.dataSource = self;
+    tableView.scrollEnabled = NO;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     tableView.showsVerticalScrollIndicator = NO;
     tableView.showsHorizontalScrollIndicator = NO;
@@ -164,6 +221,72 @@ static const CGFloat kPhotoHeight = 82;
         make.height.mas_equalTo(kCellHeight*4 + 32);
         make.top.mas_equalTo(msgView.mas_bottom).offset(28/3);
     }];
+}
+
+-(void) loadDataFromServer
+{
+    NSString *listApiUrl = API_DOMAIN@"api/user/center";
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    //get cookie data
+
+    [manager POST:listApiUrl parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject){
+        NSLog(@"%@", responseObject);
+        [self analyseInfoResponse:responseObject];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+}
+
+-(void)UserLoginSuccess {
+    NSLog(@"LoginSuccess");
+    [self loadDataFromServer];
+}
+
+-(void) loginOut
+{;
+    NSLog(@"login out");
+    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray  *tmpArray = [NSArray arrayWithArray:[cookieJar cookies]];
+    for (id obj in tmpArray) {
+        [cookieJar deleteCookie:obj];
+    }
+}
+
+-(void)checkLogin
+{
+    NSData *cookiesdata = [[NSUserDefaults standardUserDefaults] objectForKey:USERCOOKIE];
+    if ([cookiesdata length] == 0) {
+        [self showLoginPage];
+    } else {
+        [self loadDataFromServer];
+    }
+}
+
+-(void) analyseInfoResponse:(NSDictionary *)jsonObject
+{
+    if ([jsonObject isKindOfClass:[NSDictionary class]]) {
+        if ([jsonObject[@"success"] integerValue] == 1) {
+            NSDictionary *data = jsonObject[@"data"];
+            [self.imageView sd_setImageWithURL:[NSURL URLWithString:data[@"headimgurl"]]];
+            [self.nickname setText:data[@"nickname"]];
+            [self.uniqueId setText:data[@"uid"]];
+            [self.sysPoint setText:data[@"sys_msg_count"]];
+            [self.msgPoint setText:data[@"friend_msg_count"]];
+        } else {
+            [self showLoginPage];
+        }
+    } else {
+        NSLog(@"response error");
+    }
+
+}
+
+-(void) showLoginPage
+{
+    LoginViewController *loginViewController = [[LoginViewController alloc] init];
+    loginViewController.delegate = self;
+    [self.parentViewController presentViewController:loginViewController animated:YES completion:nil];
 }
 
 #pragma tableview delegate methods

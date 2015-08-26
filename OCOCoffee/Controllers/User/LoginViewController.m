@@ -11,12 +11,18 @@
 #import "LoginViewController.h"
 #import "LoginTableViewCell.h"
 #import "RegisStepOneViewController.h"
+#import <AFNetworking/AFNetworking.h>
 #import "UIColor+colorBuild.h"
 
 static const CGFloat kButtonHeight = 43;
 
 @interface LoginViewController()<UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate>
-@property (nonatomic, strong) UITableView *tableView;
+
+@property(nonatomic, strong) UITableView *tableView;
+@property(nonatomic, strong) UITextField *usernameTextField;
+@property(nonatomic, strong) UITextField *passwordTextField;
+@property(nonatomic, strong) UIButton *loginButton;
+
 @end
 
 @implementation LoginViewController
@@ -24,17 +30,12 @@ static const CGFloat kButtonHeight = 43;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self initialize];
-    NSLog(@"%@", self.navigationController);
+    [self intializeView];
     self.navigationController.delegate = self;
 }
 
-- (void) initialize{
-    [self intializeView];
-}
-
 - (void) intializeView {
-    UIImage *bg_image = [UIImage imageNamed:@"background.png"];
+    UIImage *bg_image = [UIImage imageNamed:@"background"];
     UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
     [bg_imageView setFrame:self.view.bounds];
     [self.view addSubview: bg_imageView];
@@ -52,19 +53,22 @@ static const CGFloat kButtonHeight = 43;
         make.centerX.equalTo(self.view);
     }];
     
-    
     //table view
-    _tableView = [UITableView new];
-    _tableView.layer.cornerRadius = 3;
-    _tableView.layer.masksToBounds = YES;
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    _tableView.alpha = 0.7;
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.showsVerticalScrollIndicator = NO;
-    _tableView.showsHorizontalScrollIndicator = NO;
-    [self.view addSubview:_tableView];
-    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.tableView = ({
+        UITableView *tableView = [UITableView new];
+        tableView.layer.cornerRadius = 3;
+        tableView.layer.masksToBounds = YES;
+        tableView.delegate = self;
+        tableView.dataSource = self;
+        tableView.alpha = 0.7;
+        tableView.scrollEnabled = NO;
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        tableView.showsVerticalScrollIndicator = NO;
+        tableView.showsHorizontalScrollIndicator = NO;
+        tableView;
+    });
+    [self.view addSubview:self.tableView];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(imageView.mas_bottom).offset(41);
         make.centerX.equalTo(weakSelf.view);
         make.height.mas_equalTo(kCellHeight * 2);
@@ -72,14 +76,19 @@ static const CGFloat kButtonHeight = 43;
     }];
     
     //login button
-    UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    loginBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
-    loginBtn.layer.cornerRadius = 3;
-    loginBtn.layer.masksToBounds = YES;
-    [loginBtn setTitle:@"登录"  forState:UIControlStateNormal];
-    [loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.view addSubview:loginBtn];
-    [loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.loginButton = ({
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        button.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
+        button.layer.cornerRadius = 3;
+        button.layer.masksToBounds = YES;
+        button.enabled = NO;
+        [button setTitle:@"登录"  forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(loginPost:) forControlEvents:UIControlEventTouchUpInside];
+        button;
+    });
+    [self.view addSubview:self.loginButton];
+    [self.loginButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
         make.height.mas_equalTo(kButtonHeight);
         make.left.and.right.equalTo(_tableView);
@@ -100,17 +109,88 @@ static const CGFloat kButtonHeight = 43;
         make.centerX.equalTo(weakSelf.view);
         make.height.mas_equalTo(kButtonHeight);
         make.left.and.right.equalTo(_tableView);
-        make.top.equalTo(loginBtn.mas_bottom).offset(95);
+        make.top.equalTo(weakSelf.loginButton.mas_bottom).offset(95);
     }];
 }
 
-// 点击事件
+// login_post
+- (IBAction)loginPost:(id)sender {
+    NSString *phone = self.usernameTextField.text;
+    NSString *password = self.passwordTextField.text;
+
+    NSString *listApiUrl = API_DOMAIN@"api/user/login_post";
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSDictionary *parameters = @{@"phone":phone, @"password":password};
+    
+    [manager POST:listApiUrl parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject){
+        NSLog(@"%@", responseObject);
+        [self analyseLoginResponse:responseObject];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+}
+
+-(IBAction)textFieldDidChange:(id)sender {
+    NSString *phone = self.usernameTextField.text;
+    NSString *password = self.passwordTextField.text;
+    NSLog(@"login check");
+    if ([password length] == 0 || [phone length] == 0) {
+        self.loginButton.enabled = NO;
+    } else {
+        self.loginButton.enabled = YES;
+        [self.loginButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//        self.loginButton.userInteractionEnabled = YES;
+    }
+}
+
+-(void)analyseLoginResponse:(NSDictionary *)jsonObject
+{
+    if ([jsonObject isKindOfClass:[NSDictionary class]]) {
+        if ([jsonObject[@"success"] integerValue] == 1) {
+            
+            [self dismissViewControllerAnimated:YES completion:^{
+                //set cookid data
+                NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL: [NSURL URLWithString:API_DOMAIN]];
+                NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
+                [[NSUserDefaults standardUserDefaults] setObject:data forKey:USERCOOKIE];
+                
+                //
+                if (self.delegate) {
+                    NSLog(@"delegate login success");
+                    [self.delegate UserLoginSuccess];
+                }
+
+            }];
+
+        } else {
+            [self shouErrorDialog:jsonObject[@"msg"]];
+        }
+    } else {
+        NSLog(@"response error");
+    }
+}
+
+-(void)shouErrorDialog:(NSString *)errorMsg
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"错误"
+                                                        message:errorMsg
+                                                       delegate:nil
+                                              cancelButtonTitle:@"确定"
+                                              otherButtonTitles: nil
+                              ];
+    [alertView show];
+}
+
+// register
 - (IBAction)registerOnePage:(id)sender {
     RegisStepOneViewController *page = [[RegisStepOneViewController alloc] init];
     [self presentViewController:page animated:YES completion:^{
         NSLog(@"completion");
     }];
 }
+
 
 
 #pragma mark - UINavigationControllerDelegate
@@ -144,13 +224,16 @@ static const CGFloat kButtonHeight = 43;
         [cell.imageView setImage:[UIImage imageNamed:@"login_phone"]];
         [cell.textField setPlaceholder:@"请输入手机号码"];
         cell.textField.keyboardType = UIKeyboardTypePhonePad;
+        self.usernameTextField = cell.textField;
         [cell setBottomLine:YES];
     } else if (indexPath.row == 1) {
         [cell.imageView setImage:[UIImage imageNamed:@"login_password"]];
         [cell.textField setPlaceholder:@"请输入密码"];
         cell.textField.secureTextEntry = YES;
+        self.passwordTextField = cell.textField;
         [cell setBottomLine:NO];
     }
+    [cell.textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     return cell;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

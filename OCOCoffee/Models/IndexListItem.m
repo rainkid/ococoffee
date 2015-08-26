@@ -22,7 +22,6 @@
         if ([dictionary[@"id"] isKindOfClass:[NSString class]]) {
             self.userId = dictionary[@"id"];
         }
-        NSLog(@"%d", [dictionary[@"age"] isKindOfClass:[NSNumber class]]);
         if ([dictionary[@"age"] isKindOfClass:[NSNumber class]]) {
             self.age = dictionary[@"age"];
         }
