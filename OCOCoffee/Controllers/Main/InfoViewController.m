@@ -363,10 +363,10 @@ static const CGFloat slide = 20/2;
         NSLog(@"%@", responseObject);
     
     
-        dispatch_async(dispatch_get_global_queue(0, 0), ^(void){
-            
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+              [self analyseInfoResponse:responseObject];
         });
-        [self analyseInfoResponse:responseObject];
+      
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
