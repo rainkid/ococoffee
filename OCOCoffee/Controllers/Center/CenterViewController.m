@@ -7,7 +7,7 @@
 //
 
 #import "Global.h"
-#import <Common.h>
+#import "Common.h"
 #import "UIColor+colorBuild.h"
 #import "CenterViewController.h"
 #import "CenterTableViewCell.h"
