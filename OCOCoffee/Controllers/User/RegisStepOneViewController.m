@@ -176,6 +176,8 @@
 {
     self.timeSecond--;
     //
+    self.smsButton.enabled = NO;
+    [self.smsButton setTitle:[NSString stringWithFormat:@"%d s", self.timeSecond] forState:UIControlStateNormal];
     NSLog(@"----%d", self.timeSecond);
     if(self.timeSecond==0){
         [self.smsTimer invalidate];
@@ -192,6 +194,7 @@
     if ([phone length] != 11) {
         self.smsButton.enabled = NO;
     } else {
+        NSLog(@"%ld", [phone length]);
         self.smsButton.enabled = YES;
         self.smsButton.layer.borderColor = [UIColor colorFromHexString:@"#4a2320"].CGColor;
         [self.smsButton setTitleColor:[UIColor colorFromHexString:@"#4a2320"] forState:UIControlStateNormal];
@@ -243,7 +246,7 @@
     if (indexPath.row == 0){
         [cell.label setText:@"用户名"];
         [cell.textField setPlaceholder:@"请输入手机号码"];
-        cell.textField.keyboardType = UIKeyboardTypePhonePad;
+        cell.textField.keyboardType = UIKeyboardTypeNumberPad;
         cell.textField.tag = ONE_USERNAME;
         self.phoneTextField = cell.textField;
         [cell showBottomLine:YES];
@@ -251,6 +254,7 @@
     } else if (indexPath.row == 1) {
         [cell.label setText:@"验证码"];
         [cell.textField setPlaceholder:@"请输入验证码"];
+        cell.textField.keyboardType = UIKeyboardTypeNumberPad;
         cell.textField.tag = ONE_CODE;
         self.codeTextField = cell.textField;
         
@@ -267,17 +271,22 @@
         button.layer.cornerRadius = 3;
         button.layer.masksToBounds = YES;
         cell.accessoryView = button;
+        self.smsButton = button;
+        
+        [cell.textField mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.right.offset(-kSmsButtonWidth-20);
+        }];
 
         [cell showBottomLine:YES];
     } else if (indexPath.row == 2) {
         [cell.label setText:@"密   码"];
+        [cell.label sizeToFit];
         [cell.textField setPlaceholder:@"请设置6位或6位以上密码"];
         cell.textField.tag = ONE_PASSWORD;
         cell.textField.secureTextEntry = YES;
         self.passwordTextFeild = cell.textField;
         [cell showBottomLine:NO];
     }
-    cell.textField.backgroundColor = [UIColor redColor];
     [cell.textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 
     return cell;
