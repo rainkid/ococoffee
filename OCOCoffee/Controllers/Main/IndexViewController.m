@@ -424,6 +424,7 @@ static const CGFloat kBanerHeight = 65;
     InfoViewController *infoViewController = [[InfoViewController alloc] init];
     IndexListItem *item = [self.listDataArray objectAtIndex:[indexPath row]];
     infoViewController.userId = [item.userId floatValue];
+    infoViewController.userInfo = item;
     infoViewController.latitude = self.latitude;
     infoViewController.logitude = self.logitude;
     
