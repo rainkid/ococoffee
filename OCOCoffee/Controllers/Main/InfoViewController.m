@@ -434,9 +434,13 @@ static const CGFloat slide = 20/2;
 
 -(void) setupUserImgs:(NSArray *)imgList
 {
+    _photos = [[NSMutableArray alloc] initWithCapacity:imgList.count];
     for (int i=0; i<imgList.count; i++) {
         NSDictionary *item = imgList[i];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+        _photo = [MWPhoto photoWithURL:[NSURL URLWithString:item[@"img"]]];
+        [_photos addObject:_photo];
+        
         InfoCollectionCell * cell = (InfoCollectionCell *)[self.imgCollectionView cellForItemAtIndexPath:indexPath];
         [cell.imageView sd_setImageWithURL:[NSURL URLWithString:item[@"img"]]];
     }
@@ -475,13 +479,12 @@ static const CGFloat slide = 20/2;
 {
     UICollectionViewCell * cell = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
-    _photos = [[NSMutableArray alloc] initWithCapacity:5];
-    for (int i = 0; i< 5; i++) {
-        
-        _photo = [MWPhoto photoWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"img%d.png",i+1]]];
-        _photo.caption = @"这是一个测试图片";
-        [_photos addObject:_photo];
-    }
+//    for (int i = 0; i< 5; i++) {
+//        
+//        _photo = [MWPhoto photoWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"img%d.png",i+1]]];
+//        _photo.caption = @"这是一个测试图片";
+//        [_photos addObject:_photo];
+//    }
     _browser = [self setPhotoBroswer:indexPath.row];
     [self.navigationController pushViewController:_browser animated:YES];
 }
