@@ -45,6 +45,7 @@ static const CGFloat slide = 20/2;
 @property(nonatomic, strong) UIView *centerView;
 @property(nonatomic, strong) UICollectionView *imgCollectionView;
 @property(nonatomic,strong)  NSMutableArray *photos;
+@property(nonatomic,strong)  NSMutableArray *images;
 @property(nonatomic,strong) MWPhoto *photo,*thumb;
 @property(nonatomic,strong) MWPhotoBrowser *browser;
 
@@ -133,7 +134,7 @@ static const CGFloat slide = 20/2;
     
    // [self initData];
     
-   NSLog(@"_userData:%@",_userData);
+   //NSLog(@"_userData:%@",_userData);
     
     __weak typeof(self) weakSelf = self;
     self.title = @"个人详情";
@@ -360,9 +361,6 @@ static const CGFloat slide = 20/2;
     NSDictionary *parameters = @{@"lat":latNumber, @"lng":lngNumber, @"id":userId};
     
     [manager POST:listApiUrl parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject){
-        NSLog(@"%@", responseObject);
-    
-    
         dispatch_async(dispatch_get_main_queue(), ^(void){
               [self analyseInfoResponse:responseObject];
         });
@@ -434,22 +432,30 @@ static const CGFloat slide = 20/2;
 
 -(void) setupUserImgs:(NSArray *)imgList
 {
-    _photos = [[NSMutableArray alloc] initWithCapacity:imgList.count];
-    for (int i=0; i<imgList.count; i++) {
-        NSDictionary *item = imgList[i];
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
-        _photo = [MWPhoto photoWithURL:[NSURL URLWithString:item[@"img"]]];
-        [_photos addObject:_photo];
-        
-        InfoCollectionCell * cell = (InfoCollectionCell *)[self.imgCollectionView cellForItemAtIndexPath:indexPath];
-        [cell.imageView sd_setImageWithURL:[NSURL URLWithString:item[@"img"]]];
+    if([imgList count] > 0){
+        _images = [[NSMutableArray alloc] initWithCapacity:imgList.count];
+        for (int i=0; i<imgList.count; i++) {
+            NSDictionary *item = imgList[i];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+            _photo = [MWPhoto photoWithURL:[NSURL URLWithString:item[@"img"]]];
+            [_images addObject:_photo];
+            InfoCollectionCell * cell = (InfoCollectionCell *)[self.imgCollectionView cellForItemAtIndexPath:indexPath];
+            [cell.imageView sd_setImageWithURL:[NSURL URLWithString:item[@"img"]]];
+        }
+    }else{
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        InfoCollectionCell *cell = (InfoCollectionCell *)[self.imgCollectionView cellForItemAtIndexPath:indexPath];
+        cell.imageView.image = [UIImage imageNamed:@"img1"];
+        cell.imageView.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(inviteUploadImg:)];
+        [cell.imageView addGestureRecognizer:tapGesture];
     }
 }
 
 #pragma mark -- UICollectionViewDataSource
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 10;
+    return 6;
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -479,12 +485,10 @@ static const CGFloat slide = 20/2;
 {
     UICollectionViewCell * cell = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
-//    for (int i = 0; i< 5; i++) {
-//        
-//        _photo = [MWPhoto photoWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"img%d.png",i+1]]];
-//        _photo.caption = @"这是一个测试图片";
-//        [_photos addObject:_photo];
-//    }
+    
+    _photos = [[NSMutableArray alloc] init];
+    [_photos addObjectsFromArray:_images];
+    
     _browser = [self setPhotoBroswer:indexPath.row];
     [self.navigationController pushViewController:_browser animated:YES];
 }
@@ -508,13 +512,21 @@ static const CGFloat slide = 20/2;
 }
 
 
+//图像显示
 -(void)showImage:(UITapGestureRecognizer *)tagGestureRecognizer {
-    _photos = [[NSMutableArray alloc] initWithCapacity:2];
+    _photos = [[NSMutableArray alloc] initWithCapacity:1];
     MWPhoto *image = [MWPhoto photoWithURL:[NSURL URLWithString:_userInfo.headimgurl]];
     [_photos addObject:image];
     _browser = [self setPhotoBroswer:0];
     [self.navigationController pushViewController:_browser animated:YES];
     _browser = nil;
+   
+}
+
+//邀请上传图片
+-(void)inviteUploadImg:(UITapGestureRecognizer *)tapRecognizer {
+    
+    NSLog(@"Tap Action");
 }
 
 -(MWPhotoBrowser *)setPhotoBroswer :(NSInteger)index {
