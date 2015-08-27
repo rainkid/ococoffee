@@ -65,7 +65,7 @@ static const CGFloat kPhotoHeight = 82;
 }
 
 - (void) addSubViews {
-    UIImage *bg_image = [UIImage imageNamed:@"background.png"];
+    UIImage *bg_image = [UIImage imageNamed:@"background"];
     UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
     [bg_imageView setFrame:self.view.bounds];
     [self.view addSubview: bg_imageView];

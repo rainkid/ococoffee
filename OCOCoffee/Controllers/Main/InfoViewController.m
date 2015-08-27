@@ -18,25 +18,31 @@
 #import "PhotoBroswerViewController.h"
 #import "UIColor+colorBuild.h"
 #import "InfoViewController.h"
+#import "InfoCollectionCell.h"
+#import <AFNetworking/AFNetworking.h>
 #import "IndexListItem.h"
 #import "TagItem.h"
 #import "Global.h"
 
 
-
-
 static const CGFloat kPhotoHeight = 146/2;
 static const CGFloat slide = 20/2;
-//static const CGFloat buttonHeight = 106/2;
 
 @interface InfoViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,MWPhotoBrowserDelegate,NSURLConnectionDataDelegate,NSURLConnectionDelegate>
 
+
+
 @property(nonatomic, strong) NSMutableData *userData;
 @property(nonatomic, strong) SKTagView *tagView;
-@property(nonatomic, strong) UIButton *upButton;
+
+@property(nonatomic, strong) UIImageView *headerImageView;
+@property(nonatomic, strong) UILabel *nickname;
+@property(nonatomic, strong) UILabel *sexAge;
+@property(nonatomic, strong) UILabel *jobEduCon;
+@property(nonatomic, strong) UILabel *distance;
+@property(nonatomic, strong) UILabel *address;
 @property(nonatomic, strong) UIView *topView;
 @property(nonatomic, strong) UIView *centerView;
-@property(nonatomic, assign) CGFloat centerViewHeight;
 @property(nonatomic, strong) UICollectionView *imgCollectionView;
 @property(nonatomic,strong)  NSMutableArray *photos;
 @property(nonatomic,strong) MWPhoto *photo,*thumb;
@@ -53,7 +59,6 @@ static const CGFloat slide = 20/2;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        //_userData = [[NSMutableDictionary alloc] initWithCapacity:1];
         self.hidesBottomBarWhenPushed = YES;
     }
     return self;
@@ -66,10 +71,7 @@ static const CGFloat slide = 20/2;
     [self.imgCollectionView reloadData];
     
     [self initSubViews];
-    
-    [self setupTagView];
-    
-  
+    [self loadDataFromServer];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -166,14 +168,13 @@ static const CGFloat slide = 20/2;
     }];
     
     //用户图像
-    UIImageView *headerImageView = ({
+    self.headerImageView = ({
         UIImageView *imageView = [UIImageView new];
         
         [imageView sd_setImageWithURL:[NSURL URLWithString:_userInfo.headimgurl] placeholderImage:[UIImage imageNamed:@"sample_logo"] options:SDWebImageContinueInBackground  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if(error != nil){
                 [imageView setImage:[UIImage imageNamed:@"sample_logo"]];
             }
-            
         }];
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showImage:)];
@@ -185,8 +186,8 @@ static const CGFloat slide = 20/2;
         imageView.userInteractionEnabled = YES;
         imageView;
     });
-    [topView addSubview:headerImageView];
-    [headerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [topView addSubview:self.headerImageView];
+    [self.headerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(32/2);
         make.width.height.mas_equalTo(kPhotoHeight);
         make.centerX.equalTo(topView);
@@ -195,51 +196,43 @@ static const CGFloat slide = 20/2;
     UIFont *font = [UIFont systemFontOfSize:14];
     UIColor *labelTextCollor = [UIColor colorFromHexString:@"#888888"];
     
-    
-    UILabel *nicknameLabel = ({
+    self.nickname = ({
         UILabel *label = [UILabel new];
-        label.text = _userInfo.nickname;
         label.textColor = labelTextCollor;
         label.font = [UIFont systemFontOfSize:18];
         label;
     });
-    [topView addSubview:nicknameLabel];
-    [nicknameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(headerImageView.mas_bottom).offset(24/2);
+    [topView addSubview:self.nickname];
+    [self.nickname mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.headerImageView.mas_bottom).offset(24/2);
         make.right.mas_equalTo(topView.mas_centerX).offset(-1);
     }];
     
-    UILabel *sexAgeLabel = ({
+    self.sexAge = ({
         UILabel *label = [UILabel new];
         label.layer.cornerRadius = 3;
         label.layer.masksToBounds = YES;
-        label.textColor = [UIColor colorFromHexString:@"#f16681"];
-        label.layer.borderColor = [UIColor colorFromHexString:@"#f16681"].CGColor;
+        label.font = [UIFont systemFontOfSize:12];
         label.layer.borderWidth = 1;
-        NSString *sex = [_userInfo.sex isEqualToString:@"1"] ?@"♂":@"♀";
-        label.text = [NSString stringWithFormat:@" %@%@ ", sex, _userInfo.age];
-        label.font = font;
         label;
     });
-    [topView addSubview:sexAgeLabel]; 
-    [sexAgeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(headerImageView.mas_bottom).offset(24/2);
-        make.centerY.mas_equalTo(nicknameLabel.mas_centerY);
-        make.left.mas_equalTo(topView.mas_centerX).offset(+1);
+    [topView addSubview:self.sexAge];
+    [self.sexAge mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(weakSelf.nickname.mas_centerY);
+        make.left.mas_equalTo(topView.mas_centerX).offset(+2);
     }];
     
     
-    UILabel *jobLabel = ({
+    self.jobEduCon= ({
         UILabel *label = [UILabel new];
-        label.text = [NSString stringWithFormat:@"%@ | %@ | %@",_userInfo.constellation,@"本科",@"个体经营者"];
         label.font = font;
         label.textColor =labelTextCollor;
         label.textAlignment = NSTextAlignmentCenter;
         label;
     });
-    [topView addSubview:jobLabel];
-    [jobLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(nicknameLabel.mas_bottom).offset(24/2);
+    [topView addSubview:self.jobEduCon];
+    [self.jobEduCon mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(weakSelf.nickname.mas_bottom).offset(24/2);
         make.left.right.mas_equalTo(topView);
     }];
     
@@ -252,7 +245,7 @@ static const CGFloat slide = 20/2;
     });
     [topView addSubview:self.tagView];
     [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(jobLabel.mas_bottom).offset(24/2);
+        make.top.mas_equalTo(weakSelf.jobEduCon.mas_bottom).offset(24/2);
         make.centerX.mas_equalTo(topView);
     }];
     
@@ -285,7 +278,7 @@ static const CGFloat slide = 20/2;
         imgCollectionView.delegate = self;
         imgCollectionView.backgroundColor = [UIColor clearColor];
         //register cell
-        [imgCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"imgCollectionCell"];
+        [imgCollectionView registerClass:[InfoCollectionCell class] forCellWithReuseIdentifier:@"imgCollectionCell"];
         imgCollectionView;
     });
     
@@ -326,29 +319,27 @@ static const CGFloat slide = 20/2;
     }];
 
     //
-    UILabel *addressLabel = ({
+    self.address = ({
         UILabel *label = [UILabel new];
-        label.text = @"阳光高尔夫大厦";
         label.font = font;
         label.textColor = [UIColor colorFromHexString:@"#aeaeae"];
         [addressView addSubview:label];
         label;
     });
-    [addressLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.address mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(addressImgView.mas_right).offset(24/2);
         make.centerY.mas_equalTo(addressView);
     }];
     
     //
-    UILabel *lonsLabel = ({
+    self.distance = ({
         UILabel *label = [UILabel new];
-        label.text = @"0.54km  刚刚";
         label.font = font;
         label.textColor = labelTextCollor;
         [addressView addSubview:label];
         label;
     });
-    [lonsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.distance mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(addressView.mas_right).offset(-(24/2));
         make.centerY.mas_equalTo(addressView);
     }];
@@ -358,14 +349,82 @@ static const CGFloat slide = 20/2;
     }];
 }
 
-- (void)setupTagView
+-(void) loadDataFromServer
 {
-    [self.tagView removeAllTags];
+    NSString *listApiUrl = API_DOMAIN@"api/user/info";
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSNumber *latNumber = [[NSNumber alloc] initWithDouble:self.latitude];
+    NSNumber *lngNumber = [[NSNumber alloc] initWithDouble:self.logitude];
+    NSNumber *userId = [[NSNumber alloc] initWithLong:self.userId];
     
-    for (TagItem *item in _userInfo.TagItems) {
-        SKTag *tag = [SKTag tagWithText:item.name];
-        tag.textColor = [UIColor whiteColor];
-        tag.bgColor = [UIColor colorFromHexString:item.bg_color];
+    NSDictionary *parameters = @{@"lat":latNumber, @"lng":lngNumber, @"id":userId};
+    
+    [manager POST:listApiUrl parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject){
+        NSLog(@"%@", responseObject);
+    
+    
+        dispatch_async(dispatch_get_global_queue(0, 0), ^(void){
+            
+        });
+        [self analyseInfoResponse:responseObject];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+}
+
+-(void) analyseInfoResponse:(NSDictionary *)jsonObject
+{
+    if ([jsonObject isKindOfClass:[NSDictionary class]]) {
+        if ([jsonObject[@"success"] integerValue] == 1) {
+            NSDictionary *data = jsonObject[@"data"];
+            [self.headerImageView sd_setImageWithURL:[NSURL URLWithString:data[@"headimgurl"]]];
+            [self.nickname setText:data[@"nickname"]];
+            
+            NSString *sexAge = [NSString stringWithFormat:@"%@", data[@"age"]];
+            if ([data[@"sex"] floatValue] == 1) {
+                self.sexAge.textColor = [UIColor colorFromHexString:@"#5EB6F1"];
+                self.sexAge.layer.borderColor = [UIColor colorFromHexString:@"#5EB6F1"].CGColor;
+                sexAge = [NSString stringWithFormat:@" %@ %@ ", @"♂", sexAge];
+            } else {
+                self.sexAge.textColor = [UIColor colorFromHexString:@"#f16681"];
+                self.sexAge.layer.borderColor = [UIColor colorFromHexString:@"#f16681"].CGColor;
+                sexAge = [NSString stringWithFormat:@" %@ %@ ", @"♀", sexAge];
+            }
+            [self.sexAge setText:sexAge];
+            
+            [self.address setText:data[@"address"]];
+            [self.distance setText:data[@"distance"]];
+            NSString *jobEduCon = [NSString stringWithFormat:@"%@", data[@"constellation"]];
+            if ([data[@"education"] length] > 1) {
+                jobEduCon = [NSString stringWithFormat:@"%@ | %@", jobEduCon, data[@"education"]];
+            }
+            if ([data[@"job"] length] > 1) {
+                jobEduCon = [NSString stringWithFormat:@"%@ | %@", jobEduCon, data[@"job"]];
+            }
+            [self.jobEduCon setText: jobEduCon];
+            
+            NSArray *tags = jsonObject[@"data"][@"tags"];
+            [self setupTagView:tags];
+            
+            NSArray *imgs = jsonObject[@"data"][@"imgs"];
+            [self setupUserImgs:imgs];
+
+        } else {
+            NSLog(@"response error - %@", jsonObject[@"msg"]);
+        }
+    } else {
+        NSLog(@"response error");
+    }
+    
+}
+
+- (void)setupTagView:(NSArray *)tagList
+{
+    //Add Tags
+    for (NSDictionary *tagItem in tagList) {
+        SKTag *tag = [SKTag tagWithText:tagItem[@"name"]];
+        tag.textColor = [UIColor blackColor];
+        tag.bgColor = [UIColor colorFromHexString:tagItem[@"bg_color"]];
         tag.cornerRadius = 3;
         tag.fontSize = 13;
         tag.padding = UIEdgeInsetsMake(4, 10, 4, 10);
@@ -373,6 +432,15 @@ static const CGFloat slide = 20/2;
     }
 }
 
+-(void) setupUserImgs:(NSArray *)imgList
+{
+    for (int i=0; i<imgList.count; i++) {
+        NSDictionary *item = imgList[i];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+        InfoCollectionCell * cell = (InfoCollectionCell *)[self.imgCollectionView cellForItemAtIndexPath:indexPath];
+        [cell.imageView sd_setImageWithURL:[NSURL URLWithString:item[@"img"]]];
+    }
+}
 
 #pragma mark -- UICollectionViewDataSource
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -388,21 +456,7 @@ static const CGFloat slide = 20/2;
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString * CellIdentifier = @"imgCollectionCell";
-    UICollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.layer.shadowColor =  [UIColor blackColor].CGColor;
-    cell.layer.shadowOffset = CGSizeMake(1, 1);
-    cell.layer.shadowOpacity = 0.1;
-    cell.layer.shadowRadius = 3;
-    
-    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectZero];
-    imgView.image = [UIImage imageNamed:@"sample_p"];
-    imgView.layer.masksToBounds = YES;
-    imgView.layer.cornerRadius = 3;
-    [cell addSubview:imgView];
-    [imgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.height.mas_equalTo(cell);
-    }];
-    
+    InfoCollectionCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     return cell;
 }
 
@@ -441,6 +495,7 @@ static const CGFloat slide = 20/2;
 }
 
 -(id<MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index
+
 {
     if ( index < _photos.count){
         return [ _photos objectAtIndex:index];

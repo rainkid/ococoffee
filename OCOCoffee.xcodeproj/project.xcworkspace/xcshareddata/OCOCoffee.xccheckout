@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>23636058-A436-42E1-A21B-C8109129A4F1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>OCOCoffee</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>3693FE554463E21E9782A5F0BBF0C6399DACDBC9</key>
+		<string>github.com:rainkid/ococoffee.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>OCOCoffee.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>3693FE554463E21E9782A5F0BBF0C6399DACDBC9</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:rainkid/ococoffee.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>3693FE554463E21E9782A5F0BBF0C6399DACDBC9</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>3693FE554463E21E9782A5F0BBF0C6399DACDBC9</string>
+			<key>IDESourceControlWCCName</key>
+			<string>OCOCoffee</string>
+		</dict>
+	</array>
+</dict>
+</plist>

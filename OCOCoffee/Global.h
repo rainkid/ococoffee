@@ -106,4 +106,7 @@ alpha:(a)]
 #define IOS7_STATUSBAR_OFFSET ([[UIDevice currentDevice] systemVersionNotLowerThan:@"7.0"] ? 20 : 0)
 
 #define API_DOMAIN @"http://ococoffee.com/"
+
+#define USERCOOKIE @"CF-USER-COOKIE"
+
 #endif
