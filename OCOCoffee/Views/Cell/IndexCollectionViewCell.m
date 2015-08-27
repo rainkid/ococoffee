@@ -5,13 +5,6 @@
 //  Created by panxiaobing on 15/7/29.
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
-
-#define SEXIMAGEWIDTH           11
-
-#define kTagviewMarginTop       3
-#define kTagPaddingTop          2
-#define kTagPaddingBottom       3
-
 #import "IndexCollectionViewCell.h"
 #import <Masonry/Masonry.h>
 
