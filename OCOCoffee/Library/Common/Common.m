@@ -22,6 +22,7 @@
     [alertView show];
 }
 
+#pragma mark check user is login with cookie shared
 +(bool)userIsLogin
 {
     NSData *cookiesdata = [[NSUserDefaults standardUserDefaults] objectForKey:USERCOOKIE];
