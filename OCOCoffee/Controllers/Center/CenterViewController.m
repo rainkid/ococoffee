@@ -247,11 +247,7 @@ static const CGFloat kPhotoHeight = 82;
 -(void) loginOut
 {;
     NSLog(@"login out");
-    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSArray  *tmpArray = [NSArray arrayWithArray:[cookieJar cookies]];
-    for (id obj in tmpArray) {
-        [cookieJar deleteCookie:obj];
-    }
+    [Common userLogOut];
 }
 
 -(void)checkLogin

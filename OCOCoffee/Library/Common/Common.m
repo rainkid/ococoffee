@@ -31,4 +31,21 @@
     }
     return true;
 }
+
++(void)userLogOut
+{
+    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray  *tmpArray = [NSArray arrayWithArray:[cookieJar cookies]];
+    for (id obj in tmpArray) {
+        [cookieJar deleteCookie:obj];
+    }
+}
+
+
++(void) shareUserCookie
+{
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL: [NSURL URLWithString:API_DOMAIN]];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
+    [[NSUserDefaults standardUserDefaults] setObject:data forKey:USERCOOKIE];
+}
 @end

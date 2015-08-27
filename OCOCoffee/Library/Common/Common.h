@@ -12,5 +12,7 @@
 
 +(void)showErrorDialog:(NSString *)errorMsg;
 +(bool)userIsLogin;
++(void)userLogOut;
++(void)shareUserCookie;
 
 @end

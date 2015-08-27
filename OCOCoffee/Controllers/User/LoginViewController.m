@@ -152,10 +152,7 @@ static const CGFloat kButtonHeight = 43;
             
             [self dismissViewControllerAnimated:YES completion:^{
                 //set cookid data
-                NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL: [NSURL URLWithString:API_DOMAIN]];
-                NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
-                [[NSUserDefaults standardUserDefaults] setObject:data forKey:USERCOOKIE];
-                
+                [Common shareUserCookie];
                 //
                 if (self.delegate) {
                     NSLog(@"delegate login success");
