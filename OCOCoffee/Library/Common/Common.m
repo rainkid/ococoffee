@@ -39,6 +39,7 @@
     for (id obj in tmpArray) {
         [cookieJar deleteCookie:obj];
     }
+    
 }
 
 
