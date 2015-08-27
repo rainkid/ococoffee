@@ -325,66 +325,6 @@ static const CGFloat kBanerHeight = 65;
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
     IndexCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kIndexCollectionIdentifier forIndexPath:indexPath];
-    
-//    NSDictionary *dict = [_dataList objectAtIndex:[indexPath row]];
-//    cell.usernameLabel.text     =   dict[@"nickname"];
-//    cell.constellation.text     =   dict[@"constellation"];
-//    cell.ageLabel.text          =   [NSString stringWithFormat:@"%@",dict[@"age"]];
-//    cell.usernameLabel.text     =   dict[@"nickname"];
-//    cell.locationLabel.text     =   dict[@"distance"];
-//    cell.timeLabel.text         =   dict[@"last_login_time"];
-//    if((int)dict[@"sex"] == 1){
-//        cell.sexImageView.image = [UIImage imageNamed:@"man.png"];
-//    }else{
-//        cell.sexImageView.image = [UIImage imageNamed:@"woman.png"];
-//    }
-//    NSURL *imageURL = [NSURL URLWithString:dict[@"headimgurl"]];
-//    [cell.userImageView sd_setImageWithURL:imageURL
-//                          placeholderImage:[UIImage imageNamed:@"img1"]
-//                                 completed:^(UIImage *image,NSError *error,SDImageCacheType cacheType,NSURL *imageURL){
-//                                     CGSize newSize = [self getNewImageSize:cell.userImageView.image.size maxSize:cell.contentView.frame.size];
-//                                     cell.userImageView.frame = CGRectMake(0, 0, newSize.width, newSize.height);
-//    }];
-//    NSArray *tags = dict[@"tags"];
-//    [cell.tagView removeAllTags];
-//    [self tagView:cell.tagView addTags:tags];
-    
-// CGSize  newSize = [self getNewImageSize:cell.userImageView.image.size maxSize:cell.contentView.frame.size];
-//   cell.userImageView.frame = CGRectMake(0, 0, newSize.width, newSize.height);
-//    //NSLog(@"%f",cell.userImageView.frame.size.height);
-//    double imageHeight = cell.userImageView.frame.size.height;
-//    //cell.userImageView.image = image;
-//    [cell.userImageView mas_makeConstraints:^(MASConstraintMaker *make){
-//        make.height.mas_equalTo(imageHeight);
-//        make.centerX.mas_equalTo(cell.mas_centerX);
-//        make.width.mas_equalTo(cell.frame.size.width);
-//    }];
-//    
-//    [cell.usernameLabel mas_makeConstraints:^(MASConstraintMaker *make){
-//        make.top.mas_equalTo(cell.userImageView.mas_bottom).offset(3.0);
-//        make.centerX.mas_equalTo(cell.contentView);
-//        make.width.mas_equalTo(cell.frame.size.width);
-//        make.height.mas_equalTo(@25);
-//        
-//    }];
-//    
-//    
-//   // NSLog(@"origin_x : %f  origin_y:%f",cell.frame.origin.x,cell.frame.origin.y);
-//    NSInteger tagNumber = [cell.tagCounts integerValue];
-//    float tagRowHeight = [cell.tagRowHeight floatValue];
-//    float tagHeight = ((int)(tagNumber / 4 ) + 1 ) *tagRowHeight + 3.00;
-//    
-//    
-//    float cellHeight = imageHeight + 28 + 25 + tagHeight ;
-//    float cellWidth = (self.view.bounds.size.width  - indexFlowLayout.minimumInteritemSpacing *4)/2;
-//    float originX = indexFlowLayout.minimumInteritemSpacing + ((indexPath.row) %2)*cellWidth;
-//    int column =  ceil( ((double)indexPath.row +1)/2);
-//    
-//    float originY = 110 + cellHeight * (column-1);
-//    //cell.frame = CGRectMake(originX, originY, cellWidth, cellHeight);
-//    NSLog(@"column:%d, cell_x:%f,cell_y:%f,cell_w:%f,cell_h:%f",column,originX,originY,cellWidth,cellHeight);
-//    //[_columnHeight addObject:<#(id)#>]
-//
 
     IndexListItem *item = [self.listDataArray objectAtIndex:[indexPath row]];
     [cell.userImageView sd_setImageWithURL:[NSURL URLWithString:item.headimgurl]];
@@ -411,15 +351,6 @@ static const CGFloat kBanerHeight = 65;
     return cell;
 }
 
-
-//<<<<<<< HEAD
-//#pragma collection deledate methods 
-//
-//-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-//    return CGSizeMake(self.view.bounds.size.width/2 -10 , 285);
-//}
-//
-//=======
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     IndexListItem *item = [self.listDataArray objectAtIndex:[indexPath row]];
