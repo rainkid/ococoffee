@@ -16,6 +16,7 @@
         __weak typeof(self) weakSelf = self;
         
         self.layer.shadowColor =  [UIColor blackColor].CGColor;
+        self.layer.masksToBounds = NO;
         self.layer.shadowOffset = CGSizeMake(1, 1);
         self.layer.shadowOpacity = 0.1;
         self.layer.shadowRadius = 3;
@@ -29,6 +30,7 @@
         
         [self addSubview:self.imageView];
         [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.mas_equalTo(weakSelf);
             make.width.height.mas_equalTo(weakSelf);
         }];
     }

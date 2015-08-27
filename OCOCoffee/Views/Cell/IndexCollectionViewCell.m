@@ -25,14 +25,15 @@
          __weak typeof(self) weakSelf = self;
         
         self.backgroundColor = [UIColor whiteColor];
-        self.layer.masksToBounds = YES;
+        self.layer.masksToBounds = NO;
         self.layer.shadowColor =  [UIColor blackColor].CGColor;
         self.layer.shadowOffset = CGSizeMake(1, 1);
         self.layer.shadowOpacity = 0.1;
-        self.layer.shadowRadius = 3;
         self.layer.cornerRadius = 3;
 
         _userImageView = [UIImageView new];
+        _userImageView.layer.masksToBounds = YES;
+        _userImageView.layer.cornerRadius = 3;
         [self addSubview:_userImageView];
         [_userImageView mas_makeConstraints:^(MASConstraintMaker *make){
             make.centerX.mas_equalTo(weakSelf.mas_centerX);
@@ -50,7 +51,6 @@
         }];
         
         UILabel *lineLabel = [UILabel new];
-        lineLabel.text = @"|";
         lineLabel.font = [UIFont systemFontOfSize:12];
         lineLabel.textColor= [UIColor blackColor];
         [self addSubview:lineLabel];
@@ -81,7 +81,6 @@
         
         _constellation = [[UILabel alloc] init];
         _constellation.textColor = [UIColor lightGrayColor];
-        _constellation.text = @"双鱼座";
         _constellation.font=[UIFont fontWithName:@"Helvetica" size:12.0];
         _constellation.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_constellation];
@@ -95,7 +94,7 @@
         tagView.padding = UIEdgeInsetsMake(3, tagViewRightPading ,3, tagViewLeftPading);
         tagView.insets = tagViewInserts;
         tagView.lineSpace = tagViewLineSpace;
-        self.tagView = tagView;
+         self.tagView = tagView;
         [self addSubview:tagView];
         [tagView mas_makeConstraints:^(MASConstraintMaker *make){
             make.centerX.mas_equalTo(_userImageView.mas_centerX);
@@ -103,8 +102,6 @@
             make.left.mas_equalTo(weakSelf.mas_left);
             make.width.equalTo(weakSelf.mas_width);
         }];
-        
-
         
         _locationImageView = [[UIImageView alloc] init];
         _locationImageView.backgroundColor = [UIColor clearColor];
@@ -121,7 +118,6 @@
         _locationLabel.backgroundColor = [UIColor clearColor];
         _locationLabel.textColor = [UIColor lightGrayColor];
         _locationLabel.textAlignment = NSTextAlignmentCenter;
-        _locationLabel.text =@"12.5Km";
         _locationLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         [self addSubview:_locationLabel];
         [_locationLabel mas_makeConstraints:^(MASConstraintMaker *make){
@@ -130,7 +126,6 @@
         }];
     
         _timeLabel = [[UILabel alloc] init];
-        _timeLabel.text = @"10分钟前";
         _timeLabel.textAlignment = NSTextAlignmentCenter;
         _timeLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         _timeLabel.textColor= [UIColor lightGrayColor];
