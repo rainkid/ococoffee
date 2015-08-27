@@ -7,6 +7,8 @@
 //
 
 #import "PhotoBroswerViewController.h"
+#import <MWPhotoBrowser/MWPhotoBrowser.h>
+
 
 @interface PhotoBroswerViewController ()
 

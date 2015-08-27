@@ -6,25 +6,33 @@
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
 
+#define  kUserInfoURL  @"http://ococoffee.com/api/user/info"
+
 #import <Masonry/Masonry.h>
 #import <SKTagView/SKTagView.h>
 #import <SDWebImage/UIImageView+WebCache.h>
-#import "Global.h"
+#import <MWPhotoBrowser/MWPhotoBrowser.h>
+#import <MWPhotoBrowser/MWCommon.h>
+#import <AFNetworking/AFNetworking.h>
+
+#import "PhotoBroswerViewController.h"
 #import "UIColor+colorBuild.h"
 #import "InfoViewController.h"
 #import "InfoCollectionCell.h"
 #import <AFNetworking/AFNetworking.h>
 #import "IndexListItem.h"
-
+#import "TagItem.h"
+#import "Global.h"
 
 
 static const CGFloat kPhotoHeight = 146/2;
 static const CGFloat slide = 20/2;
 
-@interface InfoViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
+@interface InfoViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,MWPhotoBrowserDelegate,NSURLConnectionDataDelegate,NSURLConnectionDelegate>
 
 
 
+@property(nonatomic, strong) NSMutableData *userData;
 @property(nonatomic, strong) SKTagView *tagView;
 
 @property(nonatomic, strong) UIImageView *headerImageView;
@@ -33,12 +41,15 @@ static const CGFloat slide = 20/2;
 @property(nonatomic, strong) UILabel *jobEduCon;
 @property(nonatomic, strong) UILabel *distance;
 @property(nonatomic, strong) UILabel *address;
-
 @property(nonatomic, strong) UIView *topView;
 @property(nonatomic, strong) UIView *centerView;
 @property(nonatomic, strong) UICollectionView *imgCollectionView;
+@property(nonatomic,strong)  NSMutableArray *photos;
+@property(nonatomic,strong) MWPhoto *photo,*thumb;
+@property(nonatomic,strong) MWPhotoBrowser *browser;
 
 @end
+
 
 
 
@@ -55,18 +66,75 @@ static const CGFloat slide = 20/2;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+   
+    [self initData];
+    [self.imgCollectionView reloadData];
     
     [self initSubViews];
     [self loadDataFromServer];
 }
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+- (void) initData {
+
+    NSString *urlString = [NSString stringWithFormat:@"%@?id=%@",kUserInfoURL,_userInfo.userId];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:30];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+    if(connection){
+        _userData = [[NSMutableData alloc] init];
+    }else{
+        NSLog(@"error has happened when connectioning!");
+    }
+//    _userData = [[NSMutableDictionary alloc] initWithCapacity:1];
+//    AFHTTPRequestOperationManager *manger = [[AFHTTPRequestOperationManager alloc] init];
+//    [manger GET:urlString parameters:nil success:^(AFHTTPRequestOperation *operation,id responseObject){
+//        NSDictionary *dict = responseObject[@"data"];
+//        if([dict isKindOfClass:[NSDictionary class]]){
+//            [_userData addEntriesFromDictionary:dict];
+//            //NSLog(@"%@",_userData);
+//        }else{
+//            NSLog(@"用户信息不存在");
+//        }
+//        
+//       } failure:^(AFHTTPRequestOperation *operation,NSError *error){
+//            NSLog(@"%@",error);
+//    }];
+//
+//    NSLog(@"%@",_userData);
+}
+
+-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+ 
+    [_userData appendData:data];
+}
+
+-(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    
+    [_userData setLength:0];
+    
+}
+
+-(void)connectionDidFinishLoading:(NSURLConnection *)connection{
+    
+    NSLog(@"finishned");
+}
+
+-(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    
+    NSLog(@"%@",error);
+    
+}
 - (void) initSubViews {
+    
+   // [self initData];
+    
+   NSLog(@"_userData:%@",_userData);
+    
     __weak typeof(self) weakSelf = self;
     self.title = @"个人详情";
     
@@ -102,6 +170,17 @@ static const CGFloat slide = 20/2;
     //用户图像
     self.headerImageView = ({
         UIImageView *imageView = [UIImageView new];
+        
+        [imageView sd_setImageWithURL:[NSURL URLWithString:_userInfo.headimgurl] placeholderImage:[UIImage imageNamed:@"sample_logo"] options:SDWebImageContinueInBackground  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            if(error != nil){
+                [imageView setImage:[UIImage imageNamed:@"sample_logo"]];
+            }
+        }];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showImage:)];
+        [imageView addGestureRecognizer:tap];
+        
+        
         imageView.layer.cornerRadius = (kPhotoHeight) /2;
         imageView.layer.masksToBounds = YES;
         imageView.userInteractionEnabled = YES;
@@ -282,7 +361,12 @@ static const CGFloat slide = 20/2;
     
     [manager POST:listApiUrl parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject){
         NSLog(@"%@", responseObject);
-        [self analyseInfoResponse:responseObject];
+    
+    
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+              [self analyseInfoResponse:responseObject];
+        });
+      
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
@@ -350,9 +434,13 @@ static const CGFloat slide = 20/2;
 
 -(void) setupUserImgs:(NSArray *)imgList
 {
+    _photos = [[NSMutableArray alloc] initWithCapacity:imgList.count];
     for (int i=0; i<imgList.count; i++) {
         NSDictionary *item = imgList[i];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+        _photo = [MWPhoto photoWithURL:[NSURL URLWithString:item[@"img"]]];
+        [_photos addObject:_photo];
+        
         InfoCollectionCell * cell = (InfoCollectionCell *)[self.imgCollectionView cellForItemAtIndexPath:indexPath];
         [cell.imageView sd_setImageWithURL:[NSURL URLWithString:item[@"img"]]];
     }
@@ -361,7 +449,7 @@ static const CGFloat slide = 20/2;
 #pragma mark -- UICollectionViewDataSource
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 6;
+    return 10;
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -387,8 +475,62 @@ static const CGFloat slide = 20/2;
     return UIEdgeInsetsMake(0, 0, 0, 0);
 }
 
--(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return YES;
+    UICollectionViewCell * cell = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    cell.backgroundColor = [UIColor whiteColor];
+//    for (int i = 0; i< 5; i++) {
+//        
+//        _photo = [MWPhoto photoWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"img%d.png",i+1]]];
+//        _photo.caption = @"这是一个测试图片";
+//        [_photos addObject:_photo];
+//    }
+    _browser = [self setPhotoBroswer:indexPath.row];
+    [self.navigationController pushViewController:_browser animated:YES];
 }
+
+
+#pragma MWPhotoBrowser delegate methods
+
+-(NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser
+{
+    return [_photos count];
+}
+
+-(id<MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index
+
+{
+    if ( index < _photos.count){
+        return [ _photos objectAtIndex:index];
+    }
+    
+    return nil;
+}
+
+
+-(void)showImage:(UITapGestureRecognizer *)tagGestureRecognizer {
+    _photos = [[NSMutableArray alloc] initWithCapacity:2];
+    MWPhoto *image = [MWPhoto photoWithURL:[NSURL URLWithString:_userInfo.headimgurl]];
+    [_photos addObject:image];
+    _browser = [self setPhotoBroswer:0];
+    [self.navigationController pushViewController:_browser animated:YES];
+    _browser = nil;
+}
+
+-(MWPhotoBrowser *)setPhotoBroswer :(NSInteger)index {
+        _browser = [[MWPhotoBrowser alloc] initWithDelegate:self];
+        _browser.displayActionButton     = NO;
+        _browser.displayNavArrows        = YES;
+        _browser.displaySelectionButtons = NO;
+        _browser.zoomPhotosToFill        = YES;
+        _browser.enableGrid              = YES;
+        _browser.enableSwipeToDismiss    = YES;
+        _browser.alwaysShowControls      = NO;
+        _browser.startOnGrid             = NO;
+        _browser.delayToHideElements     = YES;
+        [_browser setCurrentPhotoIndex:index];
+        [_browser setStartOnGrid:NO];
+        return _browser;
+}
+
 @end
