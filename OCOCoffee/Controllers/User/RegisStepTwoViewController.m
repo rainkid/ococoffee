@@ -37,7 +37,7 @@ static const CGFloat kPhotoHeight = 82;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self addSubViews];
+    [self initSubViews];
     [self initPickerView];
 }
 
@@ -64,15 +64,14 @@ static const CGFloat kPhotoHeight = 82;
     // Dispose of any resources that can be recreated.
 }
 
-- (void) addSubViews {
+- (void) initSubViews {
+    __weak typeof(self) weakSelf = self;
+
     UIImage *bg_image = [UIImage imageNamed:@"background"];
     UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
     [bg_imageView setFrame:self.view.bounds];
     [self.view addSubview: bg_imageView];
     
-    
-    __weak typeof(self) weakSelf = self;
-
     //photo
     UIView *cview = [UIView new];
     long kPhotoSlide = 8;

@@ -7,6 +7,7 @@
 //
 
 #import "Global.h"
+#import "Common.h"
 #import <Masonry/Masonry.h>
 #import "LoginViewController.h"
 #import "LoginTableViewCell.h"
@@ -141,7 +142,6 @@ static const CGFloat kButtonHeight = 43;
     } else {
         self.loginButton.enabled = YES;
         [self.loginButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//        self.loginButton.userInteractionEnabled = YES;
     }
 }
 
@@ -165,23 +165,13 @@ static const CGFloat kButtonHeight = 43;
             }];
 
         } else {
-            [self shouErrorDialog:jsonObject[@"msg"]];
+            [Common showErrorDialog:jsonObject[@"msg"]];
         }
     } else {
         NSLog(@"response error");
     }
 }
 
--(void)shouErrorDialog:(NSString *)errorMsg
-{
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"错误"
-                                                        message:errorMsg
-                                                       delegate:nil
-                                              cancelButtonTitle:@"确定"
-                                              otherButtonTitles: nil
-                              ];
-    [alertView show];
-}
 
 // register
 - (IBAction)registerOnePage:(id)sender {

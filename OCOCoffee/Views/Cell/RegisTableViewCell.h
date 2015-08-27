@@ -14,7 +14,7 @@ static const CGFloat kCellHeight = 47.0f;
 static const CGFloat kTableLeftSide = 23.3;
 static const CGFloat kButtonHeight = 43;
 
-
+static const CGFloat kSmsButtonWidth = 69;
 
 typedef NS_ENUM(NSInteger, REGIS_STEP_ONE){
     ONE_USERNAME = 0,

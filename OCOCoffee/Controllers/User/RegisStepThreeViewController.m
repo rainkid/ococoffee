@@ -15,6 +15,7 @@
 #import "RegisStepThreeViewController.h"
 static const CGFloat kHeight = 48.6f;
 static const CGFloat kTableLeftSide = 23.3f;
+static const CGFloat kButtonHeight = 43;
 
 @interface RegisStepThreeViewController ()
 
@@ -41,12 +42,12 @@ static const CGFloat kTableLeftSide = 23.3f;
 }
 
 - (void)addSubViews {
+    __weak typeof(self) weakSelf = self;
+
     UIImage *bg_image = [UIImage imageNamed:@"background"];
     UIImageView *bg_imageView = [[UIImageView alloc] initWithImage:bg_image];
     [bg_imageView setFrame:self.view.bounds];
     [self.view addSubview:bg_imageView];
-    
-//    __weak typeof(self) weakSelf = self;
     
     UIView *view = [UIView new];
     [self.view addSubview:view];
@@ -58,15 +59,17 @@ static const CGFloat kTableLeftSide = 23.3f;
         make.height.mas_equalTo(PHONE_CONTENT_HEIGHT);
     }];
     
-    UITextField *textField = [UITextField new];
-    textField.placeholder = @"  添加自定义标签（2-5个字符）";
-    textField.backgroundColor = [UIColor whiteColor];
-    textField.layer.cornerRadius = 3;
-    textField.layer.masksToBounds = YES;
-    self.textField = textField;
-    [view addSubview:textField];
+    self.textField = ({
+        UITextField *textField = [UITextField new];
+        textField.placeholder = @"  添加自定义标签（2-5个字符）";
+        textField.backgroundColor = [UIColor whiteColor];
+        textField.layer.cornerRadius = 3;
+        textField.layer.masksToBounds = YES;
+        textField;
+    });
+    [view addSubview:self.textField];
     
-    [textField mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.textField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(view.mas_top);
         make.left.and.right.mas_equalTo(0);
         make.height.mas_equalTo(kHeight);
@@ -83,9 +86,9 @@ static const CGFloat kTableLeftSide = 23.3f;
     [view addSubview:plus];
     
     [plus mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(textField.mas_top);
-        make.height.and.width.equalTo(textField.mas_height);
-        make.right.equalTo(textField.mas_right);
+        make.top.equalTo(weakSelf.textField.mas_top);
+        make.height.and.width.equalTo(weakSelf.textField.mas_height);
+        make.right.equalTo(weakSelf.textField.mas_right);
     }];
     
     
@@ -95,9 +98,9 @@ static const CGFloat kTableLeftSide = 23.3f;
     label.font = [UIFont systemFontOfSize:14];
     [view addSubview:label];
     [label mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(textField.mas_left);
+        make.left.mas_equalTo(weakSelf.textField.mas_left);
         make.height.mas_equalTo(kHeight);
-        make.top.equalTo(textField.mas_bottom);
+        make.top.equalTo(weakSelf.textField.mas_bottom);
     }];
     
     self.selectTagCount = 0;
@@ -139,6 +142,21 @@ static const CGFloat kTableLeftSide = 23.3f;
         make.left.equalTo(label.mas_left);
         make.top.equalTo(label.mas_bottom);
         make.right.mas_equalTo(view.mas_right);
+    }];
+    
+    //next button
+    UIButton *nextBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    nextBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
+    nextBtn.layer.cornerRadius = 3;
+    nextBtn.layer.masksToBounds = YES;
+    [nextBtn setTitle:@"下一步"  forState:UIControlStateNormal];
+    [nextBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.view addSubview:nextBtn];
+    [nextBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(weakSelf.view);
+        make.height.mas_equalTo(kButtonHeight);
+        make.left.and.right.equalTo(weakSelf.textField);
+        make.top.equalTo(weakSelf.view.mas_bottom).offset(47.5);
     }];
 }
 

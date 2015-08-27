@@ -43,6 +43,8 @@
         _textField = [UITextField new];
         [self addSubview:_textField];
         [_textField mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.mas_equalTo(weakSelf.mas_right).offset(-10);
+            make.height.mas_equalTo(weakSelf.mas_height);
             make.left.mas_equalTo(_label.mas_right).offset(17);
             make.centerY.mas_equalTo(weakSelf);
         }];

@@ -7,6 +7,7 @@
 //
 
 #import "Global.h"
+#import <Common.h>
 #import "UIColor+colorBuild.h"
 #import "CenterViewController.h"
 #import "CenterTableViewCell.h"
@@ -255,8 +256,7 @@ static const CGFloat kPhotoHeight = 82;
 
 -(void)checkLogin
 {
-    NSData *cookiesdata = [[NSUserDefaults standardUserDefaults] objectForKey:USERCOOKIE];
-    if ([cookiesdata length] == 0) {
+    if([Common userIsLogin]) {
         [self showLoginPage];
     } else {
         [self loadDataFromServer];
