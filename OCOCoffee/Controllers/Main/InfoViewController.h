@@ -12,5 +12,6 @@
 @interface InfoViewController : UIViewController
 
 @property(nonatomic,strong) IndexListItem *userInfo;
+@property(nonatomic,assign) NSInteger uid;
 
 @end

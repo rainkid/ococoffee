@@ -183,7 +183,9 @@ static const CGFloat kBanerHeight = 65;
     //load data
     self.collectionView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^(void){
         [weakSelf loadAdFromServer];
-        [weakSelf getLocation];
+      // [weakSelf getLocation];
+        
+        [weakSelf loadListFromServer];
     }];
 
     [self.collectionView.header beginRefreshing];
@@ -224,13 +226,13 @@ static const CGFloat kBanerHeight = 65;
     //get list
     NSString *listApiUrl = API_DOMAIN@"api/index/list";
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSNumber *latNumber = [[NSNumber alloc] initWithDouble:22.53989800818258];
-    NSNumber *lngNumber = [[NSNumber alloc] initWithDouble:114.020138046113];
+    NSNumber *latNumber = [[NSNumber alloc] initWithDouble:22.53992];
+    NSNumber *lngNumber = [[NSNumber alloc] initWithDouble:114.0201];
     NSNumber *pageIndex = [[NSNumber alloc] initWithLong:self.pageIndex];
     NSDictionary *parameters = @{@"lat":latNumber, @"lng":lngNumber, @"page":pageIndex};
-    
     [manager GET:listApiUrl parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject){
-        NSLog(@"%@", responseObject);
+        
+        NSLog(@"response:%@",responseObject);
         [self analyseListJsonObject:responseObject];
         [self.collectionView.header endRefreshing];
         [self.collectionView.footer endRefreshing];
@@ -253,9 +255,11 @@ static const CGFloat kBanerHeight = 65;
             self.hasNextPage = [jsonObject[@"data"][@"hasnext"] boolValue];
         }
         
-        for (NSDictionary *dict in dicts) {
-            IndexListItem *item = [IndexListItem indexListItemWithDictionary:dict];
-            [self.listDataArray addObject:item];
+        if([dicts count] >0){
+            for (NSDictionary *dict in dicts) {
+                IndexListItem *item = [IndexListItem indexListItemWithDictionary:dict];
+                [self.listDataArray addObject:item];
+            }
         }
         [self.collectionView reloadData];
         
@@ -319,7 +323,8 @@ static const CGFloat kBanerHeight = 65;
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return self.listDataArray.count;
+    NSLog(@"coutn:%lu",(unsigned long)self.listDataArray.count);
+    return [self.listDataArray count]?[self.listDataArray count] :0;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -411,15 +416,6 @@ static const CGFloat kBanerHeight = 65;
     return cell;
 }
 
-
-//<<<<<<< HEAD
-//#pragma collection deledate methods 
-//
-//-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-//    return CGSizeMake(self.view.bounds.size.width/2 -10 , 285);
-//}
-//
-//=======
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     IndexListItem *item = [self.listDataArray objectAtIndex:[indexPath row]];
@@ -449,7 +445,7 @@ static const CGFloat kBanerHeight = 65;
     
     CGFloat tagViewHeght = (tagCloum * tagItemHeight);
     
-    NSLog(@"%@---%d",item.nickname, tagCloum);
+    //NSLog(@"%@---%d",item.nickname, tagCloum);
 
     CGFloat cellHeight = KCollectionItemBotHeight + kImageWidth + tagViewHeght ;
     return CGSizeMake(self.itemWidth , cellHeight);
@@ -486,7 +482,6 @@ static const CGFloat kBanerHeight = 65;
     InfoViewController *infoViewController = [[InfoViewController alloc] init];
     infoViewController.userInfo = [self.listDataArray objectAtIndex:[indexPath row]];
     [self.navigationController pushViewController:infoViewController animated:YES];
-    NSLog(@"asdfasdfas");
 }
 
 -(NSArray *)layoutAttributesForElementsInRect {
@@ -597,27 +592,29 @@ static const CGFloat kBanerHeight = 65;
 
 //添加Tag标签
 - (void)tagView:(SKTagView *)tagView addTags:(NSArray *)tags {
-    [tags enumerateObjectsUsingBlock:^(id obj,NSUInteger idx,BOOL *stop){
-        NSDictionary *tagDict = obj;
-        SKTag *tag          = [SKTag tagWithText:tagDict[@"name"]];
-        tag.textColor       = [UIColor whiteColor];
-        tag.cornerRadius    = 2;
-        tag.borderWidth     = 0;
-        tag.bgColor         = [UIColor colorFromHexString:tagDict[@"bg_color"]];
-        
-        UIFont *font = [UIFont fontWithName:@"Helvetica" size:11.0];
-        tag.font            = font;
-        tag.padding         = UIEdgeInsetsMake(3, 3, 2, 2);
-        CGSize size = CGSizeMake(80, 20);
-        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil];
-        size = [tag.text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:dict context:nil].size;
-        float Height = size.height;
-        float rowHeight = Height + 5;
-        NSNumber *tagRowHeight = [[NSNumber alloc] initWithFloat:rowHeight];
-        NSNumber *tagCounts =  [[NSNumber alloc] initWithInteger:[tags count]];
-        [tagView addTag:tag];
-    }];
     
+    if([tags count]>0){
+        [tags enumerateObjectsUsingBlock:^(id obj,NSUInteger idx,BOOL *stop){
+            NSDictionary *tagDict = obj;
+            SKTag *tag          = [SKTag tagWithText:tagDict[@"name"]];
+            tag.textColor       = [UIColor whiteColor];
+            tag.cornerRadius    = 2;
+            tag.borderWidth     = 0;
+            tag.bgColor         = [UIColor colorFromHexString:tagDict[@"bg_color"]];
+            
+            UIFont *font = [UIFont fontWithName:@"Helvetica" size:11.0];
+            tag.font            = font;
+            tag.padding         = UIEdgeInsetsMake(3, 3, 2, 2);
+            CGSize size = CGSizeMake(80, 20);
+            NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil];
+            size = [tag.text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:dict context:nil].size;
+            float Height = size.height;
+            float rowHeight = Height + 5;
+            NSNumber *tagRowHeight = [[NSNumber alloc] initWithFloat:rowHeight];
+            NSNumber *tagCounts =  [[NSNumber alloc] initWithInteger:[tags count]];
+            [tagView addTag:tag];
+        }];
+    }
 }
 
 //得到合适大小的图片
@@ -645,7 +642,11 @@ static const CGFloat kBanerHeight = 65;
 #pragma mark -CLLocationManagerDelegate
 
 -(void)getLocation {
-    _locationManager = [[CLLocationManager alloc] init];
+    
+    if(_locationManager == nil){
+        _locationManager = [[CLLocationManager alloc] init];
+        
+    }
     
     if(![CLLocationManager locationServicesEnabled]){
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"错误"
@@ -683,12 +684,14 @@ static const CGFloat kBanerHeight = 65;
     _latitude = currentLocation.coordinate.latitude;
     _logitude = currentLocation.coordinate.longitude;
     
+    NSLog(@"%f",_latitude);
+    
     [self loadListFromServer];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
-    [self loadListFromServer];
+    //[self loadListFromServer];
     NSLog(@"locationManager error:%@", error);
 }
 
