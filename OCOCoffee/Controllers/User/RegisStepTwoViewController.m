@@ -8,27 +8,45 @@
 
 
 #import "Global.h"
+#import "Common.h"
 #import <Masonry/Masonry.h>
+#import <AFNetworking/AFNetworking.h>
 #import "UIColor+colorBuild.h"
 #import "RegisTableViewCell.h"
 #import "ActionSheetPicker.h"
+#import "StringPickerViewItem.h"
 #import "StringPickerView.h"
 #import "DatePickerView.h"
+#import "TagItem.h"
 #import "RegisStepThreeViewController.h"
 #import "RegisStepTwoViewController.h"
 
 
 static const CGFloat kPhotoHeight = 82;
 
-@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate, DatePickerViewDelegate, StringPickerViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
-@property(nonatomic, assign) long cellIndex;
+@interface RegisStepTwoViewController ()<UITableViewDataSource, UITableViewDelegate, DatePickerViewDelegate, StringPickerViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate, UIActionSheetDelegate>
+
+@property(nonatomic, strong) UITextField *nicknameTextField;
+@property(nonatomic, strong) UITextField *birthdayTextField;
+@property(nonatomic, strong) UITextField *jobTextField;
+@property(nonatomic, strong) UISegmentedControl *sexSegmentedController;
+@property(nonatomic, assign) long jobValue;
+@property(nonatomic, assign) long sexValue;
+
 @property (nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) DatePickerView *datePicker;
 @property(nonatomic,strong) StringPickerView *pickerView;
-@property(nonatomic, strong) NSArray *pickerViewData;
+
+@property(nonatomic, strong) NSMutableArray *pickerViewData;
+@property(nonatomic, strong) NSDictionary *sexData;
+@property(nonatomic, strong) NSMutableArray *tagData;
+
 @property(nonatomic, strong) UIImageView *imageView;
 @property(nonatomic, strong) UIImageView *cameraView;
 
+@property(nonatomic, strong) UIButton *nextButton;
+@property(nonatomic, strong) UIActionSheet *sheet;
+@property(nonatomic, strong) NSString *filePath;
 @end
 
 
@@ -36,34 +54,70 @@ static const CGFloat kPhotoHeight = 82;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    [self initSubViews];
-    [self initPickerView];
-}
 
-- (void) initPickerView {
+    [self initSubViews];
+    
+    self.phone = @"13809886150";
+    self.password = @"123456";
+    
+    self.pickerViewData = [NSMutableArray array];
+    self.tagData = [NSMutableArray array];
+    
     _datePicker = [[DatePickerView alloc] initWithFrame:CGRectMake(0, 0,self.view.frame.size.width, 200)];
     _datePicker.delegate = self;
     
     _pickerView = [[StringPickerView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
     _pickerView.delegate = self;
 
-    _pickerViewData=[[NSArray alloc] initWithObjects:
-                     @"金融行业",
-                    @"IT行业",
-                    @"互联行业",
-                    @"投资行业",
-                    @"手机游戏开发",
-                    nil];
     
-    _pickerView.pickerViewData = _pickerViewData;
+    [self loadDataFromServer];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark-loadDataFromServer get user/attr
+-(void)loadDataFromServer
+{
+    NSString *listApiUrl = API_DOMAIN@"api/user/attr";
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager POST:listApiUrl parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject){
+        [self analyseAttrResponse:responseObject];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
 }
 
+-(void)analyseAttrResponse:(NSDictionary *)jsonObject
+{
+    if ([jsonObject isKindOfClass:[NSDictionary class]]) {
+        if ([jsonObject[@"success"] integerValue] == 1) {
+
+            self.sexData =jsonObject[@"data"][@"sex"];
+            NSArray *tagDicts = jsonObject[@"data"][@"tags"];
+            for (NSDictionary *dict in tagDicts) {
+                TagItem *item = [TagItem tagItemWithDictionary:dict];
+                [self.tagData addObject:item];
+            }
+            
+            //analyse job data
+            NSDictionary *jobs = jsonObject[@"data"][@"job"];
+            for (NSString *itemId in jobs) {
+                StringPickerViewItem *item = [StringPickerViewItem new];
+                item.itemId = [itemId floatValue];
+                item.name = jobs[itemId];
+                                
+                [self.pickerViewData addObject:item];
+                [self.pickerView loadData:self.pickerViewData];
+            }
+        } else {
+            [Common showErrorDialog:jsonObject[@"msg"]];
+        }
+    } else {
+        NSLog(@"response error");
+    }
+}
+
+#pragma mark-initSubViews
 - (void) initSubViews {
     __weak typeof(self) weakSelf = self;
 
@@ -140,17 +194,21 @@ static const CGFloat kPhotoHeight = 82;
    
     
     //table view
-    _tableView = [UITableView new];
-    _tableView.layer.cornerRadius = 3;
-    _tableView.layer.masksToBounds = YES;
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    _tableView.alpha = 0.7;
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.showsVerticalScrollIndicator = NO;
-    _tableView.showsHorizontalScrollIndicator = NO;
-    [self.view addSubview:_tableView];
-    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.tableView = ({
+        UITableView *tableView = [UITableView new];
+        tableView.layer.cornerRadius = 3;
+        tableView.layer.masksToBounds = YES;
+        tableView.delegate = self;
+        tableView.dataSource = self;
+        tableView.alpha = 0.7;
+        tableView.scrollEnabled = NO;
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        tableView.showsVerticalScrollIndicator = NO;
+        tableView.showsHorizontalScrollIndicator = NO;
+        tableView;
+    });
+    [self.view addSubview:self.tableView];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.view).offset(kTableLeftSide);
         make.centerX.equalTo(weakSelf.view);
         make.height.mas_equalTo(kCellHeight * 4);
@@ -158,15 +216,19 @@ static const CGFloat kPhotoHeight = 82;
     }];
     
     //next button
-    UIButton *nextBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    nextBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
-    nextBtn.layer.cornerRadius = 3;
-    nextBtn.layer.masksToBounds = YES;
-    [nextBtn setTitle:@"下一步"  forState:UIControlStateNormal];
-    [nextBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [nextBtn addTarget:self action:@selector(registerThreePage:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:nextBtn];
-    [nextBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.nextButton = ({
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        button.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
+        button.layer.cornerRadius = 3;
+        button.layer.masksToBounds = YES;
+        button.enabled = NO;
+        [button setTitle:@"下一步"  forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(registerThreePage:) forControlEvents:UIControlEventTouchUpInside];
+        button;
+    });
+    [self.view addSubview:self.nextButton];
+    [self.nextButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
         make.height.mas_equalTo(kButtonHeight);
         make.left.and.right.equalTo(_tableView);
@@ -174,53 +236,113 @@ static const CGFloat kPhotoHeight = 82;
     }];
 }
 
-#pragma mark 用户单击上传图像
+#pragma mark-tag user image
 - (void)tapUserImage:(UITapGestureRecognizer*)tap
 {
-    NSLog(@"click userImage...");
-    [self openThePhotoAlbum];
+    self.sheet  = [[UIActionSheet alloc]
+                  initWithTitle:@"选择"
+                  delegate:self
+                  cancelButtonTitle:nil
+                  destructiveButtonTitle:@"取消"
+                  otherButtonTitles:@"拍照", @"从相册选择",nil];
+    
+    self.sheet.tag = 255;
+    self.sheet.delegate = self;
+    [self.sheet showInView:self.view];
 }
 
-#pragma mark 打开系统相册或照相机
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"%ld", buttonIndex);
+    switch (buttonIndex)
+    {
+        case 0:
+            break;
+        case 1:
+            [self takePhoto];
+            break;
+            
+        case 2:
+            [self openThePhotoAlbum];
+            break;
+    }
+}
+
+//开始拍照
+-(void)takePhoto
+{
+    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera])
+    {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.allowsEditing = YES;
+        picker.delegate = self;
+        
+        [self presentViewController:picker animated:YES completion:nil];
+    } else {
+        [Common showErrorDialog:@"无法使用相机"];
+    }
+}
+
+#pragma mark-optn photo album
 - (void)openThePhotoAlbum
 {
-    //创建图片选取器对象
-    UIImagePickerController * pickerViwController = [[UIImagePickerController alloc] init];
-    /*
-     图片来源
-     UIImagePickerControllerSourceTypePhotoLibrary：表示显示所有的照片
-     UIImagePickerControllerSourceTypeCamera：表示从摄像头选取照片
-     UIImagePickerControllerSourceTypeSavedPhotosAlbum：表示仅仅从相册中选取照片。
-     */
-    pickerViwController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    //允许用户编辑图片 (YES可以编辑，NO只能选择照片)
-    pickerViwController.allowsEditing = YES;
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+    picker.allowsEditing = YES;
+    picker.delegate = self;
     
-    pickerViwController.delegate = self;
-    [self presentViewController:pickerViwController animated:YES completion:nil];
+    [self presentViewController:picker animated:YES completion:nil];
 }
 
-#pragma mark 相册协议中方法，选中某张图片后调用方法
+#pragma mark-finish picking picture
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     
-    //头像设置为选中的图片
-    [info objectForKey:UIImagePickerControllerOriginalImage];
-    UIImage* image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];
     _cameraView.hidden = YES;
     _imageView.image = image;
+    
+    //save image
+    [self saveImage:image WithName:@"avatar.png"];
 }
 
-#pragma mark - nextBtn action
+- (void)saveImage:(UIImage *)tempImage WithName:(NSString *)imageName
+{
+    NSData* imageData = UIImagePNGRepresentation(tempImage);
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* documentsDirectory = [paths objectAtIndex:0];
+    // Now we get the full path to the file
+    NSString* fullPathToFile = [documentsDirectory stringByAppendingPathComponent:imageName];
+    
+    self.filePath = fullPathToFile;
+    // and then we write it out
+    [imageData writeToFile:fullPathToFile atomically:NO];
+}
+
+#pragma mark-nextBtn action
 - (IBAction)registerThreePage:(id)sender {
-    RegisStepThreeViewController *page = [[RegisStepThreeViewController alloc] init];
-    [self presentViewController:page animated:YES completion:^{
-        NSLog(@"regis page ");
-    }];
+    if ([self.filePath length] ==0) {
+        [Common showErrorDialog:@"请上传图像"];
+        return;
+    }
+    
+    RegisStepThreeViewController *threePage = [[RegisStepThreeViewController alloc] init];
+    
+    threePage.nickname = self.nicknameTextField.text;
+    threePage.phone = self.phone;
+    threePage.password = self.password;
+    threePage.sexValue = self.sexValue;
+    threePage.jobValue = self.jobValue;
+    threePage.birthday = self.birthdayTextField.text;
+    threePage.tagData = self.tagData;
+    threePage.headimgpath  = self.filePath;
+    
+    [self presentViewController:threePage animated:YES completion:nil];
 }
 
-#pragma mark Table view methods
+#pragma mark-UITableViewDataSource UITableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
@@ -235,21 +357,25 @@ static const CGFloat kPhotoHeight = 82;
 {
     RegisTableViewCell *cell=[[RegisTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.textField.delegate = self;
     
     if (indexPath.row == 0){
         [cell.label setText:@"呢      称"];
         [cell.textField setPlaceholder:@"请输入2-12位中英文字符"];
         cell.textField.tag = TWO_NICKNAKE;
+        self.nicknameTextField  =cell.textField;
         [cell showBottomLine:YES];
     } else if (indexPath.row == 1) {
         [cell.label setText:@"性      别"];
         cell.textField.hidden = YES;
         
-        UISegmentedControl *sortSegmentedController = [[UISegmentedControl alloc] initWithItems:@[@"男",@"女"]];
-        sortSegmentedController.selectedSegmentIndex = 0;
-        [sortSegmentedController addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
-        cell.accessoryView = sortSegmentedController;
+        UISegmentedControl *sexSegmentedController = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"男",@"女",@"未知", nil]];
+        sexSegmentedController.selectedSegmentIndex = 0;
+        [sexSegmentedController addTarget:self action:nil forControlEvents:UIControlEventValueChanged];
+        cell.accessoryView = sexSegmentedController;
+        self.sexSegmentedController = sexSegmentedController;
+        [sexSegmentedController addTarget:self
+                             action:@selector(sexDidChange:)
+                   forControlEvents:UIControlEventValueChanged];
         
         [cell showBottomLine:YES];
     } else if (indexPath.row == 2) {
@@ -258,6 +384,7 @@ static const CGFloat kPhotoHeight = 82;
         cell.textField.tag = TWO_BIRGHDAY;
         cell.textField.inputView = _datePicker;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        self.birthdayTextField = cell.textField;
         [cell showBottomLine:YES];
     } else if (indexPath.row == 3) {
         [cell.label setText:@"所在行业"];
@@ -265,9 +392,11 @@ static const CGFloat kPhotoHeight = 82;
         cell.textField.tag = TWO_TRADE;
         cell.textField.inputView = _pickerView;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        self.jobTextField = cell.textField;
         [cell showBottomLine:NO];
     }
-    
+    [cell.textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+
     return cell;
 }
 
@@ -275,63 +404,69 @@ static const CGFloat kPhotoHeight = 82;
     return kCellHeight;
 }
 
-
-#pragma mark-textField
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+-(void) checkFormValue
 {
-    NSLog(@"controller %ld", textField.tag);
+    NSString *nickname = self.nicknameTextField.text;
+    NSString *birthday = self.birthdayTextField.text;
+    NSLog(@"%@---%@", nickname, birthday);
     
-    if (textField.tag == TWO_TRADE) {
-        
+    if ([nickname length] == 0 || [birthday length] ==0 || self.jobValue == 0) {
+        self.nextButton.enabled = NO;
+    } else {
+        self.nextButton.enabled = YES;
+        [self.nextButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }
-    return YES;
 }
 
-- (void) textFieldDidBeginEditing:(UITextField *)textField {
-
-    self.cellIndex = textField.tag;
-    [textField becomeFirstResponder];
-    NSLog(@"cellIndex = %ld", self.cellIndex);
-
+#pragma mark-textFielDidChange
+-(IBAction)textFieldDidChange:(id)sender {
+    [self checkFormValue];
 }
 
--(void) textFieldDidEndEditing: (UITextField * ) textField {
-    NSLog(@"controller %ld", textField.tag);
+#pragma mark-UISegmentedControl didchange
+-(IBAction)sexDidChange:(UISegmentedControl *)sender {
+    NSInteger index = sender.selectedSegmentIndex;
+    self.sexValue = index  + 1;
 }
 
-#pragma DatePickerViewDelegate
+
+
+#pragma mark-DatePickerViewDelegate
 -(void) datePickerDone:(NSDate *)date
 {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd"];
-    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
-    RegisTableViewCell *cell = (RegisTableViewCell *)[_tableView cellForRowAtIndexPath:cellIndexPath];
-    cell.textField.text = [formatter stringFromDate:date];
-    [cell.textField resignFirstResponder];
-    NSLog(@"%@", date);
+    self.birthdayTextField.text = [formatter stringFromDate:date];
+    [self.birthdayTextField resignFirstResponder];
+    
+    [self checkFormValue];
 }
 
 -(void)datePickerCancel
 {
-    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
-    RegisTableViewCell *cell = (RegisTableViewCell *)[_tableView cellForRowAtIndexPath:cellIndexPath];
-    [cell.textField resignFirstResponder];
+    [self.birthdayTextField resignFirstResponder];
 }
 
-#pragma StringPickerViewDelegate
+#pragma mark-StringPickerViewDelegate
 -(void) stringPickerDone:(long)index
 {
-    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
-    RegisTableViewCell *cell = (RegisTableViewCell *)[_tableView cellForRowAtIndexPath:cellIndexPath];
-    cell.textField.text = [_pickerViewData objectAtIndex:index];
-    [cell.textField resignFirstResponder];
+    StringPickerViewItem *item = [_pickerViewData objectAtIndex:index];
+    self.jobTextField.text = item.name;
+    self.jobValue = item.itemId;
+    
+    [self.jobTextField resignFirstResponder];
+    
+    [self checkFormValue];
 }
 
 -(void)stringPickerCancel
 {
-    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
-    RegisTableViewCell *cell = (RegisTableViewCell *)[_tableView cellForRowAtIndexPath:cellIndexPath];
-    [cell.textField resignFirstResponder];
+    [self.jobTextField resignFirstResponder];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 @end

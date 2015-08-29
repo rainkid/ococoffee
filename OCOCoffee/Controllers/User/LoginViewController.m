@@ -11,7 +11,7 @@
 #import <Masonry/Masonry.h>
 #import "LoginViewController.h"
 #import "LoginTableViewCell.h"
-#import "RegisStepOneViewController.h"
+#import "RegisStepTwoViewController.h"
 #import <AFNetworking/AFNetworking.h>
 #import "UIColor+colorBuild.h"
 
@@ -114,7 +114,7 @@ static const CGFloat kButtonHeight = 43;
     }];
 }
 
-// login_post
+#pragma mark-loginPost
 - (IBAction)loginPost:(id)sender {
     NSString *phone = self.usernameTextField.text;
     NSString *password = self.passwordTextField.text;
@@ -131,18 +131,6 @@ static const CGFloat kButtonHeight = 43;
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
-}
-
--(IBAction)textFieldDidChange:(id)sender {
-    NSString *phone = self.usernameTextField.text;
-    NSString *password = self.passwordTextField.text;
-    NSLog(@"login check");
-    if ([password length] == 0 || [phone length] == 0) {
-        self.loginButton.enabled = NO;
-    } else {
-        self.loginButton.enabled = YES;
-        [self.loginButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    }
 }
 
 -(void)analyseLoginResponse:(NSDictionary *)jsonObject
@@ -170,27 +158,26 @@ static const CGFloat kButtonHeight = 43;
 }
 
 
-// register
-- (IBAction)registerOnePage:(id)sender {
-    RegisStepOneViewController *page = [[RegisStepOneViewController alloc] init];
-    [self presentViewController:page animated:YES completion:^{
-        NSLog(@"completion");
-    }];
-}
-
-
-
-#pragma mark - UINavigationControllerDelegate
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
-    if (viewController != self) {
-        [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-            self.navigationController.navigationBar.alpha = 1.0;
-        } completion:NULL];
+-(IBAction)textFieldDidChange:(id)sender {
+    NSString *phone = self.usernameTextField.text;
+    NSString *password = self.passwordTextField.text;
+    NSLog(@"login check");
+    if ([password length] == 0 || [phone length] == 0) {
+        self.loginButton.enabled = NO;
+    } else {
+        self.loginButton.enabled = YES;
+        [self.loginButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }
 }
 
-#pragma mark Table view methods
+#pragma mark-register
+- (IBAction)registerOnePage:(id)sender {
+    RegisStepTwoViewController *page = [[RegisStepTwoViewController alloc] init];
+    [self presentViewController:page animated:YES completion:nil];
+}
+
+
+#pragma mark-TableVviewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
