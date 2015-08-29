@@ -13,7 +13,7 @@
 
 +(void)showErrorDialog:(NSString *)errorMsg
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"错误"
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提醒"
                                                         message:errorMsg
                                                        delegate:nil
                                               cancelButtonTitle:@"确定"
