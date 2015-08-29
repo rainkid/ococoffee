@@ -10,7 +10,7 @@
 #import "LoginTableViewCell.h"
 #import "LoginViewController.h"
 
-@interface LoginTableViewCell()
+@interface LoginTableViewCell()<UITextFieldDelegate>
 
 @property (nonatomic, strong) SeparatorView *sepView;
 
@@ -37,6 +37,8 @@
         
         _textField = [UITextField new];
         _textField.userInteractionEnabled = YES;
+        _textField.delegate = self;
+        [_textField setReturnKeyType:UIReturnKeyDone];
         [self addSubview:_textField];
         [_textField mas_makeConstraints:^(MASConstraintMaker *make) {
             make.height.mas_equalTo(weakSelf.mas_height);
@@ -77,4 +79,23 @@
     // Configure the view for the selected state
 }
 
+
+#pragma mark-textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    NSLog(@"textFieldShouldReturn %ld", textField.tag);
+    return NO;
+}
+
+- (void) textFieldDidBeginEditing:(UITextField *)textField {
+    NSLog(@"textFieldDidBeginEditing %ld", textField.tag);
+    
+    [textField becomeFirstResponder];
+}
+
+-(void) textFieldDidEndEditing: (UITextField * ) textField {
+    NSLog(@"textFieldDidEndEditing %ld", textField.tag);
+    NSLog(@"controller %ld", textField.tag);
+}
 @end

@@ -13,7 +13,7 @@
 #import "RegisTableViewCell.h"
 
 
-@interface RegisTableViewCell()
+@interface RegisTableViewCell()<UITextFieldDelegate>
 
 @property (nonatomic, strong) SeparatorView *sepView;
 @property (nonatomic, strong) UIPickerView *tradePickerView;
@@ -39,8 +39,9 @@
             make.centerY.mas_equalTo(weakSelf);
         }];
         
-        
         _textField = [UITextField new];
+        _textField.delegate = self;
+        [_textField setReturnKeyType:UIReturnKeyDone];
         [self addSubview:_textField];
         [_textField mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.mas_equalTo(weakSelf.mas_right).offset(-10);
@@ -81,6 +82,23 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+
+#pragma mark-textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void) textFieldDidBeginEditing:(UITextField *)textField {
+
+    [textField becomeFirstResponder];
+}
+
+-(void) textFieldDidEndEditing: (UITextField * ) textField {
+
 }
 
 @end

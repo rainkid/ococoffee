@@ -6,6 +6,7 @@
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
 
+#import "StringPickerViewItem.h"
 #import "StringPickerView.h"
 
 static const CGFloat PickerToolBarHeight = 44.f;
@@ -13,6 +14,7 @@ static const CGFloat PickerToolBarHeight = 44.f;
 
 @interface StringPickerView()<UIPickerViewDataSource,UIPickerViewDelegate>
 
+@property(nonatomic,strong) NSMutableArray *pickerViewData;
 @property(nonatomic, strong) UIPickerView *pickerView;
 
 @end
@@ -49,21 +51,19 @@ static const CGFloat PickerToolBarHeight = 44.f;
 }
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    NSLog(@"----%ld", [_pickerViewData count]);
     return [_pickerViewData count];
 }
--(UIView *)pickerView:(UIPickerView *)pickerView
+-(NSString *)pickerView:(UIPickerView *)pickerView
           titleForRow:(NSInteger)row
          forComponent:(NSInteger)component
 {
-    
-    return [_pickerViewData objectAtIndex:row];
+    StringPickerViewItem *item = [_pickerViewData objectAtIndex:row];
+    return item.name;
 }
 
 -(IBAction)doneClicked:(id)sender
 {
     long index = [_pickerView selectedRowInComponent:0];
-    NSLog(@" select row in %ld", index);
     [self.delegate stringPickerDone:index];
     
 }
@@ -72,5 +72,9 @@ static const CGFloat PickerToolBarHeight = 44.f;
     [self.delegate stringPickerCancel];
 }
 
-
+-(void)loadData:(NSMutableArray *)data
+{
+    self.pickerViewData = data;
+    [self.pickerView reloadAllComponents];
+}
 @end
