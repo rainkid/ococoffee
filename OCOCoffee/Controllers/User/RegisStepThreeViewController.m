@@ -240,9 +240,30 @@ static const CGFloat kButtonHeight = 43;
         [formData appendPartWithFileURL:[NSURL fileURLWithPath:self.headimgpath] name:@"headimgurl" error:nil];
     } success:^(AFHTTPRequestOperation *operation, id responseObject){
         NSLog(@"%@", responseObject);
+        [self analyseResponse:responseObject];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
+}
+
+-(void)analyseResponse:(NSDictionary *)jsonObject
+{
+    if ([jsonObject isKindOfClass:[NSDictionary class]]) {
+        if ([jsonObject[@"success"] integerValue] == 1) {
+            
+            [self dismissViewControllerAnimated:YES completion:^{
+                //set cookid data
+                [Common shareUserCookie];
+                //
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+            
+        } else {
+            [Common showErrorDialog:jsonObject[@"msg"]];
+        }
+    } else {
+        NSLog(@"response error");
+    }
 }
 @end

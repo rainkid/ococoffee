@@ -11,7 +11,7 @@
 #import <Masonry/Masonry.h>
 #import "LoginViewController.h"
 #import "LoginTableViewCell.h"
-#import "RegisStepTwoViewController.h"
+#import "RegisStepOneViewController.h"
 #import <AFNetworking/AFNetworking.h>
 #import "UIColor+colorBuild.h"
 
@@ -172,7 +172,7 @@ static const CGFloat kButtonHeight = 43;
 
 #pragma mark-register
 - (IBAction)registerOnePage:(id)sender {
-    RegisStepTwoViewController *page = [[RegisStepTwoViewController alloc] init];
+    RegisStepOneViewController *page = [[RegisStepOneViewController alloc] init];
     [self presentViewController:page animated:YES completion:nil];
 }
 
