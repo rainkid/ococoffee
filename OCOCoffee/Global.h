@@ -105,8 +105,14 @@ alpha:(a)]
 
 #define IOS7_STATUSBAR_OFFSET ([[UIDevice currentDevice] systemVersionNotLowerThan:@"7.0"] ? 20 : 0)
 
-#define API_DOMAIN @"http://ococoffee.com/"
+//#define API_DOMAIN @"http://ococoffee.com/"
+#define API_DOMAIN @"http://dahongmao.net/"
+
 
 #define USERCOOKIE @"CF-USER-COOKIE"
+
+#define BAIDUKEY @"oOWcaFg4bo2oYv4QOVjNbskE"
+
+#define BAIDUSUGGESTION @"http://api.map.baidu.com/place/v2/suggestion/"
 
 #endif
