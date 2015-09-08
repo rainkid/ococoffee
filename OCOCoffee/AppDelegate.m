@@ -7,12 +7,13 @@
 //
 
 #import "AppDelegate.h"
-
+#import "Global.h"
 #import "IndexViewController.h"
 #import "MessageViewController.h"
 #import "ActivityViewController.h"
 #import "CenterViewController.h"
 #import "ViewStyles.h"
+#import <BaiduMapAPI/BMapKit.h>
 
 @interface AppDelegate ()<UIApplicationDelegate,UITabBarControllerDelegate>
 
@@ -20,6 +21,8 @@
 @property(nonatomic, strong) UINavigationController *activityNavController;
 @property(nonatomic, strong) UINavigationController *centerNavController;
 @property(nonatomic, strong) UINavigationController *messageNavController;
+
+@property(nonatomic,strong) BMKMapManager *manager;
 
 @end
 
@@ -68,6 +71,11 @@
     
     //
     
+    _manager = [[BMKMapManager alloc] init];
+    BOOL ret = [_manager start:BAIDUKEY generalDelegate:nil];
+    if(ret){
+        NSLog(@"百度地图服务已开始");
+    }
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
