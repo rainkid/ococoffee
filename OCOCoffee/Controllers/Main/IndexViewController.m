@@ -231,8 +231,6 @@ static const CGFloat kBanerHeight = 65;
     NSNumber *pageIndex = [[NSNumber alloc] initWithLong:self.pageIndex];
     NSDictionary *parameters = @{@"lat":latNumber, @"lng":lngNumber, @"page":pageIndex};
     [manager GET:listApiUrl parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject){
-        
-        NSLog(@"response:%@",responseObject);
         [self analyseListJsonObject:responseObject];
         [self.collectionView.header endRefreshing];
         [self.collectionView.footer endRefreshing];
@@ -267,11 +265,13 @@ static const CGFloat kBanerHeight = 65;
         self.pageIndex = 1;
         self.hasNextPage = NO;
         [self.listDataArray removeAllObjects];
+        [self.collectionView reloadData];
     }
 }
 
 - (void)analyseAdJsonObject:(NSDictionary *)jsonObject
 {
+
     if ([jsonObject[@"data"] isKindOfClass:[NSArray class]]) {
         NSArray *adArray = [NSMutableArray array];
         if (jsonObject[@"data"]) {
@@ -286,7 +286,6 @@ static const CGFloat kBanerHeight = 65;
 {
     [self.bannerView forceRefresh:self.adDataArray];
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -323,7 +322,8 @@ static const CGFloat kBanerHeight = 65;
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSLog(@"coutn:%lu",(unsigned long)self.listDataArray.count);
+    NSLog(@"listDataArray:%lu",(unsigned long)[self.listDataArray count]);
+    
     return [self.listDataArray count]?[self.listDataArray count] :0;
 }
 
@@ -480,62 +480,6 @@ static const CGFloat kBanerHeight = 65;
         NSLog(@"没有可用网络");
     }
 }
-
-
-//网络加载数据
-//-(void)loadNewDataWithPage:(int)page  type:(NSString *)type {
-//    
-//    [_locationManager startUpdatingLocation];
-//    double lat = _latitude;
-//    double lng = _logitude;
-//    NSLog(@"%f,%f",lat,lng);
-//    lat =22.53992;
-//    lng =114.0201;
-//  
-//    CLLocation *location = [[CLLocation alloc] initWithLatitude:lat longitude:lng];
-//    CLGeocoder *gcoder = [[CLGeocoder alloc] init];
-//    [gcoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks,NSError *error){
-//        if(!error && [placemarks count]>0){
-//            CLPlacemark *placeMark = [placemarks firstObject];
-//           // NSLog(@" distinct:%@ \n address:%@ \n city:%@ \n ",placeMark.name,placeMark.addressDictionary,placeMark.country);
-//            NSDictionary *dict = placeMark.addressDictionary;
-//            NSString *detailAddress = [NSString stringWithFormat:@"%@ %@ %@ %@ %@",
-//                                       dict[@"State"],dict[@"City"],dict[@"SubLocality"],dict[@"Name"],dict[@"Street"]
-//                                       ];
-//           // NSLog(@"%@",detailAddress);
-//            
-//        }
-//    }];
-//
-//    NSNumber *latitu = [NSNumber numberWithDouble:lat];
-//    NSNumber *logitu = [NSNumber numberWithDouble:lng];
-//    NSDictionary *dict = @{@"lat":latitu,@"lng":logitu,@"page":[NSNumber numberWithInt:page]};
-//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-//    [manager GET:base_url parameters:dict success:^(AFHTTPRequestOperation  *operation,id responseObject){
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            NSDictionary *dict = responseObject;
-//            NSArray *list = dict[@"data"][@"list"];
-//            
-//            //下拉刷新时
-//            if([type  isEqual: @"down"]){
-//                NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [list count])];
-//                [_dataList insertObjects:list atIndexes:indexes];
-//            }else{
-//                [_dataList addObjectsFromArray:list];
-//            }
-//            _hasNextPage    = dict[@"hasnext"]?dict[@"hasnext"]:FALSE;
-//            _curPage        =dict[@"curpage"]? (int)dict[@"curpage"]:1;
-//            [_collectionView reloadData];
-//            [self.collectionView.header endRefreshing];
-//        });
-//        
-//    }failure:^(AFHTTPRequestOperation *operation,NSError *error){
-//        NSLog(@" http request error happened !");
-//        [self.collectionView.header endRefreshing];
-//        
-//    }];
-//}
-
 
 //添加Tag标签
 - (void)tagView:(SKTagView *)tagView addTags:(NSArray *)tags {

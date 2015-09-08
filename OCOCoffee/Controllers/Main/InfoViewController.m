@@ -6,7 +6,10 @@
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
 
-#define  kUserInfoURL  @"http://ococoffee.com/api/user/info"
+#define  kUserInfoURL               @"/api/user/info"
+#define  kInviteUploadImageURL      @"/api/user/invite"
+
+#define  kMaxImageNum               6
 
 #import <Masonry/Masonry.h>
 #import <SKTagView/SKTagView.h>
@@ -14,25 +17,25 @@
 #import <MWPhotoBrowser/MWPhotoBrowser.h>
 #import <MWPhotoBrowser/MWCommon.h>
 #import <AFNetworking/AFNetworking.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
-#import "PhotoBroswerViewController.h"
 #import "UIColor+colorBuild.h"
 #import "InfoViewController.h"
 #import "InfoCollectionCell.h"
-#import <AFNetworking/AFNetworking.h>
 #import "IndexListItem.h"
 #import "TagItem.h"
 #import "Global.h"
+#import "Common.h"
+#import "LoginViewController.h"
+#import "InviteViewController.h"
+#import "TipView.h"
 
 
 static const CGFloat kPhotoHeight = 146/2;
 static const CGFloat slide = 20/2;
 
-@interface InfoViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,MWPhotoBrowserDelegate,NSURLConnectionDataDelegate,NSURLConnectionDelegate>
+@interface InfoViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,MWPhotoBrowserDelegate,MBProgressHUDDelegate>
 
-
-
-@property(nonatomic, strong) NSMutableData *userData;
 @property(nonatomic, strong) SKTagView *tagView;
 
 @property(nonatomic, strong) UIImageView *headerImageView;
@@ -43,15 +46,16 @@ static const CGFloat slide = 20/2;
 @property(nonatomic, strong) UILabel *address;
 @property(nonatomic, strong) UIView *topView;
 @property(nonatomic, strong) UIView *centerView;
+@property(nonatomic, strong) UIView *addressView;
 @property(nonatomic, strong) UICollectionView *imgCollectionView;
-@property(nonatomic,strong)  NSMutableArray *photos;
-@property(nonatomic,strong)  NSMutableArray *images;
-@property(nonatomic,strong) MWPhoto *photo,*thumb;
-@property(nonatomic,strong) MWPhotoBrowser *browser;
+@property(nonatomic, strong) NSMutableArray *photos;
+@property(nonatomic, strong) NSMutableArray *images;
+@property(nonatomic, strong) MWPhoto *photo,*thumb;
+@property(nonatomic, strong) MWPhotoBrowser *browser;
+@property(nonatomic, strong) NSMutableArray *imageList;
+@property(nonatomic, strong) MBProgressHUD *HUD;
 
 @end
-
-
 
 
 @implementation InfoViewController
@@ -67,75 +71,22 @@ static const CGFloat slide = 20/2;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-   
-    [self initData];
-    [self.imgCollectionView reloadData];
+    
+    _imageList = [[NSMutableArray alloc] initWithArray:_images];
     
     [self initSubViews];
-    [self loadDataFromServer];
+    _HUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.navigationController.view addSubview:_HUD];
+    _HUD.delegate  = self;
+    _HUD.labelText = @"努力加载中";
+    [_HUD showWhileExecuting:@selector(loadDataFromServer) onTarget:self withObject:nil animated:YES];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-- (void) initData {
-
-    NSString *urlString = [NSString stringWithFormat:@"%@?id=%@",kUserInfoURL,_userInfo.userId];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:30];
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    
-    if(connection){
-        _userData = [[NSMutableData alloc] init];
-    }else{
-        NSLog(@"error has happened when connectioning!");
-    }
-//    _userData = [[NSMutableDictionary alloc] initWithCapacity:1];
-//    AFHTTPRequestOperationManager *manger = [[AFHTTPRequestOperationManager alloc] init];
-//    [manger GET:urlString parameters:nil success:^(AFHTTPRequestOperation *operation,id responseObject){
-//        NSDictionary *dict = responseObject[@"data"];
-//        if([dict isKindOfClass:[NSDictionary class]]){
-//            [_userData addEntriesFromDictionary:dict];
-//            //NSLog(@"%@",_userData);
-//        }else{
-//            NSLog(@"用户信息不存在");
-//        }
-//        
-//       } failure:^(AFHTTPRequestOperation *operation,NSError *error){
-//            NSLog(@"%@",error);
-//    }];
-//
-//    NSLog(@"%@",_userData);
-}
-
--(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
- 
-    [_userData appendData:data];
-}
-
--(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    
-    [_userData setLength:0];
-    
-}
-
--(void)connectionDidFinishLoading:(NSURLConnection *)connection{
-    
-    NSLog(@"finishned");
-}
-
--(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    
-    NSLog(@"%@",error);
-    
-}
 - (void) initSubViews {
-    
-   // [self initData];
-    
-   //NSLog(@"_userData:%@",_userData);
-    
     __weak typeof(self) weakSelf = self;
     self.title = @"个人详情";
     
@@ -266,8 +217,8 @@ static const CGFloat slide = 20/2;
     }];
     
     //img collection view
-    CGFloat aImgHeight = (SCREEN_WIDTH - (4 * slide))/3;
-    CGFloat imgCollectionViewHeight = (aImgHeight*2) + slide;
+   // CGFloat aImgHeight = (SCREEN_WIDTH - (4 * slide))/3;
+    //CGFloat imgCollectionViewHeight = (aImgHeight*2) + slide;
     
     self.imgCollectionView = ({
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -289,11 +240,11 @@ static const CGFloat slide = 20/2;
         make.top.mas_equalTo(weakSelf.tagView.mas_bottom).offset(24/2);
         make.left.mas_equalTo(weakSelf.centerView).offset(slide);
         make.right.mas_equalTo(weakSelf.centerView).offset(-slide);
-        make.height.mas_equalTo(imgCollectionViewHeight);
+       // make.height.mas_equalTo(imgCollectionViewHeight);
     }];
     
     CGFloat addressViewHeight = 72/2;
-    UIView *addressView = ({
+    self.addressView = ({
         UIView *view  = [UIView new];
         view.backgroundColor = [UIColor colorFromHexString:@"#f5f5f5"];
         view.layer.masksToBounds = NO;
@@ -303,20 +254,20 @@ static const CGFloat slide = 20/2;
         view.layer.shadowRadius = 1;
         view;
     });
-    [self.centerView addSubview:addressView];
-    [addressView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.centerView addSubview:self.addressView];
+    [self.addressView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(addressViewHeight);
         make.right.left.mas_equalTo(weakSelf.imgCollectionView);
-        make.top.mas_equalTo(weakSelf.imgCollectionView.mas_bottom).offset(24/2);
+       // make.top.mas_equalTo(weakSelf.imgCollectionView.mas_bottom).offset(24/2);
     }];
     
     
     UIImageView *addressImgView = [UIImageView new];
     addressImgView.image = [UIImage imageNamed:@"center_address"];
-    [addressView addSubview:addressImgView];
+    [_addressView addSubview:addressImgView];
     [addressImgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(addressView).offset(24/2);
-        make.centerY.mas_equalTo(addressView);
+        make.left.mas_equalTo(_addressView).offset(24/2);
+        make.centerY.mas_equalTo(_addressView);
     }];
 
     //
@@ -324,12 +275,12 @@ static const CGFloat slide = 20/2;
         UILabel *label = [UILabel new];
         label.font = font;
         label.textColor = [UIColor colorFromHexString:@"#aeaeae"];
-        [addressView addSubview:label];
+        [_addressView addSubview:label];
         label;
     });
     [self.address mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(addressImgView.mas_right).offset(24/2);
-        make.centerY.mas_equalTo(addressView);
+        make.centerY.mas_equalTo(_addressView);
     }];
     
     //
@@ -337,18 +288,53 @@ static const CGFloat slide = 20/2;
         UILabel *label = [UILabel new];
         label.font = font;
         label.textColor = labelTextCollor;
-        [addressView addSubview:label];
+        [_addressView addSubview:label];
         label;
     });
     [self.distance mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(addressView.mas_right).offset(-(24/2));
-        make.centerY.mas_equalTo(addressView);
+        make.right.mas_equalTo(_addressView.mas_right).offset(-(24/2));
+        make.centerY.mas_equalTo(_addressView);
     }];
     
     [self.centerView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(addressView.mas_bottom).offset(24/2);
+        make.bottom.mas_equalTo(_addressView.mas_bottom).offset(24/2);
+    }];
+    
+    //邀请
+    float inviteHeight = 55;
+    
+    
+    UIView *inviteView = ({
+        
+        UIView *view  =[[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - inviteHeight, self.view.frame.size.width,inviteHeight)];
+        view.backgroundColor =[UIColor colorFromHexString:@"#f16681"];
+        view;
+    });
+    [self.view addSubview:inviteView];
+    UIButton *inviteBtn = ({
+       UIButton *button =  [[UIButton alloc] initWithFrame:CGRectMake(100, 0, 200, inviteHeight)];
+        button.backgroundColor = [UIColor  clearColor ];
+        [button setTitle:@"请TA喝杯咖啡" forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
+        [button addTarget:self action:@selector(sendInvite) forControlEvents:UIControlEventTouchUpInside];
+        button;
+    });
+    [inviteView addSubview:inviteBtn];
+}
+
+-(void)sendInvite {
+    NSLog(@"Send Invite");
+    
+    InviteViewController *inviteController = [[InviteViewController alloc] init];
+    inviteController.uid =[[NSNumber alloc] initWithLong:self.userId];
+    
+    UINavigationController *inviteNavController = [[UINavigationController alloc] initWithRootViewController:inviteController];
+    [self presentViewController:inviteNavController animated:YES completion:^(void){
+        NSLog(@"invite detail view controller");
     }];
 }
+
 
 -(void) loadDataFromServer
 {
@@ -368,10 +354,11 @@ static const CGFloat slide = 20/2;
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
+    
 }
 
--(void) analyseInfoResponse:(NSDictionary *)jsonObject
-{
+-(void) analyseInfoResponse:(NSDictionary *)jsonObject {
+    
     if ([jsonObject isKindOfClass:[NSDictionary class]]) {
         if ([jsonObject[@"success"] integerValue] == 1) {
             NSDictionary *data = jsonObject[@"data"];
@@ -406,7 +393,24 @@ static const CGFloat slide = 20/2;
             
             NSArray *imgs = jsonObject[@"data"][@"imgs"];
             [self setupUserImgs:imgs];
-
+            
+            double height = (SCREEN_WIDTH - (4 * slide))/3 ;
+            NSInteger counts = [imgs count];
+            if(counts != kMaxImageNum){
+                counts +=1;
+            }
+            double collectionHeight = height * (ceil((double)counts/3));
+            [self.imgCollectionView mas_makeConstraints:^(MASConstraintMaker *make){
+                make.height.mas_equalTo(collectionHeight);
+                
+            }];
+    
+            [self.addressView mas_makeConstraints:^(MASConstraintMaker *make){
+                make.top.mas_equalTo(self.imgCollectionView.mas_bottom).offset(12);
+                
+            }];
+            
+            
         } else {
             NSLog(@"response error - %@", jsonObject[@"msg"]);
         }
@@ -421,7 +425,7 @@ static const CGFloat slide = 20/2;
     //Add Tags
     for (NSDictionary *tagItem in tagList) {
         SKTag *tag = [SKTag tagWithText:tagItem[@"name"]];
-        tag.textColor = [UIColor blackColor];
+        tag.textColor = [UIColor whiteColor];
         tag.bgColor = [UIColor colorFromHexString:tagItem[@"bg_color"]];
         tag.cornerRadius = 3;
         tag.fontSize = 13;
@@ -432,30 +436,30 @@ static const CGFloat slide = 20/2;
 
 -(void) setupUserImgs:(NSArray *)imgList
 {
+    _images = [[NSMutableArray alloc] initWithCapacity:imgList.count];
     if([imgList count] > 0){
-        _images = [[NSMutableArray alloc] initWithCapacity:imgList.count];
         for (int i=0; i<imgList.count; i++) {
             NSDictionary *item = imgList[i];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
             _photo = [MWPhoto photoWithURL:[NSURL URLWithString:item[@"img"]]];
-            [_images addObject:_photo];
-            InfoCollectionCell * cell = (InfoCollectionCell *)[self.imgCollectionView cellForItemAtIndexPath:indexPath];
-            [cell.imageView sd_setImageWithURL:[NSURL URLWithString:item[@"img"]]];
+            [_images addObject:_photo];//用作查看大图
+            [_imageList addObject:item];
+        }
+        
+        if([imgList count] < 6){
+            NSDictionary *dict = @{@"img":[UIImage imageNamed:@"invite"]};
+            [_imageList addObject:dict];
         }
     }else{
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-        InfoCollectionCell *cell = (InfoCollectionCell *)[self.imgCollectionView cellForItemAtIndexPath:indexPath];
-        cell.imageView.image = [UIImage imageNamed:@"img1"];
-        cell.imageView.userInteractionEnabled = YES;
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(inviteUploadImg:)];
-        [cell.imageView addGestureRecognizer:tapGesture];
+            NSDictionary *dict = @{@"img":[UIImage imageNamed:@"invite"]};
+            [_imageList addObject:dict];
     }
+    [self.imgCollectionView reloadData];
 }
 
 #pragma mark -- UICollectionViewDataSource
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 6;
+    return [_imageList count];
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -465,9 +469,30 @@ static const CGFloat slide = 20/2;
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSInteger row = [indexPath row];
+    NSInteger number = [_images count];
     static NSString * CellIdentifier = @"imgCollectionCell";
     InfoCollectionCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+    NSDictionary *dict = _imageList[row];
+    if(number >0){
+        if(number < 6 && row == number){
+            [self initlizeInviteCell:cell image:_imageList[row][@"img"]];
+        }else{
+            [cell.imageView sd_setImageWithURL:[NSURL URLWithString:dict[@"img"]]];
+        }
+    }else {
+        [self initlizeInviteCell:cell image:_imageList[row][@"img"]];
+    }
     return cell;
+}
+
+//初始化邀请cell
+-(void)initlizeInviteCell:(InfoCollectionCell *)cell image:(UIImage *)image {
+    cell.imageView.image = image;
+    cell.imageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(inviteUploadImg:)];
+    [cell.imageView addGestureRecognizer:tapGesture];
+
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -475,6 +500,8 @@ static const CGFloat slide = 20/2;
     CGFloat width = (SCREEN_WIDTH - (4 * slide))/3;
     return CGSizeMake(width, width);
 }
+
+
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
@@ -485,10 +512,8 @@ static const CGFloat slide = 20/2;
 {
     UICollectionViewCell * cell = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
-    
     _photos = [[NSMutableArray alloc] init];
     [_photos addObjectsFromArray:_images];
-    
     _browser = [self setPhotoBroswer:indexPath.row];
     [self.navigationController pushViewController:_browser animated:YES];
 }
@@ -525,8 +550,33 @@ static const CGFloat slide = 20/2;
 
 //邀请上传图片
 -(void)inviteUploadImg:(UITapGestureRecognizer *)tapRecognizer {
-    
-    NSLog(@"Tap Action");
+//    if(![Common userIsLogin]){
+//        LoginViewController *loginController = [[LoginViewController alloc] init];
+//        [self.navigationController presentViewController:loginController animated:YES completion:^(void){
+//            NSLog(@"successed!!");
+//        }];
+//    }else{
+        NSString *url = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kInviteUploadImageURL];
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        NSDictionary *params = @{@"to_uid":_userInfo.userId};
+        [manager POST:url parameters:params success:^(AFHTTPRequestOperation *operation,id responseObj){
+            if([responseObj isKindOfClass:[NSDictionary class]]){
+                CGRect rect = CGRectMake(self.view.center.x-75, self.view.frame.size.height - 100, 150, 30);
+                [TipView displayView:self.view withFrame:rect withString:responseObj[@"msg"]];
+            }else{
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                                message:@"请求异常,请稍后再试!"
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"确定"
+                                                      otherButtonTitles:nil, nil
+                                      ];
+                [alert show];
+                
+            }
+        }failure:^(AFHTTPRequestOperation *operation,NSError *error){
+           
+            NSLog(@"%@",error);
+        }];
 }
 
 -(MWPhotoBrowser *)setPhotoBroswer :(NSInteger)index {
@@ -544,5 +594,6 @@ static const CGFloat slide = 20/2;
         [_browser setStartOnGrid:NO];
         return _browser;
 }
+
 
 @end
