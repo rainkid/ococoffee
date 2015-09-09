@@ -111,4 +111,8 @@ alpha:(a)]
 
 #define USERCOOKIE @"CF-USER-COOKIE"
 
+#define BAIDUKEY @"oOWcaFg4bo2oYv4QOVjNbskE"
+
+#define BAIDUSUGGESTION @"http://api.map.baidu.com/place/v2/suggestion/"
+
 #endif

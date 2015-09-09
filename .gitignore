@@ -1,6 +1,7 @@
 OCOCoffee.xcworkspace/*
 OCOCoffee.xcodeproj/*
 Pods/Pods.xcodeproj/*
+OCOCoffee/Base.lproj/*
 Pods/*
 Podfile.lock
 .DS_Store
