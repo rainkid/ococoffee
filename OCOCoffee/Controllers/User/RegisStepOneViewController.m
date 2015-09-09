@@ -184,9 +184,9 @@
 
 -(void)timeFireMethod
 {
-    self.timeSecond--;
-    //
     NSString *title = @"";
+    self.timeSecond--;
+
     if(self.timeSecond==0){
         [self.smsTimer invalidate];
         self.smsButton.enabled = YES;

@@ -130,6 +130,9 @@
 {
     if(error == BMK_SEARCH_NO_ERROR){
         [_mutData addObjectsFromArray:result.keyList];
+        
+        NSLog(@"PT:%@",result.ptList);
+        NSLog(@"POI:%@",result.poiIdList);
     }else{
         CGRect rect = CGRectMake(self.view.center.x-75, self.view.frame.size.height - 100, 150, 30);
         [TipView displayView:self.view withFrame:rect withString:@"抱歉，未找到相应结果！"];

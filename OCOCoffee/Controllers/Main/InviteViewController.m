@@ -10,7 +10,7 @@
 #define kTypeList            @[@"日 期：", @"时 间：",@"地 点：",@"备 注："]
 #define kTipList             @[@"请选择日期",@"请选择时间",@"请选择地点"]
 #define kDateTagList         @[@"1",@"2"]
-#define kInviteURL           @"/api/user/sendInvite"
+#define kInviteURL           @"api/invite/send"
 
 #import "InviteViewController.h"
 #import "UIColor+colorBuild.h"
@@ -59,7 +59,7 @@
     searchViewController.view.frame =CGRectMake(65, 236, 245, 212);
     [self.view addSubview:searchViewController.view];
     
-    rect = CGRectMake(self.view.center.x-60, self.view.frame.size.height - 100, 180, 30);
+    rect = CGRectMake(self.view.center.x-100, self.view.frame.size.height - 100, 180, 30);
 
 }
 
@@ -202,8 +202,17 @@
 //发送邀请
 -(void)sendInvition {
     NSString *urlString = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kInviteURL];
+    NSLog(@"%@",urlString);
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
-    NSDictionary *options =@{@"uid":_uid, @"date":inviteDate,@"time":inviteTime,@"address":inviteAddress,@"notice":inviteNotice};
+    NSDictionary *options =@{
+                             @"uid":_uid,
+                             @"date":inviteDate,
+                             @"time":inviteTime,
+                             @"lng":@11.00,
+                             @"lat":@128.0,
+                             @"address":inviteAddress,
+                             @"descprition":inviteNotice
+                             };
     [manager GET:urlString parameters:options success:^(AFHTTPRequestOperation *operation,id responseObject){
         NSLog(@"success");
         [TipView displayView:self.view withFrame:rect withString:responseObject[@"msg"]];
