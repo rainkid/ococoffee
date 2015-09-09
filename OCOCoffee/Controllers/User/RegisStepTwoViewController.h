@@ -10,4 +10,7 @@
 
 @interface RegisStepTwoViewController : UIViewController
 
+@property(nonatomic, strong) NSString *phone;
+@property(nonatomic, strong) NSString *password;
+
 @end

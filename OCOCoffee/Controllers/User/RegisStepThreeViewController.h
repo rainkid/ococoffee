@@ -10,4 +10,15 @@
 
 @interface RegisStepThreeViewController : UIViewController
 
+@property(nonatomic, strong) NSString *phone;
+@property(nonatomic, strong) NSString *password;
+@property(nonatomic, strong) NSString *nickname;
+@property(nonatomic, strong) NSString *birthday;
+
+@property(nonatomic, assign) long sexValue;
+@property(nonatomic, assign) long jobValue;
+
+@property(nonatomic, copy) NSMutableArray *tagData;
+@property(nonatomic, strong) NSString *headimgpath;
+
 @end

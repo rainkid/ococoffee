@@ -34,11 +34,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self addSubViews];
+    [self initSubViews];
 }
 
-
-- (void) addSubViews {
+#pragma mark-initSubviews
+- (void) initSubViews {
     
     __weak typeof(self) weakSelf = self;
 
@@ -65,6 +65,7 @@
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView.alpha = 0.7;
+        tableView.scrollEnabled = NO;
         tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         tableView.showsVerticalScrollIndicator = NO;
         tableView.showsHorizontalScrollIndicator = NO;
@@ -87,7 +88,7 @@
         button.enabled = NO;
         [button setTitle:@"下一步"  forState:UIControlStateNormal];
         [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [button addTarget:self action:@selector(registerTwoPage:) forControlEvents:UIControlEventTouchUpInside];
+        [button addTarget:self action:@selector(registerStepOnePost:) forControlEvents:UIControlEventTouchUpInside];
         button;
     });
     [self.view addSubview:self.nextButton];
@@ -100,8 +101,8 @@
     
 }
 
-// login_post
-- (IBAction)loginPost:(id)sender {
+#pragma mark-register step one - nextButton action
+- (IBAction)registerStepOnePost:(id)sender {
     NSString *phone = self.phoneTextField.text;
     NSString *code = self.codeTextField.text;
     NSString *password = self.passwordTextFeild.text;
@@ -125,6 +126,15 @@
     if ([jsonObject isKindOfClass:[NSDictionary class]]) {
         if ([jsonObject[@"success"] integerValue] == 1) {
             
+            //
+            NSString *phone = self.phoneTextField.text;
+            NSString *password = self.passwordTextFeild.text;
+            
+            RegisStepTwoViewController *regisTwoController = [[RegisStepTwoViewController alloc] init];
+            regisTwoController.phone = phone;
+            regisTwoController.password = password;
+            
+            [self presentViewController:regisTwoController animated:YES completion:nil];
         } else {
             [Common showErrorDialog:jsonObject[@"msg"]];
         }
@@ -133,7 +143,7 @@
     }
 }
 
-#pragma mark send sms code
+#pragma mark-send sms code with http
 - (IBAction)sendSmsCode:(id)sender {
     NSString *phone = self.phoneTextField.text;
     
@@ -165,7 +175,7 @@
     }
 }
 
-#pragma mark - sms send start timer
+#pragma mark-sms send start timer
 -(void)startTimer
 {
     self.timeSecond = 60;
@@ -174,15 +184,19 @@
 
 -(void)timeFireMethod
 {
+    NSString *title = @"";
     self.timeSecond--;
-    //
-    self.smsButton.enabled = NO;
-    [self.smsButton setTitle:[NSString stringWithFormat:@"%d s", self.timeSecond] forState:UIControlStateNormal];
-    NSLog(@"----%d", self.timeSecond);
+
     if(self.timeSecond==0){
         [self.smsTimer invalidate];
-        //
+        self.smsButton.enabled = YES;
+        title =@"发送验证码";
+    } else {
+        title =[NSString stringWithFormat:@"%d秒后重发", self.timeSecond];
+        self.smsButton.enabled = NO;
     }
+    self.smsButton.titleLabel.text = title;
+    [self.smsButton setTitle:title forState:UIControlStateNormal];
 }
 
 #pragma mark textFielDidChange
@@ -208,26 +222,7 @@
     }
 }
 
-#pragma mark - nextButton action
-- (IBAction)registerTwoPage:(id)sender {
-    RegisStepTwoViewController *page = [[RegisStepTwoViewController alloc] init];
-    [self presentViewController:page animated:YES completion:^{
-        NSLog(@"completion");
-    }];
-}
-
-
-#pragma mark - UINavigationControllerDelegate
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
-    if (viewController != self) {
-        [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-            self.navigationController.navigationBar.alpha = 1.0;
-        } completion:NULL];
-    }
-}
-
-#pragma mark -TableView
+#pragma mark-TableViewDelegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;

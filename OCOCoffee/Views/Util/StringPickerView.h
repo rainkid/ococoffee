@@ -17,8 +17,9 @@
 
 @interface StringPickerView : UIView
 
-@property(nonatomic,strong) NSArray *pickerViewData;
 @property(nonatomic,strong)id<StringPickerViewDelegate>delegate;
 
+-(void)loadData:(NSMutableArray *)data;
 
 @end
+

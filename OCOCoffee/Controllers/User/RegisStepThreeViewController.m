@@ -7,9 +7,12 @@
 //
 
 #import "Global.h"
+#import "Common.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
+#import <AFNetworking/AFNetworking.h>
 #import <SKTagView/SKTag.h>
+#import "TagItem.h"
 #import <SKTagView/SKTagButton.h>
 #import <SKTagView/SKTagView.h>
 #import "RegisStepThreeViewController.h"
@@ -17,11 +20,14 @@ static const CGFloat kHeight = 48.6f;
 static const CGFloat kTableLeftSide = 23.3f;
 static const CGFloat kButtonHeight = 43;
 
-@interface RegisStepThreeViewController ()
+@interface RegisStepThreeViewController ()<UITextFieldDelegate>
 
 @property(nonatomic, strong) UITextField *textField;
 @property(nonatomic,strong) SKTagView *tagView;
 @property(nonatomic, assign) int selectTagCount;
+
+@property(nonatomic, strong) NSMutableArray *tag_ids;
+@property(nonatomic, strong) NSMutableArray *tags;
 
 @end
 
@@ -30,10 +36,10 @@ static const CGFloat kButtonHeight = 43;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self addSubViews];
-    [self setupTagView];
-
-    
+    self.tag_ids = [NSMutableArray array];
+    self.tags = [NSMutableArray array];
+    [self initSubViews];
+    [self initTags];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -41,7 +47,7 @@ static const CGFloat kButtonHeight = 43;
     // Dispose of any resources that can be recreated.
 }
 
-- (void)addSubViews {
+- (void)initSubViews {
     __weak typeof(self) weakSelf = self;
 
     UIImage *bg_image = [UIImage imageNamed:@"background"];
@@ -64,27 +70,30 @@ static const CGFloat kButtonHeight = 43;
         textField.placeholder = @"  添加自定义标签（2-5个字符）";
         textField.backgroundColor = [UIColor whiteColor];
         textField.layer.cornerRadius = 3;
+        textField.returnKeyType = UIReturnKeyDone;
         textField.layer.masksToBounds = YES;
         textField;
     });
+    self.textField.delegate = self;
     [view addSubview:self.textField];
     
     [self.textField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(view.mas_top);
-        make.left.and.right.mas_equalTo(0);
+        make.left.mas_equalTo(view);
         make.height.mas_equalTo(kHeight);
     }];
     
     UIImageView *plus= [UIImageView new];
     plus.userInteractionEnabled = YES;
     [plus setImage:[UIImage imageNamed:@"regis_plus"]];
+    [view addSubview:plus];
     
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapUserPlus:)];
     [singleTap setNumberOfTouchesRequired:1];
     [singleTap setNumberOfTapsRequired:1];
     [plus addGestureRecognizer:singleTap];
-    [view addSubview:plus];
-    
+
+
     [plus mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(weakSelf.textField.mas_top);
         make.height.and.width.equalTo(weakSelf.textField.mas_height);
@@ -110,7 +119,7 @@ static const CGFloat kButtonHeight = 43;
         view.insets    = 5;
         view.lineSpace = 10;
         __weak SKTagView *weakView = view;
-        
+                
         //Handle tag's click event
         view.didClickTagAtIndex = ^(NSUInteger index){
             //Remove tag
@@ -126,12 +135,19 @@ static const CGFloat kButtonHeight = 43;
                 if (self.selectTagCount < 5) {
                     if (tagBtnView.tag == 0) {
                         self.selectTagCount++;
-                        tagBtnView.backgroundColor = [UIColor colorFromHexString:@"#9cd7cd"];
+                        if (index >= [self.tagData count]) {
+                            tagBtnView.backgroundColor = [UIColor colorFromHexString:@"#c9dd22"];
+                            [self.tags addObject:tagBtnView.titleLabel.text];
+                        } else {
+                            TagItem *item = [self.tagData objectAtIndex:index];
+                            [self.tag_ids addObject:item.tagId];
+                            tagBtnView.backgroundColor = [UIColor colorFromHexString:item.bg_color];
+                        }
                         [tagBtnView setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
                         tagBtnView.tag = 1;
                     }
                 } else {
-                    NSLog(@"只能选择5个标签");
+                    [Common showErrorDialog:@"只能选择5个标签"];
                 }
             }
         };
@@ -149,45 +165,105 @@ static const CGFloat kButtonHeight = 43;
     nextBtn.backgroundColor = [UIColor colorFromHexString:@"#4a2320"];
     nextBtn.layer.cornerRadius = 3;
     nextBtn.layer.masksToBounds = YES;
-    [nextBtn setTitle:@"下一步"  forState:UIControlStateNormal];
+    [nextBtn setTitle:@"完成"  forState:UIControlStateNormal];
     [nextBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [nextBtn addTarget:self action:@selector(registerFinish) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:nextBtn];
     [nextBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(weakSelf.view);
         make.height.mas_equalTo(kButtonHeight);
         make.left.and.right.equalTo(weakSelf.textField);
-        make.top.equalTo(weakSelf.view.mas_bottom).offset(47.5);
+        make.bottom.mas_equalTo(weakSelf.view.mas_bottom).offset(-100);
     }];
 }
 
-- (void)setupTagView
+#pragma mark-add tags
+- (void) initTags
 {
-    //Add Tags
-    [@[@"电烧友", @"电影控", @"吃货", @"旅游达人", @"喜欢冰琪淋",@"代码控", @"大叔", @"罗莉控"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
-     {
-         [self addTagWithObj:obj];
-     }];
+    for (TagItem *tagItem in self.tagData) {
+        SKTag *tag = [SKTag tagWithText:tagItem.name];
+        tag.textColor = [UIColor blackColor];
+        tag.bgColor = [UIColor whiteColor];
+        tag.cornerRadius = 3;
+        tag.fontSize = 13;
+        tag.padding = UIEdgeInsetsMake(5, 5, 5, 5);
+        [self.tagView addTag:tag];
+    }
 }
 
-- (void) addTagWithObj:(id)obj
-{
-    SKTag *tag = [SKTag tagWithText:obj];
-    tag.textColor = [UIColor blackColor];
-    tag.bgColor = [UIColor whiteColor];
-    tag.cornerRadius = 3;
-    tag.fontSize = 13;
-    tag.padding = UIEdgeInsetsMake(5, 5, 5, 5);
-    
-    [self.tagView addTag:tag];
-}
-
-#pragma mark 用户单击上传图像
+#pragma mark-add custom tag
 - (void)tapUserPlus:(UITapGestureRecognizer*)tap
 {
-    NSString *customTag = _textField.text;
-    if ([customTag length] != 0){
-        [self addTagWithObj:customTag];
+    NSString *title = _textField.text;
+    if ([title length] != 0){
+        SKTag *tag = [SKTag tagWithText:title];
+        tag.textColor = [UIColor blackColor];
+        tag.bgColor = [UIColor whiteColor];
+        tag.cornerRadius = 3;
+        tag.fontSize = 13;
+        tag.padding = UIEdgeInsetsMake(5, 5, 5, 5);
+        [self.tagView addTag:tag];
         _textField.text = @"";
+    }
+}
+
+#pragma mark-textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    NSLog(@"textFieldShouldReturn %ld", textField.tag);
+    return NO;
+}
+
+- (void) textFieldDidBeginEditing:(UITextField *)textField {
+    NSLog(@"textFieldDidBeginEditing %ld", textField.tag);
+    
+    [textField becomeFirstResponder];
+}
+
+-(void) textFieldDidEndEditing: (UITextField * ) textField {
+    NSLog(@"textFieldDidEndEditing %ld", textField.tag);
+    NSLog(@"controller %ld", textField.tag);
+}
+
+#pragma mark - register finish
+-(void)registerFinish {
+    NSString *apiUrl = API_DOMAIN@"api/user/register";
+    NSNumber *sex = [NSNumber numberWithFloat:self.sexValue];
+    NSNumber *job = [NSNumber numberWithFloat:self.jobValue];
+    NSLog(@"%@", sex);
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSDictionary *parameters = @{@"phone":self.phone, @"password":self.password, @"nickname":self.nickname, @"sex":sex, @"job":job, @"birthday":self.birthday, @"tag_ids":self.tag_ids, @"tags":self.tags};
+
+    [manager POST:apiUrl parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData){
+        [formData appendPartWithFileURL:[NSURL fileURLWithPath:self.headimgpath] name:@"headimgurl" error:nil];
+    } success:^(AFHTTPRequestOperation *operation, id responseObject){
+        NSLog(@"%@", responseObject);
+        [self analyseResponse:responseObject];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+}
+
+-(void)analyseResponse:(NSDictionary *)jsonObject
+{
+    if ([jsonObject isKindOfClass:[NSDictionary class]]) {
+        if ([jsonObject[@"success"] integerValue] == 1) {
+            
+            [self dismissViewControllerAnimated:YES completion:^{
+                //set cookid data
+                [Common shareUserCookie];
+                //
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+            
+        } else {
+            [Common showErrorDialog:jsonObject[@"msg"]];
+        }
+    } else {
+        NSLog(@"response error");
     }
 }
 @end
