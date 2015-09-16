@@ -21,5 +21,8 @@
 
 -(void)loadData:(NSMutableArray *)data;
 
+
++(void)showPickerView:(StringPickerView *)pickerView withRect:(CGRect) rect onView:(UIView *)view;
+
 @end
 

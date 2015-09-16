@@ -10,7 +10,6 @@
 
 @implementation TipView
 
-
 +(void)displayView:(UIView *)view withFrame:(CGRect)rect withString:(NSString *)msg {
     CGContextRef context = UIGraphicsGetCurrentContext();
     [UIView beginAnimations:nil context:context];
