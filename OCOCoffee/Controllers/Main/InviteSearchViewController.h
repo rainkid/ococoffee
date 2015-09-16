@@ -10,7 +10,7 @@
 
 @protocol InviteSearchControllerDelegate <NSObject>
 
--(void)getSelectedData:(NSString *)msg lat:(NSString *)lat log:(NSString *)log;
+-(void)getSelectedData:(NSString *)msg latitude:(NSString *)lat logitude:(NSString *)log;
 
 @end
 

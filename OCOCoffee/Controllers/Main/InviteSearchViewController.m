@@ -19,6 +19,9 @@
     BMKSuggestionSearchOption *options;
     
     NSMutableArray *_mutData;
+    NSMutableArray *_ptList;
+    //double lat;
+    //double lng;
 }
 
 @end
@@ -81,7 +84,15 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     UITableViewCell *cell = (UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     NSString *selectedText = cell.textLabel.text;
-    [self.delegate getSelectedData:selectedText lat:@"12.00343" log:@"240.33454"];
+    
+    NSInteger row = [indexPath row];
+    NSValue *ptValue =[_ptList objectAtIndex:row];
+    CLLocationCoordinate2D coordinate;
+    [ptValue getValue:&coordinate];
+    NSLog(@"经度:%f  纬度:%f",coordinate.latitude,coordinate.longitude);
+    NSString *lat = [NSString stringWithFormat:@"%f",coordinate.latitude];
+    NSString *lng = [NSString stringWithFormat:@"%f",coordinate.longitude];
+    [self.delegate getSelectedData:selectedText latitude: lat logitude:lng];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -90,25 +101,9 @@
 }
 
 
-//-(void)loadDataFromServer {
-//    
-//    NSString *urlString = BAIDUSUGGESTION;
-//    NSString *ak = BAIDUKEY;
-//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-//    NSDictionary *params = @{@"q":_queryString,@"region":@"深圳",@"output":@"json",@"ak":ak};
-//    NSLog(@"%@",params);
-//    [manager GET:urlString parameters:params success:^(AFHTTPRequestOperation *operation , id responseObj){
-//        
-//        NSLog(@"%@",responseObj);
-//        
-//    }failure:^(AFHTTPRequestOperation *operation,NSError *error){
-//        
-//    }];
-//    
-//}
-
 -(void)suggestionData {
     _mutData = [[NSMutableArray alloc] initWithCapacity:0];
+    _ptList  = [[NSMutableArray alloc] initWithCapacity:0];
     if(_searcher == nil){
         _searcher = [[BMKSuggestionSearch alloc] init];
         _searcher.delegate = self;
@@ -130,9 +125,7 @@
 {
     if(error == BMK_SEARCH_NO_ERROR){
         [_mutData addObjectsFromArray:result.keyList];
-        
-        NSLog(@"PT:%@",result.ptList);
-        NSLog(@"POI:%@",result.poiIdList);
+        [_ptList addObjectsFromArray:result.ptList];
     }else{
         CGRect rect = CGRectMake(self.view.center.x-75, self.view.frame.size.height - 100, 150, 30);
         [TipView displayView:self.view withFrame:rect withString:@"抱歉，未找到相应结果！"];
