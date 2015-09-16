@@ -48,9 +48,9 @@
     UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
     topView.backgroundColor =[UIColor lightGrayColor];
     
-    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                target:self
-                                                                                action:@selector(cancel)
+    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"返回"
+                                                                   style:UIBarButtonItemStylePlain                                                                     target:self
+                                                                      action:@selector(cancel)
                                    ];
     self.navigationItem.leftBarButtonItem = leftButton;
     
