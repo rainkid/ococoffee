@@ -122,7 +122,6 @@ static const CGFloat slide = 20/2;
     //用户图像
     self.headerImageView = ({
         UIImageView *imageView = [UIImageView new];
-        
         [imageView sd_setImageWithURL:[NSURL URLWithString:_userInfo.headimgurl] placeholderImage:[UIImage imageNamed:@"sample_logo"] options:SDWebImageContinueInBackground  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if(error != nil){
                 [imageView setImage:[UIImage imageNamed:@"sample_logo"]];
@@ -303,9 +302,7 @@ static const CGFloat slide = 20/2;
     //邀请
     float inviteHeight = 55;
     
-    
     UIView *inviteView = ({
-        
         UIView *view  =[[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - inviteHeight, self.view.frame.size.width,inviteHeight)];
         view.backgroundColor =[UIColor colorFromHexString:@"#f16681"];
         view;
@@ -324,8 +321,6 @@ static const CGFloat slide = 20/2;
 }
 
 -(void)sendInvite {
-    NSLog(@"Send Invite");
-    
     InviteViewController *inviteController = [[InviteViewController alloc] init];
     inviteController.uid =[[NSNumber alloc] initWithLong:self.userId];
     
@@ -340,12 +335,10 @@ static const CGFloat slide = 20/2;
 {
     NSString *listApiUrl = API_DOMAIN@"api/user/info";
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSNumber *latNumber = [[NSNumber alloc] initWithDouble:self.latitude];
-    NSNumber *lngNumber = [[NSNumber alloc] initWithDouble:self.logitude];
+//    NSNumber *latNumber = [[NSNumber alloc] initWithDouble:self.lati];
+//    NSNumber *lngNumber = [[NSNumber alloc] initWithDouble:self.logi];
     NSNumber *userId = [[NSNumber alloc] initWithLong:self.userId];
-    
-    NSDictionary *parameters = @{@"lat":latNumber, @"lng":lngNumber, @"id":userId};
-    
+    NSDictionary *parameters = @{@"lat":_lat, @"lng":_lng, @"id":userId};
     [manager POST:listApiUrl parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject){
         dispatch_async(dispatch_get_main_queue(), ^(void){
               [self analyseInfoResponse:responseObject];
@@ -564,13 +557,7 @@ static const CGFloat slide = 20/2;
                 CGRect rect = CGRectMake(self.view.center.x-75, self.view.frame.size.height - 100, 150, 30);
                 [TipView displayView:self.view withFrame:rect withString:responseObj[@"msg"]];
             }else{
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
-                                                                message:@"请求异常,请稍后再试!"
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"确定"
-                                                      otherButtonTitles:nil, nil
-                                      ];
-                [alert show];
+                [Common showErrorDialog:@"请求异常,请稍后再试!"];
                 
             }
         }failure:^(AFHTTPRequestOperation *operation,NSError *error){
