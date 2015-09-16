@@ -14,6 +14,8 @@
 #import "ActivityViewController.h"
 #import "FriendTableViewController.h"
 #import "MessageViewController.h"
+#import "EditViewController.h"
+#import "CenterEditTableViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "LoginViewController.h"
 #import <AFNetworking/AFNetworking.h>
@@ -28,6 +30,8 @@ static const CGFloat kPhotoHeight = 82;
 @property(nonatomic, strong) UILabel *uniqueId;
 @property(nonatomic, strong) UILabel *sysPoint;
 @property(nonatomic, strong) UILabel *msgPoint;
+
+@property(nonatomic,strong) NSMutableDictionary *userData;
 
 
 @end
@@ -45,6 +49,8 @@ static const CGFloat kPhotoHeight = 82;
     [self loginOut];
     [self initSubViews];
     [self checkLogin];
+    
+    _userData = [[NSMutableDictionary alloc] initWithCapacity:1];
 }
 
 -(void)initSubViews
@@ -82,6 +88,10 @@ static const CGFloat kPhotoHeight = 82;
         imageView.layer.masksToBounds = YES;
         imageView;
     });
+    
+    self.imageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(editMsg:)];
+    [self.imageView addGestureRecognizer:tap];
     
     [self.view addSubview:self.imageView];
     [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -224,6 +234,20 @@ static const CGFloat kPhotoHeight = 82;
     }];
 }
 
+
+-(void)editMsg:(UITapGestureRecognizer *) gestureRecognizer {
+    NSLog(@"编辑个人资料");
+    
+    //EditViewController *editViewController = [[EditViewController alloc] init];
+    
+    CenterEditTableViewController *editViewController = [[CenterEditTableViewController alloc] init];
+    editViewController.userDict = _userData;
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:editViewController];
+    [self.navigationController presentViewController:navController animated:YES completion:^(void){
+        NSLog(@"completed");
+    }];
+}
+
 -(void) loadDataFromServer
 {
     NSString *listApiUrl = API_DOMAIN@"api/user/center";
@@ -232,8 +256,12 @@ static const CGFloat kPhotoHeight = 82;
     //get cookie data
 
     [manager POST:listApiUrl parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject){
-        NSLog(@"%@", responseObject);
-        [self analyseInfoResponse:responseObject];
+        if([responseObject[@"data"] isKindOfClass:[NSDictionary class]]){
+            [_userData addEntriesFromDictionary:responseObject[@"data"]];
+            [self analyseInfoResponse:responseObject];
+            
+        }
+
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
@@ -252,7 +280,7 @@ static const CGFloat kPhotoHeight = 82;
 
 -(void)checkLogin
 {
-    if([Common userIsLogin]) {
+    if(![Common userIsLogin]) {
         [self showLoginPage];
     } else {
         [self loadDataFromServer];
