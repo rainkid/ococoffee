@@ -8,6 +8,7 @@
 
 #import "AppCache.h"
 #import <AFNetworking/AFNetworking.h>
+#import <SDWebImage/SDImageCache.h>
 #import "NSString+MD5.h"
 
 @implementation AppCache
