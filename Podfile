@@ -13,4 +13,4 @@ pod 'Masonry'
 pod 'SKTagView'
 pod 'MJRefresh'
 pod 'RNBlurModalView'
-
+pod 'JSQMessagesViewController'
