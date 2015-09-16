@@ -15,6 +15,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import <SKTagView/SKTag.h>
 #import <MJRefresh/MJRefresh.h>
+#import <BaiduMapAPI/BMapKit.h>
 
 #import "Global.h"
 #import "BannerView.h"
@@ -34,7 +35,7 @@ static NSString *kIndexCollectionIdentifier = @"kindexCellIdentifier";
 
 static const CGFloat kBanerHeight = 65;
 
-@interface IndexViewController ()<IndexCollectionViewDelegateFlowLayout,CLLocationManagerDelegate,UICollectionViewDelegate,UICollectionViewDataSource, BannerClickedProtocol>
+@interface IndexViewController ()<IndexCollectionViewDelegateFlowLayout,CLLocationManagerDelegate,UICollectionViewDelegate,UICollectionViewDataSource, BannerClickedProtocol,BMKLocationServiceDelegate>
 
 @property(nonatomic, assign) NSInteger newworkStatus;
 @property(nonatomic,strong) UICollectionView *collectionView;
@@ -46,92 +47,41 @@ static const CGFloat kBanerHeight = 65;
 @property(nonatomic, strong) NSMutableArray *listDataArray;
 @property(nonatomic, strong) NSArray *adDataArray;
 
-@property(nonatomic, assign) double logitude;
-@property(nonatomic, assign) double latitude;
+@property(nonatomic, strong) NSString *longitude;
+@property(nonatomic, strong) NSString *latitude;
 
 @property(nonatomic, assign) CGFloat itemWidth;
 @property(nonatomic, assign) NSInteger pageIndex;
 @property(nonatomic, assign) NSInteger hasNextPage;
+@property(nonatomic,strong)  BMKLocationService *locationService;
 
 @end
 
 @implementation IndexViewController
 
--(id)init {
-    [self getLocation];
-    return self;
+
+-(void)viewWillAppear:(BOOL)animated {
+    
+    [BMKLocationService setLocationDesiredAccuracy:kCLLocationAccuracyHundredMeters];
+    [BMKLocationService setLocationDistanceFilter:100.0f];
+    _locationService = [[BMKLocationService alloc] init];
+    _locationService.delegate = self;
+    [_locationService startUserLocationService];
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"一杯咖啡";
     
     [self initTopBar];
     [self initSubViews];
-//     
-//    if(_collectionView == nil){
-//        indexFlowLayout = [[UICollectionViewFlowLayout alloc] init];
-//        indexFlowLayout.minimumInteritemSpacing = 5.0;
-//        indexFlowLayout.minimumLineSpacing = 5.0;
-//        indexFlowLayout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
-//        indexFlowLayout.itemSize  =self.view.bounds.size;
-//        
-//        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:indexFlowLayout];
-//        _collectionView.delegate  = self;
-//        _collectionView.dataSource = self;
-//        _collectionView.scrollEnabled = YES;
-//        _collectionView.scrollsToTop = YES;
-//        _collectionView.backgroundColor = [UIColor clearColor];
-//        _collectionView.showsVerticalScrollIndicator = NO;
-//        
-//        [_collectionView registerClass:[BannerView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCycleBannerIdentifier];
-//        [_collectionView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:kIndexCollectionIdentifier];
-//        [self.view addSubview:_collectionView];
-//        _dataList = [[NSMutableArray alloc] initWithCapacity:0];
-//        _columnHeight = [[NSMutableArray alloc] initWithCapacity:0];
-//        _hasNextPage = YES;
-//        _curPage = 1;
-//    }
-//    
-//    //网络检测
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newWorkStateChanged:) name:kReachabilityChangedNotification object:nil];
-//    _reachAblity = [Reachability reachabilityForInternetConnection];
-//    [_reachAblity startNotifier];
-//    newworkStatus = [_reachAblity currentReachabilityStatus];
-//    
-//    //刷新加载数据
-//    _collectionView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^(void){
-//        if(newworkStatus == 0){
-//            [self displayAlertView];
-//        }
-//        if(_hasNextPage){
-//            [self loadNewDataWithPage:_curPage type:@"down"];
-//        }else {
-//            [_collectionView.header endRefreshing];
-//        }
-//    }];
-//    
-//    [_collectionView.header beginRefreshing];
-//    _collectionView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^(void){
-//        NSLog(@"Pushing");
-//        if(newworkStatus == 0){
-//            [self displayAlertView];
-//        }
-//        if(_hasNextPage){
-//            [self loadNewDataWithPage:_curPage type:@"up"];
-//        }else{
-//            NSLog(@"No More Data");
-//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                [_collectionView.footer noticeNoMoreData];
-//            });
-//        }
-//        [_collectionView reloadData];
-//        [_collectionView.footer endRefreshing];
-//    }];
-//    _collectionView.footer.hidden = YES;
-//    }
-//
-//-(void)viewDidAppear:(BOOL)animated
-  
+    //网络检测
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newWorkStateChanged:) name:kReachabilityChangedNotification object:nil];
+    _reachAblity = [Reachability reachabilityForInternetConnection];
+    [_reachAblity startNotifier];
+    _newworkStatus = [_reachAblity currentReachabilityStatus];
+
+
 }
 
 - (void) initTopBar
@@ -183,9 +133,9 @@ static const CGFloat kBanerHeight = 65;
     //load data
     self.collectionView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^(void){
         [weakSelf loadAdFromServer];
-      // [weakSelf getLocation];
-        
-        [weakSelf loadListFromServer];
+        if(_latitude != nil){
+            [weakSelf loadListFromServer];
+        }
     }];
 
     [self.collectionView.header beginRefreshing];
@@ -223,13 +173,10 @@ static const CGFloat kBanerHeight = 65;
 
 - (void) loadListFromServer
 {
-    //get list
     NSString *listApiUrl = API_DOMAIN@"api/index/list";
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSNumber *latNumber = [[NSNumber alloc] initWithDouble:22.53992];
-    NSNumber *lngNumber = [[NSNumber alloc] initWithDouble:114.0201];
     NSNumber *pageIndex = [[NSNumber alloc] initWithLong:self.pageIndex];
-    NSDictionary *parameters = @{@"lat":latNumber, @"lng":lngNumber, @"page":pageIndex};
+    NSDictionary *parameters = @{@"lat":_latitude, @"lng":_longitude, @"page":pageIndex};
     [manager GET:listApiUrl parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject){
         [self analyseListJsonObject:responseObject];
         [self.collectionView.header endRefreshing];
@@ -320,9 +267,7 @@ static const CGFloat kBanerHeight = 65;
 #pragma collection datasource methods
 
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    NSLog(@"listDataArray:%lu",(unsigned long)[self.listDataArray count]);
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     
     return [self.listDataArray count]?[self.listDataArray count] :0;
 }
@@ -361,7 +306,6 @@ static const CGFloat kBanerHeight = 65;
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     IndexListItem *item = [self.listDataArray objectAtIndex:[indexPath row]];
-
     int tagCloum = 1;
     CGFloat kImageWidth = self.itemWidth;
     CGFloat cellLessWith = self.itemWidth - tagViewLeftPading - tagViewRightPading;
@@ -386,9 +330,6 @@ static const CGFloat kBanerHeight = 65;
     }
     
     CGFloat tagViewHeght = (tagCloum * tagItemHeight);
-    
-    //NSLog(@"%@---%d",item.nickname, tagCloum);
-
     CGFloat cellHeight = KCollectionItemBotHeight + kImageWidth + tagViewHeght ;
     return CGSizeMake(self.itemWidth , cellHeight);
 }
@@ -425,8 +366,8 @@ static const CGFloat kBanerHeight = 65;
     IndexListItem *item = [self.listDataArray objectAtIndex:[indexPath row]];
     infoViewController.userId = [item.userId floatValue];
     infoViewController.userInfo = item;
-    infoViewController.latitude = self.latitude;
-    infoViewController.logitude = self.logitude;
+    infoViewController.lat = self.latitude;
+    infoViewController.lng = self.longitude;
     
     [self.navigationController pushViewController:infoViewController animated:YES];
 }
@@ -528,103 +469,71 @@ static const CGFloat kBanerHeight = 65;
 }
 
 
-
-//地理定位
-#pragma mark -CLLocationManagerDelegate
-
--(void)getLocation {
-    
-    if(_locationManager == nil){
-        _locationManager = [[CLLocationManager alloc] init];
-        
-    }
-    
-    if(![CLLocationManager locationServicesEnabled]){
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"错误"
-                                                            message:@"还没有开启定位服务"
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"确定"
-                                                  otherButtonTitles: nil
-                                  ];
-        [alertView show];
-    }
-    
-    if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
-        [_locationManager requestWhenInUseAuthorization];
-    }else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"错误"
-                                                        message:@"请在系统设置中开启定位服务"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"确定"
-                                              otherButtonTitles: nil
-                              ];
-        [alert show];
-        
-    }else {
-        _locationManager.delegate = self;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        _locationManager.distanceFilter = 200.0f;
-        [_locationManager startUpdatingLocation];
-    }
+//百度地图定位
+-(void)willStartLocatingUser {
+    NSLog(@"将要开始定位");
+    BMKUserLocation *coor = _locationService.userLocation;
+    NSLog(@"当前经度：%f",coor.location.coordinate.latitude);
 }
 
-
--(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
-    CLLocation *currentLocation = locations[0];
-    _latitude = currentLocation.coordinate.latitude;
-    _logitude = currentLocation.coordinate.longitude;
-    
-    NSLog(@"%f",_latitude);
-    
+-(void)didStopLocatingUser {
+    NSLog(@"停止定位！");
+}
+-(void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation {
+    NSLog(@"user—latitude:%f user-longitude:%f",userLocation.location.coordinate.latitude,
+          userLocation.location.coordinate.longitude);
+    double lat = userLocation.location.coordinate.latitude;
+    double lng = userLocation.location.coordinate.longitude;
+    _longitude = [NSString stringWithFormat:@"%f",lng];
+    _latitude  = [NSString stringWithFormat:@"%f",lat];
     [self loadListFromServer];
 }
 
--(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
-{
-    //[self loadListFromServer];
-    NSLog(@"locationManager error:%@", error);
+-(void)didFailToLocateUserWithError:(NSError *)error {
+    //[_locationService stopUserLocationService];
+    NSLog(@"百度定位错误提示:%@",error);
 }
 
+//地理定位
+#pragma mark -CLLocationManagerDelegate
+//
+//-(void)getLocation {
+//    
+//    if(_locationManager == nil){
+//        _locationManager = [[CLLocationManager alloc] init];
+//        
+//    }
+//    
+//    if(![CLLocationManager locationServicesEnabled]){
+//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"错误"
+//                                                            message:@"还没有开启定位服务"
+//                                                           delegate:nil
+//                                                  cancelButtonTitle:@"确定"
+//                                                  otherButtonTitles: nil
+//                                  ];
+//        [alertView show];
+//    }
+//    
+//    if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
+//        [_locationManager requestWhenInUseAuthorization];
+//    }else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"错误"
+//                                                        message:@"请在系统设置中开启定位服务"
+//                                                       delegate:nil
+//                                              cancelButtonTitle:@"确定"
+//                                              otherButtonTitles: nil
+//                              ];
+//        [alert show];
+//        
+//    }else {
+//        _locationManager.delegate = self;
+//        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+//        _locationManager.distanceFilter = 200.0f;
+//        [_locationManager startUpdatingLocation];
+//    }
+//}
+//
 
-//地理位置反编码
--(void) reverseGeocode {
-    double lat  = _latitude;
-    double log  = _logitude;
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:lat longitude:log];
-    CLGeocoder *geo = [[CLGeocoder alloc] init];
-    [geo reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks,NSError *error){
-        if(error || placemarks == nil){
-            NSLog(@"no data :%@",error);
-        }
-        CLPlacemark *plackmark = [placemarks firstObject];
-        NSString *name = plackmark.name;
-        NSDictionary *address = plackmark.addressDictionary;
-        NSString *subAddress = plackmark.subLocality;
-        NSString *counrty = plackmark.country;
-        NSLog(@"%@ %@ %@ %@",name,address,subAddress,counrty);
-    }];
-}
 
-//地理位置 得到经纬度
--(void)geoCoder :(NSString *)address {
-    if (address == nil){
-        NSLog(@"请输入地址信息");
-    }
-    
-    CLGeocoder *geo = [[CLGeocoder alloc] init];
-    [geo geocodeAddressString:address completionHandler:^(NSArray *placemarks,NSError *error){
-        if(error || [placemarks count] == 0){
-            NSLog(@"您给的地址没有找到");
-        }else {
-            CLPlacemark *firstMark = [placemarks firstObject];
-            NSLog(@"%@ %@ %@ %@",firstMark.country,firstMark.subLocality,firstMark.thoroughfare,firstMark.subThoroughfare);
-            
-            CLLocationDegrees lat = firstMark.location.coordinate.latitude;
-            CLLocationDegrees lng = firstMark.location.coordinate.longitude;
-            NSLog(@"Latitude:%f Longitude: %f",lat,lng);
-        }
-    }];
-}
 
 @end
