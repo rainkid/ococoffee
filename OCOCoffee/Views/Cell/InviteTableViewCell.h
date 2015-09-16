@@ -13,5 +13,6 @@
 
 @property(nonatomic,strong) UILabel *typeLabel;
 @property(nonatomic,strong) UITextField *textfield;
+@property(nonatomic,strong) UIImageView *underLineImageView;
 
 @end

@@ -31,10 +31,10 @@
         [self.contentView addSubview:self.typeLabel];
          
         [self.typeLabel mas_makeConstraints:^(MASConstraintMaker *make){
-            make.left.mas_equalTo(self.mas_left).offset(8);
+            make.left.mas_equalTo(self.mas_left).offset(12);
             make.centerY.mas_equalTo(weakSelf);
            // make.center.mas_equalTo(weakSelf);
-            make.width.equalTo(@60);
+            //make.width.equalTo(@60);
         }];
 
         self.textfield = ({
@@ -48,9 +48,26 @@
         [self addSubview:self.textfield];
         
         [self.textfield mas_makeConstraints:^(MASConstraintMaker *make){
-            make.left.mas_equalTo(self.typeLabel.mas_right).offset(15);
-            make.center.mas_equalTo(weakSelf);
+            make.left.mas_equalTo(self.typeLabel.mas_right).offset(12);
+            //make.center.mas_equalTo(weakSelf);
+            make.centerY.mas_equalTo(weakSelf.mas_centerY);
+            
         }];
+        
+        _underLineImageView = ({
+            UIImageView *imageView = [UIImageView new];
+            imageView.backgroundColor = [UIColor whiteColor];
+            imageView;
+        });
+        [self addSubview:_underLineImageView];
+        
+        [_underLineImageView mas_makeConstraints:^(MASConstraintMaker *make){
+            make.bottom.mas_equalTo(weakSelf.mas_bottom).offset(0);
+            make.left.mas_equalTo(weakSelf.mas_left).offset(15);
+            make.right.mas_equalTo(weakSelf.mas_right).offset(1);
+            make.height.mas_equalTo(@1);
+        }];
+        
         
     }
     return self;
