@@ -13,29 +13,30 @@
 #define kInviteURL           @"api/invite/send"
 
 #import "InviteViewController.h"
+#import <BaiduMapAPI/BMapKit.h>
+#import <Masonry/Masonry.h>
+#import <AFNetworking/AFNetworking.h>
 #import "UIColor+colorBuild.h"
 #import "Global.h"
 #import "ViewStyles.h"
 #import "InviteTableViewCell.h"
 #import "TipView.h"
-#import <BaiduMapAPI/BMapKit.h>
-#import <Masonry/Masonry.h>
-#import <AFNetworking/AFNetworking.h>
+#import "BaiDuMapViewController.h"
+
 
 @interface InviteViewController (){
     UITableView *inviteTableview;
     DatePickerView *datePicker;
     NSIndexPath *selectedIndexPath;
     InviteSearchView *searchView;
-    NSString *logitute;
-    NSString *latitute;
     InviteSearchViewController *searchViewController;
     CGRect rect;
-    
     NSString *inviteDate ;
     NSString *inviteTime;
     NSString *inviteAddress;
     NSString *inviteNotice;
+    NSString *logitude;
+    NSString *latitude;
 }
 
 
@@ -144,41 +145,37 @@
 }
 
 -(void)initNavBarButton {
-    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                target:self
-                                                                                action:@selector(returnBack)
-                                   ];
-    self.navigationItem.leftBarButtonItem = leftButton;
-    
-    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"搜索"
+
+    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"返回"
                                                                     style:UIBarButtonItemStylePlain
                                                                    target:self
-                                                                   action:@selector(searchData)
+                                                                   action:@selector(returnBack)
                                     ];
-    self.navigationItem.rightBarButtonItem = rightButton;
+    self.navigationItem.leftBarButtonItem = leftButton;
 }
 
 -(void)invite:(NSString *)string {
     NSLog(@"clicked");
-    [self checkData];
-    [self sendInvition];
+    if([self checkData]){
+        [self sendInvition];
+    }
 }
 
 //信息合法性检测
--(void)checkData {
+-(BOOL)checkData {
     if(inviteDate == nil){
         [TipView displayView:self.view withFrame:rect withString:@"请选择日期"];
-        return;
+        return FALSE;
     }
     
     if(inviteTime == nil){
         [TipView displayView:self.view withFrame:rect withString:@"请选择时间"];
-        return;
+        return FALSE;
     }
     if(inviteAddress == nil){
         
         [TipView displayView:self.view withFrame:rect withString:@"请选择地点"];
-        return;
+        return FALSE;
     }
     
     NSDate *now = [NSDate date];
@@ -192,24 +189,25 @@
     NSTimeInterval inviteTimeStamp = [ivDate timeIntervalSince1970];
     if(inviteTimeStamp < nowTimeStamp){
         [TipView displayView:self.view withFrame:rect withString:@"邀请时间不能小于当前时间"];
-        return;
+        return FALSE;
     }
     
     InviteTableViewCell *cell = (InviteTableViewCell *)[[inviteTableview viewWithTag:4] superview];
     inviteNotice = cell.textfield.text;
+    return TRUE;
 }
 
 //发送邀请
 -(void)sendInvition {
     NSString *urlString = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kInviteURL];
-    NSLog(@"%@",urlString);
+    NSLog(@"%@",inviteNotice);
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
     NSDictionary *options =@{
                              @"uid":_uid,
                              @"date":inviteDate,
                              @"time":inviteTime,
-                             @"lng":@11.00,
-                             @"lat":@128.0,
+                             @"lng":logitude ,
+                             @"lat":latitude,
                              @"address":inviteAddress,
                              @"descprition":inviteNotice
                              };
@@ -288,10 +286,15 @@
     NSString *address = cell.textfield.text;
     NSLog(@"%@",address);
     if(address.length == 0){
-        //CGRect rect = CGRectMake(self.view.center.x-75, self.view.frame.size.height - 100, 150, 30);
         [TipView displayView:self.view withFrame:rect withString:@"请输入地址信息！"];
+        return;
     }
-    
+    NSLog(@"latitute:%@,logitude:%@",latitude,logitude);
+    BaiDuMapViewController *baiduViewController = [[BaiDuMapViewController alloc] init];
+    baiduViewController.address = address;
+    baiduViewController.latitude = latitude;
+    baiduViewController.logitute = logitude;
+    [self.navigationController pushViewController:baiduViewController animated:YES];
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -358,7 +361,6 @@
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField {
     NSInteger tag = textField.tag;
-    NSLog(@"%ld",(long)tag);
     if([kDateTagList containsObject:[NSString stringWithFormat:@"%ld",(long)tag]]){
         datePicker.tag = tag;
         if(tag == 1){
@@ -412,7 +414,7 @@
 
 #pragma IniviteSearchView Delegate Method
 
--(void)getSelectedData:(NSString *)msg lat:(NSString *)lat log:(NSString *)log {
+-(void)getSelectedData:(NSString *)msg latitude:(NSString *)lat logitude:(NSString *)lng{
     
     InviteTableViewCell *cell = (InviteTableViewCell *)[[inviteTableview viewWithTag:3] superview];
     cell.textfield.text = msg;
@@ -425,8 +427,8 @@
                          searchViewController.view.hidden = YES;
                      }completion:^(BOOL finished){
                          NSLog(@"finished!");
-                         logitute = log;
-                         latitute = lat;
+                         logitude = lng;
+                         latitude = lat;
                          inviteAddress = msg;
                      }
      ];
