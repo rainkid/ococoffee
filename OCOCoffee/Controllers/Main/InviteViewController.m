@@ -22,6 +22,7 @@
 #import "InviteTableViewCell.h"
 #import "TipView.h"
 #import "BaiDuMapViewController.h"
+#import "Common.h"
 
 
 @interface InviteViewController (){
@@ -332,7 +333,7 @@
     }else{
         format = @"HH:mm:ss";
     }
-    NSString *dateString = [self formatedDateString:date format:format];
+    NSString *dateString = [Common formatedDateString:date format:format];
     InviteTableViewCell *cell = (InviteTableViewCell *)[[inviteTableview viewWithTag:tag] superview];
     cell.textfield.text = dateString;
     [cell.textfield resignFirstResponder];
@@ -344,18 +345,6 @@
     }
 }
 
-
--(NSString *)formatedDateString:(NSDate *)date format :(NSString *)format {
-    
-    NSString *dateString;
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.timeStyle = NSDateFormatterNoStyle;
-    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"];
-    dateFormatter.dateFormat = format;
-    dateString = [dateFormatter  stringFromDate:date];
-    return dateString;
-}
 
 #pragma textField delegate methods
 
