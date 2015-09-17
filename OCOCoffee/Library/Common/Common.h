@@ -15,4 +15,6 @@
 +(void)userLogOut;
 +(void)shareUserCookie;
 
++(NSString *)formatedDateString:(NSDate *)date format :(NSString *)format;
+
 @end

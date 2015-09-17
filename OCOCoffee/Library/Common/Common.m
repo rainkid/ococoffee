@@ -49,4 +49,16 @@
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
     [[NSUserDefaults standardUserDefaults] setObject:data forKey:USERCOOKIE];
 }
+
+//时间格式化
++(NSString *)formatedDateString:(NSDate *)date format:(NSString *)format {
+    NSString *dateString;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.timeStyle = NSDateFormatterNoStyle;
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"];
+    dateFormatter.dateFormat = format;
+    dateString = [dateFormatter  stringFromDate:date];
+    return dateString;
+}
 @end
