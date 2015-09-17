@@ -21,11 +21,11 @@ static const CGFloat DatePickerToolBarHeight = 44.f;
     if (self == [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor whiteColor];
         
-        UIDatePicker *picker = [[UIDatePicker alloc] initWithFrame: CGRectMake(0, DatePickerToolBarHeight, frame.size.width, frame.size.height - DatePickerToolBarHeight)];
-        picker.datePickerMode = UIDatePickerModeDate;
-        picker.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-        self.picker = picker;
-        [self addSubview: picker];
+        UIDatePicker *datePicker = [[UIDatePicker alloc] initWithFrame: CGRectMake(0, DatePickerToolBarHeight, frame.size.width, frame.size.height - DatePickerToolBarHeight)];
+        datePicker.datePickerMode = UIDatePickerModeDate;
+        datePicker.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        self.picker = datePicker;
+        [self addSubview: datePicker];
         
         UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame: CGRectMake(0, 0, frame.size.width, DatePickerToolBarHeight)];
         toolbar.barStyle = UIBarStyleDefault;
@@ -58,6 +58,11 @@ static const CGFloat DatePickerToolBarHeight = 44.f;
 {
     [self.delegate datePickerCancel];
 }
+-(void)setDate:(NSDate *)date {
+
+    [_picker setDate:date];
+}
+
 
 +(void)showDatePicker:(DatePickerView *)pickerView rect:(CGRect)rect onView:(UIView *)view {
     [UIView animateWithDuration:0.5 delay:0.05 options:UIViewAnimationOptionCurveEaseIn animations:^(){

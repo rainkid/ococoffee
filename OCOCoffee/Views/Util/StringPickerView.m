@@ -17,6 +17,9 @@ static const CGFloat PickerToolBarHeight = 44.f;
 @property(nonatomic,strong) NSMutableArray *pickerViewData;
 @property(nonatomic, strong) UIPickerView *pickerView;
 
+@property(nonatomic,assign)NSInteger row;
+@property(nonatomic,assign)NSInteger  component;
+
 @end
 
 @implementation StringPickerView
@@ -57,6 +60,7 @@ static const CGFloat PickerToolBarHeight = 44.f;
           titleForRow:(NSInteger)row
          forComponent:(NSInteger)component
 {
+    //NSLog(@"pickerrow:%ld",(long)row);
     StringPickerViewItem *item = [_pickerViewData objectAtIndex:row];
     return item.name;
 }
@@ -76,9 +80,15 @@ static const CGFloat PickerToolBarHeight = 44.f;
 -(void)loadData:(NSMutableArray *)data
 {
     self.pickerViewData = data;
-    [self.pickerView reloadAllComponents];
+    [self.pickerView reloadComponent:self.component];
+    
+    [self.pickerView selectRow:self.row inComponent:self.component animated:YES];
 }
 
+-(void)selectedRow:(NSInteger)row andComponent:(NSInteger)component {
+    self.row = row?row:0;
+    self.component = component?component:0;
+}
 
 +(void)showPickerView:(StringPickerView *)pickerView withRect:(CGRect) rect onView:(UIView *)view {
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -89,8 +99,7 @@ static const CGFloat PickerToolBarHeight = 44.f;
     view.alpha = 0.7;
     pickerView.frame = rect;
     pickerView.hidden= NO;
-    //[pickerView.superview setUserInteractionEnabled:NO];
-    //view.userInteractionEnabled  = NO;
+   // NSLog(@"%@",view);
     pickerView.userInteractionEnabled =YES;
     [UIView setAnimationDelegate:self];
     [UIView commitAnimations];

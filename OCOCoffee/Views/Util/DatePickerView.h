@@ -21,6 +21,7 @@
 @property(nonatomic,strong)id<DatePickerViewDelegate>delegate;
 
 - (void) setMode: (UIDatePickerMode) mode;
+- (void)setDate:(NSDate *)date;
 
 +(void)showDatePicker:(DatePickerView *)pickerView rect:(CGRect)rect onView:(UIView *)view;
 +(void)hiddenDatePicker:(DatePickerView *)pickerView rect:(CGRect)rect onView:(UIView *)view;
