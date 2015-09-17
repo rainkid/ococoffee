@@ -8,6 +8,7 @@
 
 #define kimageCollectionViewCell  @"imageCollectioinViewCell"
 #define kUserInfo                 @"api/user/info"
+#define kAttributeURL            @"api/user/attr"
 #define kAttributeList            @[@"咖 啡 I D:",@"昵       称:",@"性       别:",@"出生日期:",@"所在行业:",@"学       历:"]
 #define kPlaceHoldList            @[@"", @"请输入",@"暂无",@"请选择日期",@"请选择所在行业",@"请选择学历"]
 
@@ -27,14 +28,16 @@
 #import "InviteTableViewCell.h"
 #import "StringPickerView.h"
 #import "StringPickerViewItem.h"
+#import "DatePickerView.h"
 #import "TagViewController.h"
 
-@interface CenterEditTableViewController ()<MBProgressHUDDelegate,MWPhotoBrowserDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,StringPickerViewDelegate,UITextFieldDelegate>{
-    MBProgressHUD *_HUD;
-    SKTagView *_tagView;
-    MWPhotoBrowser *browser;
-    MWPhoto *photo;
-    StringPickerView *commonPickerView;
+@interface CenterEditTableViewController ()<UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextFieldDelegate,StringPickerViewDelegate,MBProgressHUDDelegate,MWPhotoBrowserDelegate,DatePickerViewDelegate>{
+    MBProgressHUD       *_HUD;
+    SKTagView           *_tagView;
+    MWPhotoBrowser      *browser;
+    MWPhoto             *photo;
+    StringPickerView    *attrPickerView;
+    DatePickerView      *datePickerView;
     
     UIImagePickerController *_imagePicker;
     UITableView *subTableView ;
@@ -42,6 +45,8 @@
     NSMutableArray *browserImgs;
     NSMutableArray *imgArr;
     NSMutableArray *userInfo ;
+    NSMutableDictionary *attributeDict;
+    NSMutableArray *mutablePickerArr;
     NSArray *tags;
     double collectionHeight;
 }
@@ -74,20 +79,31 @@
     _HUD.labelText = @"努力加载中";
     [_HUD showWhileExecuting:@selector(loadImgsFromServer) onTarget:self withObject:nil animated:YES];
     
-    NSMutableArray *mutableArr = [[NSMutableArray alloc] initWithCapacity:2];
-    commonPickerView = [[StringPickerView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 200)];
-    NSArray *sexList = @[@{@"id":@1,@"name":@"男"},@{@"id":@2,@"name":@"女"}];
-    for (NSDictionary *temp in sexList) {
-        StringPickerViewItem *item = [StringPickerViewItem new];
-        item.itemId = [temp[@"id"] intValue];
-        item.name   = temp[@"name"];
-        [mutableArr addObject:item];
-    }
-    [commonPickerView loadData:mutableArr];
-    commonPickerView.hidden = YES;
-    commonPickerView.delegate = self;
-    [self.view addSubview:commonPickerView];
+    [self initAttributePickerView];
+    [self initDatePicker];
+    [self loadAttributeListFromServer];
 
+}
+
+
+
+-(void)initAttributePickerView {
+    if(attrPickerView == nil){
+        attrPickerView = [[StringPickerView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 200)];
+        attrPickerView.hidden = YES;
+        attrPickerView.delegate = self;
+        [self.view addSubview:attrPickerView];
+    }
+}
+
+-(void)initDatePicker {
+    if(datePickerView == nil){
+        datePickerView = [[DatePickerView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 230)];
+        [datePickerView setMode:UIDatePickerModeDate];
+        datePickerView.delegate = self;
+        datePickerView.hidden = YES;
+        [self.view addSubview:datePickerView];
+    }
 }
 
 -(void)loadImgsFromServer {
@@ -100,15 +116,24 @@
         if(obj[@"data"] !=nil){
             NSMutableDictionary *temp = [[NSMutableDictionary alloc] initWithDictionary:obj[@"data"]];
             [self formatUserData:temp];
-           // NSArray *imgs =obj[@"data"][@"imgs"];
             [self setupUserImgs:obj[@"data"][@"imgs"]];
-            //[imgArr addObjectsFromArray:obj[@"data"][@"imgs"]];
-            
             [subTableView reloadData];
         }
         
     }failure:^(AFHTTPRequestOperation *operation,NSError *error){
         NSLog(@"%@",error);
+    }];
+}
+
+-(void)loadAttributeListFromServer {
+    NSString *urlString = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kAttributeURL];
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+    [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation *operation,id obj){
+        if([obj[@"data"] isKindOfClass:[NSDictionary class]]){
+            attributeDict = [[NSMutableDictionary alloc] initWithDictionary:obj[@"data"]];
+        }
+    }failure:^(AFHTTPRequestOperation *operation ,NSError *error){
+        [Common showErrorDialog:[NSString stringWithFormat:@"%@",error]];
     }];
 }
 
@@ -215,7 +240,7 @@
             break;
         case 1:{
             InviteTableViewCell *cell = [[InviteTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"attrIdentifier"];
-           // cell.selectionStyle  = UITableViewCellSelectionStyleNone;
+             cell.selectionStyle  = UITableViewCellSelectionStyleNone;
              NSInteger row = [indexPath row];
             if(row < 6){
                 cell.underLineImageView.image = [UIImage imageNamed:@"underline"];
@@ -234,13 +259,13 @@
                 CGSize size = CGSizeMake(50, 20);
                 UIFont *font = [UIFont fontWithName:@"Helvetica" size:15.0];
                 NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil];
-                size = [cell.typeLabel.text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:dict context:nil].size;
+                [cell.typeLabel.text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:dict context:nil];
                 cell.typeLabel.textAlignment = NSTextAlignmentLeft;
                 cell.typeLabel.text = kAttributeList[row - 1];
                 cell.typeLabel.textColor = [UIColor grayColor];
                 cell.textfield.delegate =self;
-                cell.textfield.inputView = commonPickerView;
                 cell.textfield.tag = row+1;
+                cell.tag = row+10;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 if(userInfo.count >0){
                     NSString *str = [userInfo objectAtIndex:row];
@@ -254,9 +279,15 @@
                 
                 if(row == 2){ //只有昵称可编辑
                     cell.textfield.userInteractionEnabled = YES;
+                    cell.textfield.clearButtonMode = UITextFieldViewModeWhileEditing;
+                    cell.textfield.autoresizesSubviews = YES;
+                    cell.textfield.autocorrectionType = UITextAutocorrectionTypeDefault;
+                    cell.textfield.returnKeyType = UIReturnKeyDone;
                 }else{
                      cell.textfield.userInteractionEnabled = NO;
                 }
+                
+                
             }
             return cell;
         }
@@ -264,6 +295,7 @@
             
         case 2:{
             InviteTableViewCell *cell = [[InviteTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"favoriteCellIdentifier"];
+            cell.selectionStyle  = UITableViewCellSelectionStyleNone;
             NSInteger row = [indexPath row];
             if(row == 0){
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"col"]];
@@ -342,25 +374,55 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     InviteTableViewCell *cell = (InviteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     NSInteger section = indexPath.section;
     NSInteger row     = indexPath.row;
     NSLog(@"section:%ld row:%ld cell:%@",section,(long)row,cell.textfield.text);
-    if(section == 1){
-        if(row == 3){
-            
-            CGRect rect = CGRectMake(0, 430, self.view.frame.size.width, self.view.frame.size.height - 430);
-            [StringPickerView showPickerView:commonPickerView withRect:rect onView:self.view];
+    
+    CGRect rect = CGRectMake(0, self.view.frame.size.height- 200, self.view.frame.size.width, 200);
+        if(section == 1){
+            attrPickerView.tag = row;
+        switch (row) {
+            case 3:
+                [self showPickerView:attributeDict[@"sex"] withRect:rect];
+                break;
+              
+            case 4:
+                datePickerView.tag = row;
+                [DatePickerView showDatePicker:datePickerView rect:rect onView:self.view];
+                break;
+              
+            case 5:
+                [self showPickerView:attributeDict[@"job"] withRect:rect];
+                break;
+            case 6:
+                [self showPickerView:attributeDict[@"education"] withRect:rect];
+                break;
+                
+            default:
+                break;
         }
         
     }else if (section == 2){
         TagViewController *tagViewController = [[TagViewController alloc] init];
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:tagViewController];
+        //UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:tagViewController];
         [self.navigationController pushViewController:tagViewController animated:YES];
     }
 }
+-(void)showPickerView:(NSDictionary *)dict withRect:(CGRect)rect {
+     mutablePickerArr = [[NSMutableArray alloc] initWithCapacity:2];
+    for (NSString *itemId in dict) {
+        StringPickerViewItem *item = [StringPickerViewItem new];
+        item.itemId = [itemId intValue];
+        item.name   = dict[itemId];
+        [mutablePickerArr addObject:item];
+    }
+    
+    [attrPickerView loadData:mutablePickerArr];
+    [StringPickerView showPickerView:attrPickerView withRect:rect onView:self.view];
+}
+
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     return UIEdgeInsetsMake(0, 0, 0, 0);
@@ -417,10 +479,49 @@
 
 
 -(void)stringPickerCancel{
-    
+    NSLog(@"string picker cancel");
+    [StringPickerView hiddenPickerView:attrPickerView withRect:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 200) onView:self.view];
 }
 
 -(void)stringPickerDone:(long)index {
+    
+    NSLog(@"@string picker done");
+    [StringPickerView hiddenPickerView:attrPickerView withRect:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 200) onView:self.view];
+    StringPickerViewItem *item = [mutablePickerArr objectAtIndex:index];
+    NSInteger tagValue = attrPickerView.tag;
+    InviteTableViewCell *cell = (InviteTableViewCell *)[subTableView viewWithTag:tagValue+10];
+    cell.textfield.text = item.name;
+}
+
+-(void)datePickerCancel {
+    NSLog(@"date picker cancel");
+    [DatePickerView hiddenDatePicker:datePickerView rect:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 200) onView:self.view];
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
+-(void)datePickerDone:(NSDate *)date {
+    NSLog(@"date picker done");
+    
+     [DatePickerView hiddenDatePicker:datePickerView rect:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 200) onView:self.view];
+    NSInteger tagValue = datePickerView.tag;
+     InviteTableViewCell *cell = (InviteTableViewCell *)[subTableView viewWithTag:tagValue+10];
+    NSString *dateString = [Common formatedDateString:date format:@"yyyy-MM-dd"];
+    cell.textfield.text = dateString;
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    InviteTableViewCell *cell = (InviteTableViewCell *)[subTableView viewWithTag:12];
+    NSLog(@"x:%f,y:%f,w:%f,h:%f",cell.frame.origin.x,cell.frame.origin.y,cell.frame.size.width,cell.frame.size.height);
+    
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
 }
 

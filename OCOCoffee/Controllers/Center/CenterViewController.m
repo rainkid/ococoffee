@@ -280,7 +280,7 @@ static const CGFloat kPhotoHeight = 82;
 
 -(void)checkLogin
 {
-    if(![Common userIsLogin]) {
+    if([Common userIsLogin]) {
         [self showLoginPage];
     } else {
         [self loadDataFromServer];
