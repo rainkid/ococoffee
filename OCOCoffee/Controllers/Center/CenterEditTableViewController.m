@@ -45,6 +45,7 @@
     NSMutableArray *browserImgs;
     NSMutableArray *imgArr;
     NSMutableArray *userInfo ;
+    NSMutableDictionary *userDictInfo;
     NSMutableDictionary *attributeDict;
     NSMutableArray *mutablePickerArr;
     NSArray *tags;
@@ -114,8 +115,8 @@
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
     [manager GET:url parameters:params success:^(AFHTTPRequestOperation *operation,id obj){
         if(obj[@"data"] !=nil){
-            NSMutableDictionary *temp = [[NSMutableDictionary alloc] initWithDictionary:obj[@"data"]];
-            [self formatUserData:temp];
+            userDictInfo = [[NSMutableDictionary alloc] initWithDictionary:obj[@"data"]];
+            [self formatUserData:userDictInfo];
             [self setupUserImgs:obj[@"data"][@"imgs"]];
             [subTableView reloadData];
         }
@@ -144,19 +145,28 @@
     NSString *sex = ((int)dict[@"sex"] == 2)?@"女":@"男";
     NSString *birthday = @"";
     if(dict[@"age"] != nil){
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        formatter.dateStyle = NSDateFormatterNoStyle;
-        formatter.dateFormat = @"yyyy-MM-dd";
-        NSString *ageString = [NSString stringWithFormat:@"%@",dict[@"age"]];
-        int age = [ageString intValue];
-        NSDate *preDate = [NSDate dateWithTimeIntervalSinceNow:-age*365*24*3600];
-        birthday = [formatter stringFromDate:preDate];
+        birthday = [self birthdayString:dict[@"age"]];
     }
     NSString *job = dict[@"job"]?dict[@"job"]:@"";
     NSString *edu = dict[@"education"]?dict[@"education"]:@"";
     NSArray *data = [[NSArray alloc] initWithObjects:constellation,uid,nickname,sex,birthday,job,edu, nil];
     [userInfo addObjectsFromArray:data];
     tags = dict[@"tags"];
+}
+
+-(NSString *)birthdayString:(id)age {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateStyle = NSDateFormatterNoStyle;
+    formatter.dateFormat = @"yyyy-MM-dd";
+    NSDate *birthday = [self getDrithday:age];
+    return  [formatter stringFromDate:birthday];
+}
+
+-(NSDate *)getDrithday:(id)age {
+    NSString *ageString = [NSString stringWithFormat:@"%@",age];
+    int ageval = [ageString intValue];
+    NSDate *preDate = [NSDate dateWithTimeIntervalSinceNow:-ageval*365*24*3600];
+    return preDate;
 }
 
 -(void) setupUserImgs:(NSArray *)imgList {
@@ -255,6 +265,7 @@
                 cell.textfield.text = @"基本资料";
                 cell.textfield.textColor = [UIColor grayColor];
                 cell.textfield.font = [UIFont fontWithName:@"Helvetica" size:14.0];
+                cell.textfield.userInteractionEnabled = NO;
             }else{
                 CGSize size = CGSizeMake(50, 20);
                 UIFont *font = [UIFont fontWithName:@"Helvetica" size:15.0];
@@ -378,26 +389,41 @@
     InviteTableViewCell *cell = (InviteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     NSInteger section = indexPath.section;
     NSInteger row     = indexPath.row;
-    NSLog(@"section:%ld row:%ld cell:%@",section,(long)row,cell.textfield.text);
+    NSLog(@"section:%ld row:%ld ",section,(long)row);
+    
+    if(row != 2){
+        InviteTableViewCell *nameCell = (InviteTableViewCell *)[subTableView viewWithTag:2+10];
+        if(nameCell.textfield.isFirstResponder){
+            [nameCell.textfield resignFirstResponder];
+            NSLog(@"text:%@",nameCell.textfield.text);
+        }
+    }
     
     CGRect rect = CGRectMake(0, self.view.frame.size.height- 200, self.view.frame.size.width, 200);
         if(section == 1){
             attrPickerView.tag = row;
         switch (row) {
+             case 2:
+                [cell.textfield becomeFirstResponder];
+                break;
+                
             case 3:
-                [self showPickerView:attributeDict[@"sex"] withRect:rect];
+                [self showPickerViewWithKey:@"sex" withRect:rect];
                 break;
               
-            case 4:
+            case 4:{
                 datePickerView.tag = row;
+                NSDate *birthday = [self getDrithday:userDictInfo[@"age"]];
+                [datePickerView setDate:birthday];
                 [DatePickerView showDatePicker:datePickerView rect:rect onView:self.view];
+            }
                 break;
               
             case 5:
-                [self showPickerView:attributeDict[@"job"] withRect:rect];
+                [self showPickerViewWithKey:@"job" withRect:rect];
                 break;
             case 6:
-                [self showPickerView:attributeDict[@"education"] withRect:rect];
+                [self showPickerViewWithKey:@"education" withRect:rect];
                 break;
                 
             default:
@@ -410,15 +436,29 @@
         [self.navigationController pushViewController:tagViewController animated:YES];
     }
 }
--(void)showPickerView:(NSDictionary *)dict withRect:(CGRect)rect {
-     mutablePickerArr = [[NSMutableArray alloc] initWithCapacity:2];
-    for (NSString *itemId in dict) {
+-(void)showPickerViewWithKey:(NSString *)key withRect:(CGRect)rect {
+    NSDictionary *dict = attributeDict[key];
+    NSArray *sorted = [[dict allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1,id obj2) {
+        NSNumber *num1 = [NSNumber numberWithInteger:[obj1 integerValue]];
+        NSNumber *num2 = [NSNumber numberWithInteger:[obj2 integerValue]];
+        NSComparisonResult result = [ num1 compare:num2];
+        return result == NSOrderedDescending;
+    }];
+    NSString *selected = userDictInfo[key];
+    NSInteger selectedIndex = 0;
+     mutablePickerArr = [[NSMutableArray alloc] initWithCapacity:10];
+    for (NSNumber *index  in sorted) {
         StringPickerViewItem *item = [StringPickerViewItem new];
-        item.itemId = [itemId intValue];
-        item.name   = dict[itemId];
+        item.itemId = [index intValue];
+        item.name   = dict[index];
         [mutablePickerArr addObject:item];
+        if([ selected isEqual:item.name]){
+            selectedIndex = item.itemId;
+        }
     }
+  
     
+    [attrPickerView selectedRow:selectedIndex-1 andComponent:0];
     [attrPickerView loadData:mutablePickerArr];
     [StringPickerView showPickerView:attrPickerView withRect:rect onView:self.view];
 }
@@ -440,7 +480,6 @@
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    NSLog(@"coll_num");
     return [imgArr count]?[imgArr count]:1;
 }
 
@@ -463,12 +502,10 @@
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     NSInteger row = [indexPath row];
     browser = [self setPhotoBroswer:row];
     [self.navigationController pushViewController:browser animated:YES];
 }
-
 
 -(void)initlizeUploadCell:(InfoCollectionCell *)cell image:(UIImage *)image {
     cell.imageView.image = image;
@@ -477,6 +514,24 @@
     [cell.imageView addGestureRecognizer:tapGesture];
 }
 
+#pragma textField delegate methods
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+    [textField becomeFirstResponder];
+    textField.autocorrectionType = UITextAutocorrectionTypeYes;
+    textField.keyboardType = UIKeyboardTypeDefault;
+    textField.returnKeyType = UIReturnKeyDone;
+    NSLog(@"begin textfield edit");
+    
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField {
+    NSLog(@"end editing");
+    [textField resignFirstResponder];
+}
 
 -(void)stringPickerCancel{
     NSLog(@"string picker cancel");
@@ -494,19 +549,10 @@
 }
 
 -(void)datePickerCancel {
-    NSLog(@"date picker cancel");
     [DatePickerView hiddenDatePicker:datePickerView rect:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 200) onView:self.view];
 }
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return YES;
-}
-
-
 -(void)datePickerDone:(NSDate *)date {
-    NSLog(@"date picker done");
-    
      [DatePickerView hiddenDatePicker:datePickerView rect:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 200) onView:self.view];
     NSInteger tagValue = datePickerView.tag;
      InviteTableViewCell *cell = (InviteTableViewCell *)[subTableView viewWithTag:tagValue+10];
