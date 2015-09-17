@@ -22,4 +22,7 @@
 
 - (void) setMode: (UIDatePickerMode) mode;
 
++(void)showDatePicker:(DatePickerView *)pickerView rect:(CGRect)rect onView:(UIView *)view;
++(void)hiddenDatePicker:(DatePickerView *)pickerView rect:(CGRect)rect onView:(UIView *)view;
+
 @end

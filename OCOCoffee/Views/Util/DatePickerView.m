@@ -59,5 +59,26 @@ static const CGFloat DatePickerToolBarHeight = 44.f;
     [self.delegate datePickerCancel];
 }
 
++(void)showDatePicker:(DatePickerView *)pickerView rect:(CGRect)rect onView:(UIView *)view {
+    [UIView animateWithDuration:0.5 delay:0.05 options:UIViewAnimationOptionCurveEaseIn animations:^(){
+        
+        pickerView.frame = rect;
+        pickerView.userInteractionEnabled =YES;
+        pickerView.hidden = NO;
+        [view bringSubviewToFront:pickerView];
+        view.alpha = 0.7;
+        
+    }completion:^(BOOL isfinished){
+    }];
+}
++(void)hiddenDatePicker:(DatePickerView *)pickerView rect:(CGRect)rect onView:(UIView *)view {
+    [UIView animateWithDuration:0.5 delay:0.05 options:UIViewAnimationOptionCurveEaseOut animations:^(void){
+        pickerView.frame = rect;
+        view.userInteractionEnabled = YES;
+        view.alpha = 1.0;
+    }completion:^(BOOL isfinished){
+        pickerView.hidden = YES;
+    }];
+}
 
 @end

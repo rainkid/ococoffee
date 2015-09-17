@@ -49,6 +49,7 @@
         
         [self.textfield mas_makeConstraints:^(MASConstraintMaker *make){
             make.left.mas_equalTo(self.typeLabel.mas_right).offset(12);
+            make.width.mas_equalTo(@250);
             //make.center.mas_equalTo(weakSelf);
             make.centerY.mas_equalTo(weakSelf.mas_centerY);
             

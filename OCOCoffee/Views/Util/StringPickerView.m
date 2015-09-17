@@ -61,6 +61,7 @@ static const CGFloat PickerToolBarHeight = 44.f;
     return item.name;
 }
 
+
 -(IBAction)doneClicked:(id)sender
 {
     long index = [_pickerView selectedRowInComponent:0];
@@ -80,19 +81,28 @@ static const CGFloat PickerToolBarHeight = 44.f;
 
 
 +(void)showPickerView:(StringPickerView *)pickerView withRect:(CGRect) rect onView:(UIView *)view {
-    
     CGContextRef context = UIGraphicsGetCurrentContext();
     [UIView beginAnimations:nil context:context];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationDuration:0.5];
-    // [self.view exchangeSubviewAtIndex:0 withSubviewAtIndex:1];
     [view bringSubviewToFront:pickerView];
     view.alpha = 0.7;
     pickerView.frame = rect;
     pickerView.hidden= NO;
-    view.userInteractionEnabled  = NO;
+    //[pickerView.superview setUserInteractionEnabled:NO];
+    //view.userInteractionEnabled  = NO;
+    pickerView.userInteractionEnabled =YES;
     [UIView setAnimationDelegate:self];
     [UIView commitAnimations];
-    
+}
+
++(void)hiddenPickerView:(StringPickerView *)pickerView withRect:(CGRect)rect onView:(UIView *)view {
+    [UIView animateWithDuration:0.5 delay:0.01 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        pickerView.frame = rect;
+        view.alpha = 1.0;
+        view.userInteractionEnabled = YES;
+    }completion:^(BOOL isfinished ){
+        pickerView.hidden = YES;
+    }];
 }
 @end

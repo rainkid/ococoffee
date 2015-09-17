@@ -23,6 +23,6 @@
 
 
 +(void)showPickerView:(StringPickerView *)pickerView withRect:(CGRect) rect onView:(UIView *)view;
-
++(void)hiddenPickerView:(StringPickerView *)pickerView withRect:(CGRect)rect onView:(UIView *)view;
 @end
 
