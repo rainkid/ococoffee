@@ -260,6 +260,9 @@ static const CGFloat kPhotoHeight = 82;
 
 -(void)showMessage:(UITapGestureRecognizer *)tap{
     
+    MessageViewController *messageViewController = [[MessageViewController alloc] init];
+    [self.navigationController pushViewController:messageViewController animated:YES];
+    
 }
 
 
