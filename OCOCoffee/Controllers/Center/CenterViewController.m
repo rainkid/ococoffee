@@ -14,16 +14,16 @@
 #import "ActivityViewController.h"
 #import "FriendTableViewController.h"
 #import "MessageViewController.h"
-#import "EditViewController.h"
 #import "CenterEditTableViewController.h"
-#import <SDWebImage/UIImageView+WebCache.h>
 #import "LoginViewController.h"
+#import "SystemMessageViewController.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 #import <AFNetworking/AFNetworking.h>
 #import <Masonry/Masonry.h>
 
 static const CGFloat kPhotoHeight = 82;
 
-@interface CenterViewController ()<UITableViewDataSource, UITableViewDelegate, LoginSuccessProtocol>
+@interface CenterViewController ()<UITableViewDataSource, UITableViewDelegate, LoginSuccessProtocol,CenterEditTableViewControllerDelegate>
     
 @property(nonatomic, strong) UIImageView *imageView;
 @property(nonatomic, strong) UILabel *nickname;
@@ -179,6 +179,10 @@ static const CGFloat kPhotoHeight = 82;
         make.center.mas_equalTo(noticeView);
     }];
     
+    noticeImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *noticeTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotice:)];
+    [noticeImageView addGestureRecognizer:noticeTap];
+    
     //msg view
     UIView *msgView = [UIView new];
     msgView.backgroundColor = [UIColor whiteColor];
@@ -215,7 +219,9 @@ static const CGFloat kPhotoHeight = 82;
         make.center.mas_equalTo(msgView);
     }];
     
-    
+    UITapGestureRecognizer *messageTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showMessage:)];
+    msgImageView.userInteractionEnabled = YES;
+    [msgImageView addGestureRecognizer:messageTap];
     //table view
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     tableView.delegate = self;
@@ -237,16 +243,25 @@ static const CGFloat kPhotoHeight = 82;
 
 -(void)editMsg:(UITapGestureRecognizer *) gestureRecognizer {
     NSLog(@"编辑个人资料");
-    
-    //EditViewController *editViewController = [[EditViewController alloc] init];
-    
     CenterEditTableViewController *editViewController = [[CenterEditTableViewController alloc] init];
     editViewController.userDict = _userData;
+    editViewController.delegate = self;
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:editViewController];
     [self.navigationController presentViewController:navController animated:YES completion:^(void){
         NSLog(@"completed");
     }];
 }
+
+-(void)showNotice:(UITapGestureRecognizer *)tap {
+    SystemMessageViewController *sysViewController = [[SystemMessageViewController alloc] init];
+    UINavigationController *navSysController = [[UINavigationController alloc] initWithRootViewController:sysViewController];
+    [self.navigationController presentViewController:navSysController animated:YES completion:nil];
+}
+
+-(void)showMessage:(UITapGestureRecognizer *)tap{
+    
+}
+
 
 -(void) loadDataFromServer
 {
@@ -428,4 +443,8 @@ static const CGFloat kPhotoHeight = 82;
     // Dispose of any resources that can be recreated.
 }
 
+
+-(void)loadNewDataFromServer{
+    [self loadDataFromServer];
+}
 @end

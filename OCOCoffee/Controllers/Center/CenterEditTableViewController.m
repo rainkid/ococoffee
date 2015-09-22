@@ -6,30 +6,35 @@
 //  Copyright (c) 2015年 gionee_panxb. All rights reserved.
 //
 
-#define kimageCollectionViewCell  @"imageCollectioinViewCell"
 #define kUserInfo                 @"api/user/info"
-#define kAttributeURL            @"api/user/attr"
+#define kAttributeURL             @"api/user/attr"
+#define kProfilePost              @"api/user/profile_post"
+
+#define kimageCollectionViewCell  @"imageCollectioinViewCell"
 #define kAttributeList            @[@"咖 啡 I D:",@"昵       称:",@"性       别:",@"出生日期:",@"所在行业:",@"学       历:"]
 #define kPlaceHoldList            @[@"", @"请输入",@"暂无",@"请选择日期",@"请选择所在行业",@"请选择学历"]
-
+#define kCellIndexAndName         @{@"2":@"nickname",@"3":@"sex",@"4":@"age",@"5":@"job",@"6":@"education"}
 #import "CenterEditTableViewController.h"
 #import "UIColor+colorBuild.h"
 #import "ViewStyles.h"
 #import "Global.h"
+#import "Common.h"
 #import "LoginViewController.h"
 #import "InfoCollectionCell.h"
-#import "Common.h"
+#import "CenterViewController.h"
+#import "InviteTableViewCell.h"
+#import "StringPickerView.h"
+#import "StringPickerViewItem.h"
+#import "DatePickerView.h"
+#import "TagViewController.h"
+#import "NSString+MD5.h"
 #import <Masonry/Masonry.h>
 #import <AFNetworking/AFNetworking.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <MWPhotoBrowser/MWPhotoBrowser.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <SKTagView/SKTagView.h>
-#import "InviteTableViewCell.h"
-#import "StringPickerView.h"
-#import "StringPickerViewItem.h"
-#import "DatePickerView.h"
-#import "TagViewController.h"
+
 
 @interface CenterEditTableViewController ()<UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextFieldDelegate,StringPickerViewDelegate,MBProgressHUDDelegate,MWPhotoBrowserDelegate,DatePickerViewDelegate>{
     MBProgressHUD       *_HUD;
@@ -50,6 +55,10 @@
     NSMutableArray *mutablePickerArr;
     NSArray *tags;
     double collectionHeight;
+    NSDictionary  *responseData;
+    NSString *nickname;
+    BOOL isNewHeadImg;
+    NSInteger imagePickerViewTag;
 }
 
 @end
@@ -86,7 +95,12 @@
 
 }
 
-
+-(void)viewWillDisappear:(BOOL)animated {
+    NSLog(@"view will disappeared");
+    if(isNewHeadImg){
+        [self.delegate loadNewDataFromServer];
+    }
+}
 
 -(void)initAttributePickerView {
     if(attrPickerView == nil){
@@ -116,6 +130,7 @@
     [manager GET:url parameters:params success:^(AFHTTPRequestOperation *operation,id obj){
         if(obj[@"data"] !=nil){
             userDictInfo = [[NSMutableDictionary alloc] initWithDictionary:obj[@"data"]];
+            
             [self formatUserData:userDictInfo];
             [self setupUserImgs:obj[@"data"][@"imgs"]];
             [subTableView reloadData];
@@ -138,18 +153,31 @@
     }];
 }
 
+
+-(void)submitToServer:(NSString *)urlString params:(NSDictionary *)params {
+    
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+    [manager POST:urlString parameters:params success:^(AFHTTPRequestOperation *opteration,id obj){
+        
+    } failure:^(AFHTTPRequestOperation *operation ,NSError *error){
+        [Common showErrorDialog:[NSString stringWithFormat:@"%@",error]];
+    }];
+}
+
 -(void)formatUserData:(NSMutableDictionary *)dict {
     NSString *constellation = dict[@"constellation"]?dict[@"constellation"]:@"";
     NSString *uid = _userDict[@"uid"];
-    NSString *nickname = dict[@"nickname"]?dict[@"nickname"]:@"";
-    NSString *sex = ((int)dict[@"sex"] == 2)?@"女":@"男";
+    NSString *name = dict[@"nickname"]?dict[@"nickname"]:@"";
+    NSInteger sexType = [dict[@"sex"] integerValue];
+    NSString *sex = (sexType == 2 ) ?@"女":@"男";
+    userDictInfo[@"sex"] = sex;
     NSString *birthday = @"";
     if(dict[@"age"] != nil){
         birthday = [self birthdayString:dict[@"age"]];
     }
     NSString *job = dict[@"job"]?dict[@"job"]:@"";
     NSString *edu = dict[@"education"]?dict[@"education"]:@"";
-    NSArray *data = [[NSArray alloc] initWithObjects:constellation,uid,nickname,sex,birthday,job,edu, nil];
+    NSArray *data = [[NSArray alloc] initWithObjects:constellation,uid,name,sex,birthday,job,edu, nil];
     [userInfo addObjectsFromArray:data];
     tags = dict[@"tags"];
 }
@@ -180,11 +208,11 @@
             [imgArr addObject:item];
         }
         if(count < 6){
-            NSDictionary *dict = @{@"img":[UIImage imageNamed:@"invite"]};
+            NSDictionary *dict = @{@"img":[UIImage imageNamed:@"more"]};
             [imgArr addObject:dict];
         }
     }else{
-        NSDictionary *dict = @{@"img":[UIImage imageNamed:@"invite"]};
+        NSDictionary *dict = @{@"img":[UIImage imageNamed:@"more"]};
         [imgArr addObject:dict];
     }
     
@@ -230,8 +258,6 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"TableView Cell");
-    
     NSInteger section  = indexPath.section;
     switch (section) {
         case 0: {
@@ -389,26 +415,25 @@
     InviteTableViewCell *cell = (InviteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     NSInteger section = indexPath.section;
     NSInteger row     = indexPath.row;
-    NSLog(@"section:%ld row:%ld ",section,(long)row);
     
     if(row != 2){
         InviteTableViewCell *nameCell = (InviteTableViewCell *)[subTableView viewWithTag:2+10];
         if(nameCell.textfield.isFirstResponder){
             [nameCell.textfield resignFirstResponder];
-            NSLog(@"text:%@",nameCell.textfield.text);
         }
     }
     
     CGRect rect = CGRectMake(0, self.view.frame.size.height- 200, self.view.frame.size.width, 200);
         if(section == 1){
             attrPickerView.tag = row;
+             NSString *name = kCellIndexAndName[[NSString stringWithFormat:@"%ld",(long)row]];
         switch (row) {
              case 2:
                 [cell.textfield becomeFirstResponder];
                 break;
                 
             case 3:
-                [self showPickerViewWithKey:@"sex" withRect:rect];
+                [self showPickerViewWithKey:name withRect:rect];
                 break;
               
             case 4:{
@@ -420,10 +445,10 @@
                 break;
               
             case 5:
-                [self showPickerViewWithKey:@"job" withRect:rect];
+                [self showPickerViewWithKey:name withRect:rect];
                 break;
             case 6:
-                [self showPickerViewWithKey:@"education" withRect:rect];
+                [self showPickerViewWithKey:name withRect:rect];
                 break;
                 
             default:
@@ -432,37 +457,9 @@
         
     }else if (section == 2){
         TagViewController *tagViewController = [[TagViewController alloc] init];
-        //UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:tagViewController];
         [self.navigationController pushViewController:tagViewController animated:YES];
     }
 }
--(void)showPickerViewWithKey:(NSString *)key withRect:(CGRect)rect {
-    NSDictionary *dict = attributeDict[key];
-    NSArray *sorted = [[dict allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1,id obj2) {
-        NSNumber *num1 = [NSNumber numberWithInteger:[obj1 integerValue]];
-        NSNumber *num2 = [NSNumber numberWithInteger:[obj2 integerValue]];
-        NSComparisonResult result = [ num1 compare:num2];
-        return result == NSOrderedDescending;
-    }];
-    NSString *selected = userDictInfo[key];
-    NSInteger selectedIndex = 0;
-     mutablePickerArr = [[NSMutableArray alloc] initWithCapacity:10];
-    for (NSNumber *index  in sorted) {
-        StringPickerViewItem *item = [StringPickerViewItem new];
-        item.itemId = [index intValue];
-        item.name   = dict[index];
-        [mutablePickerArr addObject:item];
-        if([ selected isEqual:item.name]){
-            selectedIndex = item.itemId;
-        }
-    }
-  
-    
-    [attrPickerView selectedRow:selectedIndex-1 andComponent:0];
-    [attrPickerView loadData:mutablePickerArr];
-    [StringPickerView showPickerView:attrPickerView withRect:rect onView:self.view];
-}
-
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     return UIEdgeInsetsMake(0, 0, 0, 0);
@@ -524,13 +521,47 @@
     textField.autocorrectionType = UITextAutocorrectionTypeYes;
     textField.keyboardType = UIKeyboardTypeDefault;
     textField.returnKeyType = UIReturnKeyDone;
-    NSLog(@"begin textfield edit");
+    nickname = textField.text;
     
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField {
     NSLog(@"end editing");
     [textField resignFirstResponder];
+    NSString *modifyName = textField.text;
+    if(![modifyName isEqualToString:nickname]){
+        NSString *urlString = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kProfilePost];
+        NSDictionary *dict = @{@"nickname":modifyName};
+        [self submitToServer:urlString params:dict];
+        _userDict[@"nickname"] = modifyName;
+        
+    }
+}
+
+-(void)showPickerViewWithKey:(NSString *)key withRect:(CGRect)rect {
+    NSDictionary *dict = attributeDict[key];
+    NSArray *sorted = [[dict allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1,id obj2) {
+        NSNumber *num1 = [NSNumber numberWithInteger:[obj1 integerValue]];
+        NSNumber *num2 = [NSNumber numberWithInteger:[obj2 integerValue]];
+        NSComparisonResult result = [ num1 compare:num2];
+        return result == NSOrderedDescending;
+    }];
+    NSString *selected = userDictInfo[key];
+    NSInteger selectedIndex = 0;
+    mutablePickerArr = [[NSMutableArray alloc] initWithCapacity:10];
+    for (NSNumber *index  in sorted) {
+        StringPickerViewItem *item = [StringPickerViewItem new];
+        item.itemId = [index intValue];
+        item.name   = dict[index];
+        [mutablePickerArr addObject:item];
+        if([ selected isEqual:item.name]){
+            selectedIndex = item.itemId;
+        }
+    }
+    
+    [attrPickerView selectedRow:selectedIndex-1 andComponent:0];
+    [attrPickerView loadData:mutablePickerArr];
+    [StringPickerView showPickerView:attrPickerView withRect:rect onView:self.view];
 }
 
 -(void)stringPickerCancel{
@@ -545,6 +576,20 @@
     StringPickerViewItem *item = [mutablePickerArr objectAtIndex:index];
     NSInteger tagValue = attrPickerView.tag;
     InviteTableViewCell *cell = (InviteTableViewCell *)[subTableView viewWithTag:tagValue+10];
+    NSIndexPath *indexPath = [subTableView indexPathForCell:cell];
+    
+    NSString *title = kCellIndexAndName[[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
+    NSDictionary *dict = @{title:[NSNumber numberWithInt:item.itemId]};
+    NSString *urlString = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kProfilePost];
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+    [manager POST:urlString parameters:dict success:^(AFHTTPRequestOperation *opteration,id obj){
+        if(obj[@"success"]){
+            userDictInfo[title] = item.name;
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation ,NSError *error){
+        [Common showErrorDialog:[NSString stringWithFormat:@"%@",error]];
+    }];
     cell.textfield.text = item.name;
 }
 
@@ -569,10 +614,6 @@
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
-}
-
--(void)uploadImg:(UITapGestureRecognizer *)tap {
-    [self showActionSheet];
 }
 
 
@@ -606,8 +647,14 @@
     return browser;
 }
 
+-(void)uploadImg:(UITapGestureRecognizer *)tap {
+    imagePickerViewTag = 2;
+    [self showActionSheet];
+}
+
 
 -(void)changeHeadImage:(UITapGestureRecognizer *)tap {
+    imagePickerViewTag = 1;
     [self showActionSheet];
 }
 
@@ -623,8 +670,6 @@
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSLog(@"Selected:%ld",(long)buttonIndex);
-    
     switch (buttonIndex) {
         case 0:
             [self takePhoto];
@@ -675,10 +720,11 @@
         NSLog(@"pick from album");
         _imagePicker = [[UIImagePickerController alloc] init];
         _imagePicker.delegate       = self;
+
     }
+    _imagePicker.view.tag       = imagePickerViewTag;
     _imagePicker.sourceType     = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
     [self presentViewController:_imagePicker animated:YES completion:nil];
-    
 }
 //图库中选择
 -(void)pickFromGallery {
@@ -739,16 +785,52 @@
 #pragma imagepickerController delegate methods
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    
+
+    NSInteger tag = picker.view.tag;
+    NSLog(@"%ld",(long)tag);
     UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
     if(picker.sourceType== UIImagePickerControllerSourceTypeSavedPhotosAlbum){
+        NSLog(@"相册");
         
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        CenterHeaderCell *cell = (CenterHeaderCell *)[subTableView cellForRowAtIndexPath:indexPath];
+     
+        
+        UIActivityIndicatorView *activityView = ({
+            UIActivityIndicatorView *activityIndicatorView = [UIActivityIndicatorView new];
+            activityIndicatorView.activityIndicatorViewStyle  = UIActivityIndicatorViewStyleWhite;
+            activityIndicatorView.hidesWhenStopped = YES;
+            activityIndicatorView;
+        });
+        [cell.headImageView addSubview:activityView];
+        [activityView mas_makeConstraints:^(MASConstraintMaker *make){
+            make.centerX.mas_equalTo(cell.headImageView.mas_centerX);
+            make.centerY.mas_equalTo(cell.headImageView.mas_centerY);
+            make.width.mas_equalTo(@25);
+            make.height.mas_equalTo(@25);
+        }];
+        [activityView startAnimating];
+        
+        NSData *data = UIImageJPEGRepresentation(image, 1.0f);
+        NSString *encodeImg = [data base64EncodedStringWithOptions:0];
+        NSString *urlstring = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kProfilePost];
+        NSString *base = @"data:image/png;base64,";
+        NSString *imgtring = [NSString stringWithFormat:@"%@%@",base,encodeImg];
+        NSDictionary *dict = @{@"headimg":imgtring};
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        [manager POST:urlstring parameters:dict success:^(AFHTTPRequestOperation *operation,id obj){
+            if(obj[@"success"]){
+                cell.headImageView.image = image;
+                cell.headImageView.contentMode = UIViewContentModeScaleAspectFill;
+                [activityView stopAnimating];
+                isNewHeadImg = YES;
+            }
+        } failure:^(AFHTTPRequestOperation *operatoin,NSError *error){
+            NSLog(@"%@",error);
+        }];
     }
-    //headImageView.image = image;
-    //headImageView.contentMode = UIViewContentModeScaleAspectFill;
-    
     [self dismissViewControllerAnimated:YES completion:nil];
+   
 }
 
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
