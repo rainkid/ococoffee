@@ -13,7 +13,7 @@
 @property(nonatomic,strong) NSString *logitute;
 @property(nonatomic,strong) NSString *latitude;
 @property(nonatomic,strong) NSString *cityName;
-@property(nonatomic,strong) NSString *address;
+@property(nonatomic,strong) NSString *address; 
 
 
 @end

@@ -64,7 +64,7 @@
     BMKPointAnnotation *annotation = [[BMKPointAnnotation alloc] init];
     annotation.coordinate = coordinate;
     annotation.title = _address;
-    [_mkMapView addAnnotation:annotation];
+    [_mkMapView addAnnotation:annotation]; 
     
 
 }
