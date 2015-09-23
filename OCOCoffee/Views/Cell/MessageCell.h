@@ -10,11 +10,10 @@
 
 @interface MessageCell : UITableViewCell
 
-@property(strong,nonatomic) UIImageView *photo;
-@property(strong,nonatomic) NSString *time;
-@property(strong,nonatomic) NSString *title;
-@property(strong,nonatomic) NSString *message;
-@property(strong,nonatomic) NSString *name;
-@property(strong,nonatomic) NSString *typeName;
+@property(strong,nonatomic) UIImageView     *headImageView;
+@property(strong,nonatomic) UILabel         *nicknameLabel;
+@property(strong,nonatomic) UILabel         *numLabel;
+@property(strong,nonatomic) UILabel         *messageLabel;
+@property(strong,nonatomic) UILabel         *timeLabel;
 
 @end
