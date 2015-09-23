@@ -161,4 +161,8 @@ static const CGFloat kCellHeight = 188/2;
     return kCellHeight;
 }
 
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+}
 @end
