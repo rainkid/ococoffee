@@ -11,17 +11,8 @@
 #import "InviteSearchView.h"
 #import "InviteSearchViewController.h"
 
-@protocol InviteSuccessProtocol <NSObject>
-
-@required
--(void) InviteSuccess;
-
-@end
-
 @interface InviteViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,DatePickerViewDelegate,UITextFieldDelegate,InviteSearchControllerDelegate>
 
-@property(nonatomic, strong) id<InviteSuccessProtocol> delegate;
-
-@property(nonatomic,strong) NSNumber *uid;
+@property(nonatomic,strong) NSNumber *userId;
 
 @end

@@ -8,7 +8,7 @@
 #import "Global.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
-#import "DetailViewController.h"
+#import "ActivityDetailViewController.h"
 #import <SKTagView/SKTagView.h>
 
 
@@ -16,7 +16,7 @@ static const CGFloat kPhotoHeight = 146/2;
 static const CGFloat slide = 20/2;
 static const CGFloat buttonHeight = 106/2;
 
-@interface DetailViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
+@interface ActivityDetailViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
 
 @property(nonatomic, strong) NSDictionary *activityData;
 
@@ -31,7 +31,7 @@ static const CGFloat buttonHeight = 106/2;
 
 
 
-@implementation DetailViewController
+@implementation ActivityDetailViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

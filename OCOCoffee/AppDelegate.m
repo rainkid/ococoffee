@@ -10,7 +10,7 @@
 #import "Global.h"
 #import "IndexViewController.h"
 #import "MessageViewController.h"
-#import "ActivityViewController.h"
+#import "ActivityTableViewController.h"
 #import "CenterViewController.h"
 #import "ViewStyles.h"
 #import <BaiduMapAPI/BMapKit.h>
@@ -53,7 +53,7 @@
     //
     imageNormal       = [UIImage imageNamed:@"schedule_origin"];
     imageSelected     = [UIImage imageNamed:@"schedule_clicked"];
-    _activityViewController = [[ActivityViewController alloc]  initWithNibName:nil bundle:nil];
+    _activityViewController = [[ActivityTableViewController alloc]  initWithNibName:nil bundle:nil];
     _activityViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"日程" image:imageNormal selectedImage:imageSelected];
     _activityNavController = [[UINavigationController alloc] initWithRootViewController:_activityViewController];
     [ViewStyles setNaviControllerStyle:_activityNavController];

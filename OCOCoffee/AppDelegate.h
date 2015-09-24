@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class IndexViewController;
-@class ActivityViewController;
+@class ActivityTableViewController;
 @class CenterViewController;
 @class MessageViewController;
 
@@ -20,7 +20,7 @@
 
 @property(strong,nonatomic) IndexViewController *indexViewController;
 @property(strong,nonatomic) MessageViewController *messageViewController;
-@property(strong,nonatomic) ActivityViewController *activityViewController;
+@property(strong,nonatomic) ActivityTableViewController *activityViewController;
 @property(strong,nonatomic) CenterViewController *centerViewController;
 
 

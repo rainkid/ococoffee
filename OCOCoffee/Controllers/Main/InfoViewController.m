@@ -34,7 +34,7 @@
 static const CGFloat kPhotoHeight = 146/2;
 static const CGFloat slide = 20/2;
 
-@interface InfoViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,MWPhotoBrowserDelegate,MBProgressHUDDelegate, InviteSuccessProtocol, LoginSuccessProtocol>
+@interface InfoViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,MWPhotoBrowserDelegate,MBProgressHUDDelegate>
 
 @property(nonatomic, strong) SKTagView *tagView;
 
@@ -91,7 +91,6 @@ static const CGFloat slide = 20/2;
 {
     if([Common userIsLogin] == false){
         LoginViewController *loginController = [[LoginViewController alloc] init];
-        loginController.delegate = self;
         [self.navigationController presentViewController:loginController animated:YES completion:nil];
     }
 }
@@ -332,8 +331,7 @@ static const CGFloat slide = 20/2;
 
 -(void)sendInvite {
     InviteViewController *inviteController = [[InviteViewController alloc] init];
-    inviteController.delegate = self;
-    inviteController.uid =[[NSNumber alloc] initWithLong:self.userId];
+    inviteController.userId =[[NSNumber alloc] initWithLong:self.userId];
     
     UINavigationController *inviteNavController = [[UINavigationController alloc] initWithRootViewController:inviteController];
     [self presentViewController:inviteNavController animated:YES completion:^(void){
@@ -344,7 +342,7 @@ static const CGFloat slide = 20/2;
 
 -(void) loadDataFromServer
 {
-    NSString *listApiUrl = API_DOMAIN@"api/user/info";
+    NSString *listApiUrl = [NSString stringWithFormat:@"%@%@", API_DOMAIN, kUserInfoURL];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 //    NSNumber *latNumber = [[NSNumber alloc] initWithDouble:self.lati];
 //    NSNumber *lngNumber = [[NSNumber alloc] initWithDouble:self.logi];
@@ -584,18 +582,6 @@ static const CGFloat slide = 20/2;
         [_browser setCurrentPhotoIndex:index];
         [_browser setStartOnGrid:NO];
         return _browser;
-}
-
-#pragma mark-InviteSuccessProtocol
--(void)InviteSuccess
-{
-    NSLog(@"InviteSuccess");
-}
-
-#pragma mark-LoginSuccessProtocol
--(void)UserLoginSuccess
-{
-    NSLog(@"LoginSuccess");
 }
 
 @end

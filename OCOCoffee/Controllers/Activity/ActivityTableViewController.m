@@ -6,25 +6,28 @@
 //  Copyright (c) 2015年 sam. All rights reserved.
 //
 
+#define kSendActivityListUrl      @"/api/activity/mysend"
+#define kRecvActivityListUrl      @"/api/activity/myrecv"
+
 #import "Global.h"
 #import "UIColor+colorBuild.h"
 #import <Masonry/Masonry.h>
 #import <MJRefresh/MJRefresh.h>
 #import "UIScrollView+MJRefresh.h"
 #import "ActivityTableViewCell.h"
-#import "DetailViewController.h"
-#import "ActivityViewController.h"
+#import "ActivityDetailViewController.h"
+#import "ActivityTableViewController.h"
 
 
 static const CGFloat kCellHeight = 440/2;
 
-@interface ActivityViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface ActivityTableViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property(nonatomic, strong) UITableView *tableView;
 
 @end
 
-@implementation ActivityViewController
+@implementation ActivityTableViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -153,7 +156,7 @@ static const CGFloat kCellHeight = 440/2;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    DetailViewController *detail = [[DetailViewController alloc] init];
+    ActivityDetailViewController *detail = [[ActivityDetailViewController alloc] init];
     [self.navigationController pushViewController:detail animated:YES];
 }
 

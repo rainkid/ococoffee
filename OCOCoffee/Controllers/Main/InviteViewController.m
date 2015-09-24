@@ -10,7 +10,7 @@
 #define kTypeList            @[@"日 期：", @"时 间：",@"地 点：",@"备 注："]
 #define kTipList             @[@"请选择日期",@"请选择时间",@"请选择地点"]
 #define kDateTagList         @[@"1",@"2"]
-#define kInviteURL           @"api/invite/send"
+#define kInviteURL           @"api/activity/send"
 
 #import "InviteViewController.h"
 #import <BaiduMapAPI/BMapKit.h>
@@ -24,7 +24,7 @@
 #import "TipView.h"
 #import "BaiDuMapViewController.h"
 #import "Common.h"
-
+#import "ActivityDetailViewController.h"
 
 @interface InviteViewController (){
     UITableView *inviteTableview;
@@ -205,7 +205,7 @@
     NSLog(@"%@",urlString);
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
     NSDictionary *options =@{
-                             @"uid":_uid,
+                             @"to_uid":self.userId,
                              @"date":inviteDate,
                              @"time":inviteTime,
                              @"lng":logitude ,
@@ -216,8 +216,9 @@
     [manager GET:urlString parameters:options success:^(AFHTTPRequestOperation *operation,id responseObject){
         NSLog(@"%@", responseObject);
         if ([responseObject[@"success"] integerValue] == 1) {
-            [self.delegate InviteSuccess];
-            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+            
+            ActivityDetailViewController *activityDetailController = [[ActivityDetailViewController alloc] init];
+            [self presentViewController:activityDetailController animated:YES completion:nil];
         } else {
             [TipView displayView:self.view withFrame:rect withString:responseObject[@"msg"]];
         }
