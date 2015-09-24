@@ -10,6 +10,7 @@
 @class IndexListItem;
 
 @interface InfoViewController : UIViewController
+
 @property(nonatomic,strong) IndexListItem *userInfo;
 @property(nonatomic, assign) CGFloat userId;
 @property(nonatomic, strong) NSString  *lng;

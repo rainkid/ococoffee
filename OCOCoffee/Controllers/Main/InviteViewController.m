@@ -17,6 +17,7 @@
 #import <Masonry/Masonry.h>
 #import <AFNetworking/AFNetworking.h>
 #import "UIColor+colorBuild.h"
+#import "InfoViewController.h"
 #import "Global.h"
 #import "ViewStyles.h"
 #import "InviteTableViewCell.h"
@@ -201,7 +202,7 @@
 //发送邀请
 -(void)sendInvition {
     NSString *urlString = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kInviteURL];
-    NSLog(@"%@",inviteNotice);
+    NSLog(@"%@",urlString);
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
     NSDictionary *options =@{
                              @"uid":_uid,
@@ -213,8 +214,13 @@
                              @"descprition":inviteNotice
                              };
     [manager GET:urlString parameters:options success:^(AFHTTPRequestOperation *operation,id responseObject){
-        NSLog(@"success");
-        [TipView displayView:self.view withFrame:rect withString:responseObject[@"msg"]];
+        NSLog(@"%@", responseObject);
+        if ([responseObject[@"success"] integerValue] == 1) {
+            [self.delegate InviteSuccess];
+            [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+        } else {
+            [TipView displayView:self.view withFrame:rect withString:responseObject[@"msg"]];
+        }
         
     }failure:^(AFHTTPRequestOperation *operation,NSError *error){
         [TipView displayView:self.view withFrame:rect withString:@"发送邀请失败"];
