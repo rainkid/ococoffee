@@ -23,6 +23,7 @@ static const CGFloat kPhotoHeight = 126/2;
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         __weak typeof(self) weakSelf = self;
+        self.backgroundColor = [UIColor whiteColor];
         UIFont *font = [UIFont systemFontOfSize:14];
         UIColor *labelTextCollor = [UIColor colorFromHexString:@"#888888"];
         
@@ -91,16 +92,34 @@ static const CGFloat kPhotoHeight = 126/2;
             make.top.mas_equalTo(headerImageView.mas_bottom).offset(24/2);
         }];
         
+        //timeImgeView
+        UIImageView *timeImageView = [UIImageView new];
+        timeImageView.image= [UIImage imageNamed:@"center_time"];
+        [self addSubview:timeImageView];
+        [timeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(headerImageView);
+            make.top.mas_equalTo(line.mas_bottom).offset(24/2);
+        }];
+        
+        UILabel *dateLineLabel = [UILabel new];
+        dateLineLabel.font = font;
+        dateLineLabel.textColor = labelTextCollor;
+        [self addSubview:dateLineLabel];
+        self.dateLineLabel = dateLineLabel;
+        [dateLineLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(timeImageView.mas_right).offset(24/2);
+            make.centerY.mas_equalTo(timeImageView);
+            make.top.mas_equalTo(line.mas_bottom).offset(24/2);
+        }];
+        
         //地址图片
         UIImageView *addressImageView = [UIImageView new];
         addressImageView.image = [UIImage imageNamed:@"center_address"];
         [self addSubview:addressImageView];
         [addressImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(headerImageView);
-            make.width.mas_equalTo(26/2);
-            make.top.mas_equalTo(line.mas_bottom).offset(24/2);
+            make.left.mas_equalTo(timeImageView);
+            make.top.mas_equalTo(timeImageView.mas_bottom).offset(24/2);
         }];
-        
         
         //address标签
         UILabel *addressLabel = [UILabel new];
@@ -111,37 +130,20 @@ static const CGFloat kPhotoHeight = 126/2;
         self.addressLabel = addressLabel;
         [self addSubview:addressLabel];
         [addressLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(addressImageView.mas_right).offset(24/2);
-            make.right.mas_equalTo(weakSelf);
-            make.top.mas_equalTo(addressImageView);
+            make.left.mas_equalTo(dateLineLabel);
+            make.top.mas_equalTo(dateLineLabel.mas_bottom).offset(24/2);
+            make.centerY.mas_equalTo(addressImageView);
         }];
-        
-        //timeImgeView
-        UIImageView *timeImageView = [UIImageView new];
-        timeImageView.image= [UIImage imageNamed:@"center_time"];
-        [self addSubview:timeImageView];
-        [timeImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(headerImageView);
-            make.top.mas_equalTo(addressLabel.mas_bottom).offset(24/2);
-        }];
-        
-        UILabel *nearTimeLabel = [UILabel new];
-        nearTimeLabel.font = font;
-        nearTimeLabel.textColor = labelTextCollor;
-        [self addSubview:nearTimeLabel];
-        self.nearTimeLabel = nearTimeLabel;
-        [nearTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(addressLabel);
-            make.top.mas_equalTo(addressLabel.mas_bottom).offset(24/2);
-        }];
+
         
         //descImageView
         UIImageView *descImageView = [UIImageView new];
         descImageView.image= [UIImage imageNamed:@"center_desc"];
+        self.descImageView = descImageView;
         [self addSubview:descImageView];
         [descImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(timeImageView);
-            make.top.mas_equalTo(nearTimeLabel.mas_bottom).offset(24/2);
+            make.left.mas_equalTo(addressImageView);
+            make.top.mas_equalTo(addressImageView.mas_bottom).offset(24/2);
         }];
         
         //descLabel
@@ -151,10 +153,11 @@ static const CGFloat kPhotoHeight = 126/2;
         self.descLabel = descLabel;
         [self addSubview:descLabel];
         [descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(nearTimeLabel);
-            make.top.mas_equalTo(nearTimeLabel.mas_bottom).offset(24/2);
+            make.left.mas_equalTo(addressLabel);
+            make.centerY.mas_equalTo(descImageView);
+            make.top.mas_equalTo(addressLabel.mas_bottom).offset(24/2);
         }];
-        
+
         UIView *lineTwo = [UIView new];
         lineTwo.backgroundColor = [UIColor colorFromHexString:@"#f5f5f5"];
         [self addSubview:lineTwo];
@@ -166,11 +169,12 @@ static const CGFloat kPhotoHeight = 126/2;
         UILabel *beforeLabel = [UILabel new];
         beforeLabel.textColor = labelTextCollor;
         beforeLabel.font = font;
+        beforeLabel.textAlignment = NSTextAlignmentCenter;
         self.beforeLabel = beforeLabel;
         [self addSubview:beforeLabel];
         [beforeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(lineTwo.mas_bottom).offset(24/2);
-            make.right.mas_equalTo(weakSelf.mas_right).offset(-2);
+            make.right.mas_equalTo(weakSelf.mas_right).offset(-10);
         }];
     
         UIView *bottom = [UIView new];
@@ -178,7 +182,7 @@ static const CGFloat kPhotoHeight = 126/2;
         [self addSubview:bottom];
         [bottom mas_makeConstraints:^(MASConstraintMaker *make) {
             make.width.mas_equalTo(weakSelf);
-            make.bottom.mas_equalTo(self.mas_bottom);
+            make.top.mas_equalTo(beforeLabel.mas_bottom).offset(24/2);
             make.height.mas_equalTo(14/2);
         }];
     }

@@ -167,10 +167,6 @@ static const CGFloat kBanerHeight = 65;
     }];
 }
 
--(void)settings {
-    
-}
-
 - (void) loadListFromServer
 {
     NSString *listApiUrl = API_DOMAIN@"api/index/list";
