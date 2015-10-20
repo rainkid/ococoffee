@@ -45,5 +45,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSLocationUsageDescription</key>
+	<string>允许使用GPS</string>
 </dict>
 </plist>
