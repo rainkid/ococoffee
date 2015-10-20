@@ -14,6 +14,7 @@
 #import "CenterViewController.h"
 #import "ViewStyles.h"
 #import <BaiduMapAPI/BMapKit.h>
+#import "NSUserDefaults+Settings.h"
 
 @interface AppDelegate ()<UIApplicationDelegate,UITabBarControllerDelegate>
 
@@ -76,6 +77,10 @@
     if(ret){
         NSLog(@"百度地图服务已开始");
     }
+    
+    [NSUserDefaults setOutcomingAvatarSetting:YES];
+    [NSUserDefaults setIncomingAvatarSetting:YES];
+    
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
