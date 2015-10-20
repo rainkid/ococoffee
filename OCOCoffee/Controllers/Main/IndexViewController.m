@@ -123,6 +123,7 @@ static const CGFloat kBanerHeight = 65;
         collectionView.frame = weakSelf.view.frame;
         collectionView.backgroundColor = [UIColor clearColor];
         collectionView.showsVerticalScrollIndicator = NO;
+        collectionView.bounces = YES;
         
         [collectionView registerClass:[BannerView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kCycleBannerIdentifier];
         [collectionView registerClass:[IndexCollectionViewCell class] forCellWithReuseIdentifier:kIndexCollectionIdentifier];
