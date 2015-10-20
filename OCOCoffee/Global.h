@@ -115,4 +115,5 @@ alpha:(a)]
 
 #define BAIDUSUGGESTION @"http://api.map.baidu.com/place/v2/suggestion/"
 
+
 #endif
