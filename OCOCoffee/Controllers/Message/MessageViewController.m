@@ -17,6 +17,7 @@
 #import "UIScrollView+MJRefresh.h"
 #import "MessageViewController.h"
 #import "MessageCell.h"
+#import "DialogueViewController.h"
 
 static const CGFloat kCellHeight = 188/2;
 
@@ -153,4 +154,10 @@ static const CGFloat kCellHeight = 188/2;
     return kCellHeight;
 }
 
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    DialogueViewController *dialogueController = [DialogueViewController messagesViewController];
+    [self.navigationController pushViewController:dialogueController animated:YES];
+}
 @end
