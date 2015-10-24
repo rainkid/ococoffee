@@ -11,4 +11,6 @@
 
 @interface TagViewController : UIViewController
 
+@property(nonatomic,strong) NSArray *tagList;
+
 @end
