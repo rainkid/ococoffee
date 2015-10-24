@@ -24,7 +24,7 @@
 #import "TipView.h"
 #import "BaiDuMapViewController.h"
 #import "Common.h"
-#import "ActivityDetailViewController.h"
+
 
 @interface InviteViewController (){
     UITableView *inviteTableview;
@@ -217,8 +217,8 @@
         NSLog(@"%@", responseObject);
         if ([responseObject[@"success"] integerValue] == 1) {
             
-            ActivityDetailViewController *activityDetailController = [[ActivityDetailViewController alloc] init];
-            [self presentViewController:activityDetailController animated:YES completion:nil];
+//            ActivityDetailViewController *activityDetailController = [[ActivityDetailViewController alloc] init];
+//            [self presentViewController:activityDetailController animated:YES completion:nil];
         } else {
             [TipView displayView:self.view withFrame:rect withString:responseObject[@"msg"]];
         }
