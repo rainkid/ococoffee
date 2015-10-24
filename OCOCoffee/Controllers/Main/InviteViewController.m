@@ -10,20 +10,21 @@
 #define kTypeList            @[@"日 期：", @"时 间：",@"地 点：",@"备 注："]
 #define kTipList             @[@"请选择日期",@"请选择时间",@"请选择地点"]
 #define kDateTagList         @[@"1",@"2"]
-#define kInviteURL           @"api/invite/send"
+#define kInviteURL           @"api/activity/send"
 
 #import "InviteViewController.h"
 #import <BaiduMapAPI/BMapKit.h>
 #import <Masonry/Masonry.h>
 #import <AFNetworking/AFNetworking.h>
 #import "UIColor+colorBuild.h"
+#import "InfoViewController.h"
 #import "Global.h"
 #import "ViewStyles.h"
 #import "InviteTableViewCell.h"
 #import "TipView.h"
 #import "BaiDuMapViewController.h"
 #import "Common.h"
-
+#import "ActivityDetailViewController.h"
 
 @interface InviteViewController (){
     UITableView *inviteTableview;
@@ -201,10 +202,10 @@
 //发送邀请
 -(void)sendInvition {
     NSString *urlString = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kInviteURL];
-    NSLog(@"%@",inviteNotice);
+    NSLog(@"%@",urlString);
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
     NSDictionary *options =@{
-                             @"uid":_uid,
+                             @"to_uid":self.userId,
                              @"date":inviteDate,
                              @"time":inviteTime,
                              @"lng":logitude ,
@@ -213,8 +214,14 @@
                              @"descprition":inviteNotice
                              };
     [manager GET:urlString parameters:options success:^(AFHTTPRequestOperation *operation,id responseObject){
-        NSLog(@"success");
-        [TipView displayView:self.view withFrame:rect withString:responseObject[@"msg"]];
+        NSLog(@"%@", responseObject);
+        if ([responseObject[@"success"] integerValue] == 1) {
+            
+            ActivityDetailViewController *activityDetailController = [[ActivityDetailViewController alloc] init];
+            [self presentViewController:activityDetailController animated:YES completion:nil];
+        } else {
+            [TipView displayView:self.view withFrame:rect withString:responseObject[@"msg"]];
+        }
         
     }failure:^(AFHTTPRequestOperation *operation,NSError *error){
         [TipView displayView:self.view withFrame:rect withString:@"发送邀请失败"];

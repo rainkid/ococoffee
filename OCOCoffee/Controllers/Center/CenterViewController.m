@@ -11,7 +11,7 @@
 #import "UIColor+colorBuild.h"
 #import "CenterViewController.h"
 #import "CenterTableViewCell.h"
-#import "ActivityViewController.h"
+#import "ActivityTableViewController.h"
 #import "FriendTableViewController.h"
 #import "MessageViewController.h"
 #import "CenterEditTableViewController.h"
@@ -298,7 +298,7 @@ static const CGFloat kPhotoHeight = 82;
 
 -(void)checkLogin
 {
-    if([Common userIsLogin]) {
+    if([Common userIsLogin] == false) {
         [self showLoginPage];
     } else {
         [self loadDataFromServer];
@@ -417,7 +417,7 @@ static const CGFloat kPhotoHeight = 82;
     CenterTableViewCell *cell = (CenterTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     switch (cell.tag) {
         case CENTER_MY_ACTIVITY:{
-            ActivityViewController *activity = [[ActivityViewController alloc] init];
+            ActivityTableViewController *activity = [[ActivityTableViewController alloc] init];
             [self.navigationController pushViewController:activity animated:YES];
         }
             break;

@@ -72,6 +72,7 @@ static const CGFloat slide = 20/2;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self checkLogin];
     _imageList = [[NSMutableArray alloc] initWithArray:_images];
     
     [self initSubViews];
@@ -84,6 +85,14 @@ static const CGFloat slide = 20/2;
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)checkLogin
+{
+    if([Common userIsLogin] == false){
+        LoginViewController *loginController = [[LoginViewController alloc] init];
+        [self.navigationController presentViewController:loginController animated:YES completion:nil];
+    }
 }
 
 - (void) initSubViews {
@@ -322,7 +331,7 @@ static const CGFloat slide = 20/2;
 
 -(void)sendInvite {
     InviteViewController *inviteController = [[InviteViewController alloc] init];
-    inviteController.uid =[[NSNumber alloc] initWithLong:self.userId];
+    inviteController.userId =[[NSNumber alloc] initWithLong:self.userId];
     
     UINavigationController *inviteNavController = [[UINavigationController alloc] initWithRootViewController:inviteController];
     [self presentViewController:inviteNavController animated:YES completion:^(void){
@@ -333,7 +342,7 @@ static const CGFloat slide = 20/2;
 
 -(void) loadDataFromServer
 {
-    NSString *listApiUrl = API_DOMAIN@"api/user/info";
+    NSString *listApiUrl = [NSString stringWithFormat:@"%@%@", API_DOMAIN, kUserInfoURL];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 //    NSNumber *latNumber = [[NSNumber alloc] initWithDouble:self.lati];
 //    NSNumber *lngNumber = [[NSNumber alloc] initWithDouble:self.logi];
@@ -543,12 +552,6 @@ static const CGFloat slide = 20/2;
 
 //邀请上传图片
 -(void)inviteUploadImg:(UITapGestureRecognizer *)tapRecognizer {
-//    if(![Common userIsLogin]){
-//        LoginViewController *loginController = [[LoginViewController alloc] init];
-//        [self.navigationController presentViewController:loginController animated:YES completion:^(void){
-//            NSLog(@"successed!!");
-//        }];
-//    }else{
         NSString *url = [NSString stringWithFormat:@"%@%@",API_DOMAIN,kInviteUploadImageURL];
         AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
         NSDictionary *params = @{@"to_uid":_userInfo.userId};
@@ -558,7 +561,6 @@ static const CGFloat slide = 20/2;
                 [TipView displayView:self.view withFrame:rect withString:responseObj[@"msg"]];
             }else{
                 [Common showErrorDialog:@"请求异常,请稍后再试!"];
-                
             }
         }failure:^(AFHTTPRequestOperation *operation,NSError *error){
            
@@ -581,6 +583,5 @@ static const CGFloat slide = 20/2;
         [_browser setStartOnGrid:NO];
         return _browser;
 }
-
 
 @end
