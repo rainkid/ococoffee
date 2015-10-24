@@ -457,6 +457,7 @@
         
     }else if (section == 2){
         TagViewController *tagViewController = [[TagViewController alloc] init];
+        tagViewController.tagList = userDictInfo[@"tags"];
         [self.navigationController pushViewController:tagViewController animated:YES];
     }
 }
@@ -840,7 +841,6 @@
 
 
 -(void)savePhoto:(UIButton *)button {
-    NSLog(@"%ld",(long)button.tag);
     if(button.tag == 100){
         button.layer.borderColor = [UIColor redColor].CGColor;
         [button setTitle:@"完 成" forState:UIControlStateNormal];

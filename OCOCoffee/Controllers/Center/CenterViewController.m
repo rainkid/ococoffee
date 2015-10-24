@@ -11,7 +11,6 @@
 #import "UIColor+colorBuild.h"
 #import "CenterViewController.h"
 #import "CenterTableViewCell.h"
-#import "ActivityTableViewController.h"
 #import "FriendTableViewController.h"
 #import "MessageViewController.h"
 #import "CenterEditTableViewController.h"
@@ -20,6 +19,8 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <AFNetworking/AFNetworking.h>
 #import <Masonry/Masonry.h>
+#import "ActivityDetailViewController.h"
+#import "ActivityTableViewController.h"
 
 static const CGFloat kPhotoHeight = 82;
 
@@ -298,7 +299,7 @@ static const CGFloat kPhotoHeight = 82;
 
 -(void)checkLogin
 {
-    if([Common userIsLogin] == false) {
+    if(![Common userIsLogin] == false) {
         [self showLoginPage];
     } else {
         [self loadDataFromServer];
