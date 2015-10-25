@@ -8,8 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol InfoCollectionCellDelete <NSObject>
+
+-(void)removeImage:(UITapGestureRecognizer *)tap;
+
+@end
+
 @interface InfoCollectionCell : UICollectionViewCell
 
 @property(nonatomic, strong) UIImageView *imageView;
+@property(nonatomic,strong)  UIImageView *deleteImageView;
+
+@property(nonatomic,strong) id<InfoCollectionCellDelete> delegate;
 
 @end
