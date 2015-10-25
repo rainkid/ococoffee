@@ -147,6 +147,9 @@ static const CGFloat kPhotoHeight = 82;
         UIButton *button = [UIButton new];
         button.backgroundColor = [UIColor whiteColor];
         [button setTitle:@"编 辑" forState:UIControlStateNormal];
+        [button setBackgroundImage:[UIImage imageNamed:@"white"] forState:UIControlStateNormal];
+        [button setAdjustsImageWhenHighlighted:YES];
+        
         [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         [button setTag:kButtonTag];
         button.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0];
@@ -181,7 +184,7 @@ static const CGFloat kPhotoHeight = 82;
         make.right.mas_equalTo(weakSelf.mas_right).offset(-5);
         //make.height.mas_equalTo(@225);
     }];
-
+    
 }
 
 -(void)editImage:(UITapGestureRecognizer *)tap {
