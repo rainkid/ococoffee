@@ -20,7 +20,6 @@
 #import "Global.h"
 #import "Common.h"
 #import "LoginViewController.h"
-#import "InfoCollectionCell.h"
 #import "CenterViewController.h"
 #import "InviteTableViewCell.h"
 #import "StringPickerView.h"
@@ -36,7 +35,7 @@
 #import <SKTagView/SKTagView.h>
 
 
-@interface CenterEditTableViewController ()<UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextFieldDelegate,StringPickerViewDelegate,MBProgressHUDDelegate,MWPhotoBrowserDelegate,DatePickerViewDelegate>{
+@interface CenterEditTableViewController ()<UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextFieldDelegate,StringPickerViewDelegate,MBProgressHUDDelegate,MWPhotoBrowserDelegate,DatePickerViewDelegate,UIAlertViewDelegate>{
     MBProgressHUD       *_HUD;
     SKTagView           *_tagView;
     MWPhotoBrowser      *browser;
@@ -485,6 +484,7 @@
     NSInteger row = [indexPath row];
     NSString static *identifier = kimageCollectionViewCell;
     InfoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
+    cell.delegate = self;
     NSInteger num = [browserImgs count];
     if(num >0){
         if(num < 6 && num == row){
@@ -846,14 +846,52 @@
         [button setTitle:@"完 成" forState:UIControlStateNormal];
         [button setTag:11];
         [button setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [self setImageHidden:NO];
+        
 
     }else{
         button.layer.borderColor = [UIColor grayColor].CGColor;
         [button setTitle:@"编 辑" forState:UIControlStateNormal];
-        [button setTag:11];
+        [button setTag:100];
         [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [self setImageHidden:YES];
     }
     
+}
+
+-(void)setImageHidden:(BOOL)isShow {
+    NSArray *arr = [subTableView subviews];
+    for (InfoCollectionCell *cell  in arr) {
+        UIImageView *imageview = (UIImageView *)[cell viewWithTag:212];
+        imageview.hidden = isShow;
+    }
+}
+
+
+-(void)removeImage:(UITapGestureRecognizer *)tap {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                    message:@"确定要删除该图片吗"
+                                                   delegate:self
+                                          cancelButtonTitle:@"取消"
+                                          otherButtonTitles:@"确定", nil
+                          ];
+    [alert show];
+    
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 1:{
+            
+            
+        }
+            
+            break;
+            
+        default:
+            break;
+    }
 }
 
 @end

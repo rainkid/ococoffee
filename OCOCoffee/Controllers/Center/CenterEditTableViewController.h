@@ -10,14 +10,16 @@
 
 #import <UIKit/UIKit.h>
 #import "CenterHeaderCell.h"
+#import "InfoCollectionCell.h"
 
 @protocol CenterEditTableViewControllerDelegate <NSObject>
 
 -(void)loadNewDataFromServer;
+-(void)removeUserImage;
 
 @end
 
-@interface CenterEditTableViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDelegate,UICollectionViewDataSource,CenterHeaderCellDelegate>
+@interface CenterEditTableViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDelegate,UICollectionViewDataSource,CenterHeaderCellDelegate,InfoCollectionCellDelete>
 @property(nonatomic,strong) NSMutableDictionary *userDict;
 
 @property(nonatomic,strong) id<CenterEditTableViewControllerDelegate>delegate;
